@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block title %}CyberCloak - AI-Powered Image Encryption & Steganography{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="display-4 mb-4">
+                <i class="fas fa-shield-alt text-primary me-3"></i>
+                Welcome to CyberCloak
+            </h1>
+            <p class="lead mb-4">
+                Secure your secrets with advanced steganography and encryption. 
+                Hide messages within images using military-grade AES-256 encryption.
+            </p>
+            
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                </a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-sign-in-alt me-2"></i>Get Started
+                </a>
+            {% endif %}
+            
+            <a href="#features" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-info-circle me-2"></i>Learn More
+            </a>
+        </div>
+    </div>
+</div>
+
+<section id="features" class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">
+            <i class="fas fa-star me-2"></i>Core Features
+        </h2>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-lock fa-3x text-primary"></i>
+                    </div>
+                    <h4>AES-256 Encryption</h4>
+                    <p>Military-grade encryption using industry-standard AES-256 with PBKDF2 key derivation.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-eye-slash fa-3x text-primary"></i>
+                    </div>
+                    <h4>LSB Steganography</h4>
+                    <p>Hide encrypted messages within image pixels using advanced Least Significant Bit techniques.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-chart-line fa-3x text-primary"></i>
+                    </div>
+                    <h4>Security Analysis</h4>
+                    <p>Real-time security scoring and detectability analysis for your steganographic images.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="workflow-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">
+            <i class="fas fa-cogs me-2"></i>How It Works
+        </h2>
+        
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="workflow-steps">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="step-card text-center">
+                                <div class="step-number">1</div>
+                                <div class="step-icon mb-3">
+                                    <i class="fas fa-upload fa-2x"></i>
+                                </div>
+                                <h5>Upload Image</h5>
+                                <p>Choose a cover image and enter your secret message</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="step-card text-center">
+                                <div class="step-number">2</div>
+                                <div class="step-icon mb-3">
+                                    <i class="fas fa-cog fa-2x"></i>
+                                </div>
+                                <h5>Process</h5>
+                                <p>Our AI encrypts and hides your message within the image</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="step-card text-center">
+                                <div class="step-number">3</div>
+                                <div class="step-icon mb-3">
+                                    <i class="fas fa-download fa-2x"></i>
+                                </div>
+                                <h5>Download</h5>
+                                <p>Get your steganographic image with hidden encrypted data</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if not current_user.is_authenticated %}
+<section class="extract-demo py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h3 class="mb-4">
+                    <i class="fas fa-search me-2"></i>Try Message Extraction
+                </h3>
+                <p class="mb-4">
+                    Upload an image that may contain hidden messages and try to extract them.
+                    No account required for extraction!
+                </p>
+                
+                <div class="extraction-form">
+                    <form id="extractForm" class="text-start">
+                        <div class="mb-3">
+                            <label for="encrypted_image" class="form-label">Choose Image File:</label>
+                            <input type="file" class="form-control" id="encrypted_image" name="encrypted_image" accept="image/*" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="decrypt_password" class="form-label">Password (if encrypted):</label>
+                            <input type="password" class="form-control" id="decrypt_password" name="decrypt_password" placeholder="Leave empty if not encrypted">
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search me-2"></i>Extract Message
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div id="extractResult" class="mt-4" style="display: none;">
+                        <div class="alert" role="alert">
+                            <h5><i class="fas fa-check-circle me-2"></i>Extracted Message:</h5>
+                            <div id="extractedMessage" class="mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="security-info py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="security-card p-4">
+                    <h3 class="text-center mb-4">
+                        <i class="fas fa-shield-virus me-2"></i>Security & Privacy
+                    </h3>
+                    
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="security-point">
+                                <i class="fas fa-server text-primary me-2"></i>
+                                <strong>Client-Side Processing:</strong> All encryption happens in your browser for maximum security.
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="security-point">
+                                <i class="fas fa-trash text-primary me-2"></i>
+                                <strong>Auto Cleanup:</strong> Uploaded files are automatically deleted after processing.
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="security-point">
+                                <i class="fas fa-user-secret text-primary me-2"></i>
+                                <strong>No Data Logging:</strong> We don't store your messages or passwords anywhere.
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="security-point">
+                                <i class="fas fa-certificate text-primary me-2"></i>
+                                <strong>Open Source:</strong> Transparent algorithms you can verify and trust.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('extractForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const resultDiv = document.getElementById('extractResult');
+    const messageDiv = document.getElementById('extractedMessage');
+    
+    try {
+        const response = await fetch('/api/extract_decrypt', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            messageDiv.textContent = result.message;
+            resultDiv.className = 'alert alert-success mt-4';
+            resultDiv.style.display = 'block';
+        } else {
+            messageDiv.textContent = result.error || 'Failed to extract message';
+            resultDiv.className = 'alert alert-danger mt-4';
+            resultDiv.style.display = 'block';
+        }
+    } catch (error) {
+        messageDiv.textContent = 'Error: ' + error.message;
+        resultDiv.className = 'alert alert-danger mt-4';
+        resultDiv.style.display = 'block';
+    }
+});
+</script>
+{% endblock %}

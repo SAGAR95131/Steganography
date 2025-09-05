@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - CyberCloak{% endblock %}
+
+{% block content %}
+<div class="dashboard-header mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1><i class="fas fa-tachometer-alt me-2"></i>Dashboard</h1>
+            <p class="text-muted">Welcome back, {{ current_user.name }}! Manage your encrypted files and steganographic operations.</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                <i class="fas fa-plus me-2"></i>New Encryption
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card p-3">
+            <div class="d-flex align-items-center">
+                <div class="stat-icon">
+                    <i class="fas fa-file-image text-primary"></i>
+                </div>
+                <div class="ms-3">
+                    <h3 class="mb-1">{{ jobs|length }}</h3>
+                    <p class="text-muted mb-0">Total Files</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="stat-card p-3">
+            <div class="d-flex align-items-center">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle text-success"></i>
+                </div>
+                <div class="ms-3">
+                    <h3 class="mb-1">{{ jobs|selectattr('status', 'equalto', 'completed')|list|length }}</h3>
+                    <p class="text-muted mb-0">Completed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="stat-card p-3">
+            <div class="d-flex align-items-center">
+                <div class="stat-icon">
+                    <i class="fas fa-shield-alt text-warning"></i>
+                </div>
+                <div class="ms-3">
+                    <h3 class="mb-1">{{ jobs|selectattr('has_password', 'equalto', true)|list|length }}</h3>
+                    <p class="text-muted mb-0">Encrypted</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="stat-card p-3">
+            <div class="d-flex align-items-center">
+                <div class="stat-icon">
+                    <i class="fas fa-download text-info"></i>
+                </div>
+                <div class="ms-3">
+                    <h3 class="mb-1">{{ (jobs|sum(attribute='file_size', start=0) / 1024 / 1024)|round(1) }}</h3>
+                    <p class="text-muted mb-0">MB Total</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Jobs</h5>
+    </div>
+    <div class="card-body">
+        {% if jobs %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Original File</th>
+                        <th>Message Preview</th>
+                        <th>Status</th>
+                        <th>Size</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in jobs %}
+                    <tr>
+                        <td>
+                            <i class="fas fa-file-image text-muted me-2"></i>
+                            {{ job.original_filename|truncate(30) }}
+                        </td>
+                        <td>
+                            <span class="text-muted">{{ job.message|truncate(40) }}</span>
+                            {% if job.has_password %}
+                                <i class="fas fa-lock text-warning ms-2" title="Encrypted"></i>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if job.status == 'completed' %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check me-1"></i>Completed
+                                </span>
+                            {% elif job.status == 'pending' %}
+                                <span class="badge bg-warning">
+                                    <i class="fas fa-clock me-1"></i>Pending
+                                </span>
+                            {% else %}
+                                <span class="badge bg-danger">
+                                    <i class="fas fa-times me-1"></i>Failed
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>{{ (job.file_size / 1024)|round(1) }} KB</td>
+                        <td>{{ job.created_at.strftime('%m/%d %H:%M') }}</td>
+                        <td>
+                            {% if job.status == 'completed' and job.encrypted_filename %}
+                                <a href="{{ url_for('download_file', filename=job.encrypted_filename) }}" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-download me-1"></i>Download
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4">
+            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+            <h5>No files yet</h5>
+            <p class="text-muted">Upload your first image to get started with steganography!</p>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                <i class="fas fa-plus me-2"></i>Upload First File
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Upload Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-upload me-2"></i>New Steganographic Encryption
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="uploadSteps">
+                    <!-- Step 1: Upload Image -->
+                    <div class="step" id="step1">
+                        <h6><i class="fas fa-image me-2"></i>Step 1: Choose Cover Image</h6>
+                        <div class="upload-area mb-3" id="uploadArea">
+                            <input type="file" id="inputImage" accept="image/*" style="display: none;">
+                            <div class="text-center p-4">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                <p>Drag & drop an image here or click to browse</p>
+                                <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('inputImage').click()">
+                                    Choose File
+                                </button>
+                            </div>
+                        </div>
+                        <div id="imagePreview" style="display: none;">
+                            <img id="previewImg" class="img-fluid mb-3" style="max-height: 200px;">
+                            <div id="imageAnalysis"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2: Enter Message -->
+                    <div class="step" id="step2" style="display: none;">
+                        <h6><i class="fas fa-comment me-2"></i>Step 2: Enter Secret Message</h6>
+                        <div class="mb-3">
+                            <label for="secretMessage" class="form-label">Your Secret Message:</label>
+                            <textarea class="form-control" id="secretMessage" rows="4" 
+                                    placeholder="Enter the message you want to hide..."></textarea>
+                            <div class="form-text">Maximum capacity will be shown based on your image.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="encryptionPassword" class="form-label">Encryption Password (Optional):</label>
+                            <input type="password" class="form-control" id="encryptionPassword" 
+                                   placeholder="Leave empty for no encryption">
+                            <div class="form-text">Recommended for sensitive messages.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3: Process -->
+                    <div class="step" id="step3" style="display: none;">
+                        <h6><i class="fas fa-cog me-2"></i>Step 3: Processing</h6>
+                        <div class="text-center">
+                            <div class="spinner-border text-primary mb-3" role="status"></div>
+                            <p>Encrypting and hiding your message...</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 4: Complete -->
+                    <div class="step" id="step4" style="display: none;">
+                        <h6><i class="fas fa-check-circle me-2"></i>Step 4: Complete</h6>
+                        <div class="alert alert-success">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            Your message has been successfully encrypted and hidden!
+                        </div>
+                        <div id="securityAnalysis"></div>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-success" id="downloadBtn">
+                                <i class="fas fa-download me-2"></i>Download Encrypted Image
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()">Next</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

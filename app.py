@@ -17,6 +17,9 @@ from steganography import SteganoTool
 from encryption import EncryptionTool
 from image_processor import ImageProcessor
 
+# Initialize the processor globally
+steganography_processor = SteganoTool()
+
 # Load environment variables
 load_dotenv()
 
@@ -40,11 +43,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
-# OAuth configuration
-app.config['GOOGLE_CLIENT_ID'] = os.environ.get('GOOGLE_CLIENT_ID')
-app.config['GOOGLE_CLIENT_SECRET'] = os.environ.get('GOOGLE_CLIENT_SECRET')
-app.config['GITHUB_CLIENT_ID'] = os.environ.get('GITHUB_CLIENT_ID')
-app.config['GITHUB_CLIENT_SECRET'] = os.environ.get('GITHUB_CLIENT_SECRET')
+# OAuth configuration (optional)
+app.config['GOOGLE_CLIENT_ID'] = os.environ.get('GOOGLE_CLIENT_ID', '')
+app.config['GOOGLE_CLIENT_SECRET'] = os.environ.get('GOOGLE_CLIENT_SECRET', '')
+app.config['GITHUB_CLIENT_ID'] = os.environ.get('GITHUB_CLIENT_ID', '')
+app.config['GITHUB_CLIENT_SECRET'] = os.environ.get('GITHUB_CLIENT_SECRET', '')
 
 # Email configuration
 app.config['SENDGRID_API_KEY'] = os.environ.get('SENDGRID_API_KEY')
@@ -54,34 +57,39 @@ app.config['ADMIN_EMAIL'] = os.environ.get('ADMIN_EMAIL', 'admin@cybercloak.com'
 db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'login'  # type: ignore
 login_manager.login_message = 'Please log in to access this feature.'
 login_manager.login_message_category = 'info'
 
 oauth = OAuth(app)
 
-# Configure OAuth providers
-google = oauth.register(
-    name='google',
-    client_id=app.config['GOOGLE_CLIENT_ID'],
-    client_secret=app.config['GOOGLE_CLIENT_SECRET'],
-    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
-    client_kwargs={
-        'scope': 'openid email profile'
-    }
-)
+# Configure OAuth providers only if credentials are available
+google = None
+github = None
 
-github = oauth.register(
-    name='github',
-    client_id=app.config['GITHUB_CLIENT_ID'],
-    client_secret=app.config['GITHUB_CLIENT_SECRET'],
-    access_token_url='https://github.com/login/oauth/access_token',
-    access_token_params=None,
-    authorize_url='https://github.com/login/oauth/authorize',
-    authorize_params=None,
-    api_base_url='https://api.github.com/',
-    client_kwargs={'scope': 'user:email'},
-)
+if app.config['GOOGLE_CLIENT_ID'] and app.config['GOOGLE_CLIENT_SECRET']:
+    google = oauth.register(
+        name='google',
+        client_id=app.config['GOOGLE_CLIENT_ID'],
+        client_secret=app.config['GOOGLE_CLIENT_SECRET'],
+        server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+        client_kwargs={
+            'scope': 'openid email profile'
+        }
+    )
+
+if app.config['GITHUB_CLIENT_ID'] and app.config['GITHUB_CLIENT_SECRET']:
+    github = oauth.register(
+        name='github',
+        client_id=app.config['GITHUB_CLIENT_ID'],
+        client_secret=app.config['GITHUB_CLIENT_SECRET'],
+        access_token_url='https://github.com/login/oauth/access_token',
+        access_token_params=None,
+        authorize_url='https://github.com/login/oauth/authorize',
+        authorize_params=None,
+        api_base_url='https://api.github.com/',
+        client_kwargs={'scope': 'user:email'},
+    )
 
 # Ensure upload folder exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -110,20 +118,20 @@ def login():
 
 @app.route('/auth/<provider>')
 def oauth_login(provider):
-    if provider == 'google':
+    if provider == 'google' and google:
         redirect_uri = url_for('oauth_callback', provider='google', _external=True)
         return google.authorize_redirect(redirect_uri)
-    elif provider == 'github':
+    elif provider == 'github' and github:
         redirect_uri = url_for('oauth_callback', provider='github', _external=True)
         return github.authorize_redirect(redirect_uri)
     else:
-        flash('Invalid provider', 'error')
+        flash('OAuth provider not configured', 'error')
         return redirect(url_for('login'))
 
 @app.route('/auth/<provider>/callback')
 def oauth_callback(provider):
     try:
-        if provider == 'google':
+        if provider == 'google' and google:
             token = google.authorize_access_token()
             user_info = token.get('userinfo')
             if user_info:
@@ -136,14 +144,13 @@ def oauth_callback(provider):
                         return redirect(url_for('login'))
                     
                     # Create new user
-                    user = User(
-                        email=user_info['email'],
-                        username=user_info['email'].split('@')[0],
-                        name=user_info.get('name', ''),
-                        avatar_url=user_info.get('picture', ''),
-                        provider='google',
-                        provider_id=user_info['sub']
-                    )
+                    user = User()
+                    user.email = user_info['email']
+                    user.username = user_info['email'].split('@')[0]
+                    user.name = user_info.get('name', '')
+                    user.avatar_url = user_info.get('picture', '')
+                    user.provider = 'google'
+                    user.provider_id = user_info['sub']
                     db.session.add(user)
                     db.session.commit()
                     flash('Account created successfully! Welcome to CyberCloak!', 'success')
@@ -155,7 +162,7 @@ def oauth_callback(provider):
                 login_user(user, remember=True)
                 return redirect(url_for('dashboard'))
                 
-        elif provider == 'github':
+        elif provider == 'github' and github:
             token = github.authorize_access_token()
             resp = github.get('user', token=token)
             user_info = resp.json()
@@ -175,14 +182,13 @@ def oauth_callback(provider):
                         return redirect(url_for('login'))
                     
                     # Create new user
-                    user = User(
-                        email=primary_email,
-                        username=user_info['login'],
-                        name=user_info.get('name', user_info['login']),
-                        avatar_url=user_info.get('avatar_url', ''),
-                        provider='github',
-                        provider_id=str(user_info['id'])
-                    )
+                    user = User()
+                    user.email = primary_email
+                    user.username = user_info['login']
+                    user.name = user_info.get('name', user_info['login'])
+                    user.avatar_url = user_info.get('avatar_url', '')
+                    user.provider = 'github'
+                    user.provider_id = str(user_info['id'])
                     db.session.add(user)
                     db.session.commit()
                     flash('Account created successfully! Welcome to CyberCloak!', 'success')
@@ -222,13 +228,12 @@ def contact():
             data = request.get_json() if request.is_json else request.form
             
             # Create contact message
-            message = ContactMessage(
-                user_id=current_user.id if current_user.is_authenticated else None,
-                name=data.get('name'),
-                email=data.get('email'),
-                subject=data.get('subject'),
-                message=data.get('message')
-            )
+            message = ContactMessage()
+            message.user_id = current_user.id if current_user.is_authenticated else None
+            message.name = data.get('name')
+            message.email = data.get('email')
+            message.subject = data.get('subject')
+            message.message = data.get('message')
             db.session.add(message)
             db.session.commit()
             
@@ -336,18 +341,30 @@ def api_extract_decrypt():
         session_id = str(uuid.uuid4())
         
         # Save uploaded file
-        filename = secure_filename(file.filename)
+        filename = secure_filename(file.filename if file.filename else 'upload.png')
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], f"{session_id}_{filename}")
         file.save(filepath)
         
         # Get password if provided
         password = request.form.get('decrypt_password', '')
         
-        # Extract and decrypt message
-        result = steganography_processor.extract_decrypt(
-            image_path=filepath,
-            password=password if password else None
-        )
+        # Extract message
+        steg_tool = SteganoTool()
+        extracted_message = steg_tool.extract_message(filepath)
+        
+        if not extracted_message:
+            result = {'message': 'No hidden message found', 'was_encrypted': False}
+        else:
+            # Try to decrypt if password provided
+            if password:
+                try:
+                    encrypt_tool = EncryptionTool()
+                    decrypted = encrypt_tool.decrypt_data(extracted_message, password)
+                    result = {'message': decrypted, 'was_encrypted': True}
+                except:
+                    result = {'message': extracted_message, 'was_encrypted': False}
+            else:
+                result = {'message': extracted_message, 'was_encrypted': False}
         
         # Clean up uploaded file
         os.remove(filepath)
@@ -397,15 +414,14 @@ def encrypt_hide():
         
         if success:
             # Save encryption job to database
-            job = EncryptionJob(
-                user_id=current_user.id,
-                original_filename=input_files[0],
-                encrypted_filename=f"{session_id}_output.png",
-                message=message[:100] + "..." if len(message) > 100 else message,
-                has_password=bool(password),
-                file_size=os.path.getsize(output_path),
-                status='completed'
-            )
+            job = EncryptionJob()
+            job.user_id = current_user.id
+            job.original_filename = input_files[0]
+            job.encrypted_filename = f"{session_id}_output.png"
+            job.message = message[:100] + "..." if len(message) > 100 else message
+            job.has_password = bool(password)
+            job.file_size = os.path.getsize(output_path)
+            job.status = 'completed'
             db.session.add(job)
             db.session.commit()
             
@@ -486,7 +502,7 @@ def extract_decrypt():
         
         # Save uploaded file
         session_id = str(uuid.uuid4())
-        filename = secure_filename(encrypted_file.filename or 'encrypted.png')
+        filename = secure_filename(encrypted_file.filename if encrypted_file.filename else 'encrypted.png')
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{session_id}_encrypted_{filename}")
         encrypted_file.save(file_path)
         

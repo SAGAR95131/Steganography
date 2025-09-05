@@ -1,4 +1,4 @@
-modules = ["python-3.11", "web"]
+modules = ["python-3.11"]
 
 [nix]
 channel = "stable-25_05"
@@ -14,10 +14,10 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Start application"
+args = "CyberCloak App"
 
 [[workflows.workflow]]
-name = "Start application"
+name = "CyberCloak App"
 author = "agent"
 
 [[workflows.workflow.tasks]]

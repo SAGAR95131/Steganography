@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Login - CyberCloak{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="login-card p-4">
+            <div class="text-center mb-4">
+                <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                <h2>Welcome Back</h2>
+                <p class="text-muted">Sign in to access your secure workspace</p>
+            </div>
+
+            <div class="oauth-buttons">
+                {% if config.GOOGLE_CLIENT_ID %}
+                <a href="{{ url_for('oauth_login', provider='google') }}" class="btn btn-outline-primary w-100 mb-3">
+                    <i class="fab fa-google me-2"></i>Continue with Google
+                </a>
+                {% endif %}
+                
+                {% if config.GITHUB_CLIENT_ID %}
+                <a href="{{ url_for('oauth_login', provider='github') }}" class="btn btn-outline-dark w-100 mb-3">
+                    <i class="fab fa-github me-2"></i>Continue with GitHub
+                </a>
+                {% endif %}
+                
+                {% if not config.GOOGLE_CLIENT_ID and not config.GITHUB_CLIENT_ID %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    OAuth providers are not configured. Please set up Google or GitHub OAuth to enable login.
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="text-center mt-4">
+                <p class="small text-muted">
+                    Don't have an account? Sign up with OAuth above to get started.
+                </p>
+            </div>
+
+            <div class="security-note mt-4 p-3">
+                <h6><i class="fas fa-lock me-2"></i>Secure Authentication</h6>
+                <ul class="small text-muted mb-0">
+                    <li>We use OAuth for secure authentication</li>
+                    <li>No passwords stored on our servers</li>
+                    <li>Your data remains encrypted and private</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <a href="{{ url_for('index') }}" class="btn btn-link">
+        <i class="fas fa-arrow-left me-2"></i>Back to Home
+    </a>
+</div>
+{% endblock %}
