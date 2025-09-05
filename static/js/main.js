@@ -1,17 +1,19 @@
-// CyberCloak - Main JavaScript
+// CyberCloak - Main JavaScript with God-like Animations
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize theme system
+    // Initialize all systems
     initializeTheme();
-    
-    // Initialize drag and drop for upload areas
     initializeDragAndDrop();
-    
-    // Initialize form enhancements
     initializeForms();
-    
-    // Initialize animations
     initializeAnimations();
+    initializeScrollAnimations();
+    initializeParticles();
+    initializeCounters();
+    
+    // Add loading screen fade out
+    setTimeout(() => {
+        document.body.classList.add('loaded');
+    }, 500);
 });
 
 // Theme Management

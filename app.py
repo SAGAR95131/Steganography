@@ -51,7 +51,7 @@ app.config['GITHUB_CLIENT_SECRET'] = os.environ.get('GITHUB_CLIENT_SECRET', '')
 
 # Email configuration
 app.config['SENDGRID_API_KEY'] = os.environ.get('SENDGRID_API_KEY')
-app.config['ADMIN_EMAIL'] = os.environ.get('ADMIN_EMAIL', 'admin@cybercloak.com')
+app.config['ADMIN_EMAIL'] = os.environ.get('ADMIN_EMAIL', 'rahulkumarpokhriyal1029@gmail.com')
 
 # Initialize extensions
 db.init_app(app)
@@ -243,7 +243,7 @@ def contact():
             if request.is_json:
                 return jsonify({'success': True, 'message': 'Message sent successfully!'})
             else:
-                flash('Message received! Thank you for contacting us. Rahul will respond to your email soon.', 'success')
+                flash('Message received! Thank you for contacting us. Rahul Pokhriyal will respond to your email soon.', 'success')
                 return redirect(url_for('contact'))
                 
         except Exception as e:
