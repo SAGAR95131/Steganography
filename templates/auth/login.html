@@ -3,57 +3,132 @@
 {% block title %}Login - CyberCloak{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5">
-        <div class="login-card p-4">
-            <div class="text-center mb-4">
-                <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
-                <h2>Welcome Back</h2>
-                <p class="text-muted">Sign in to access your secure workspace</p>
-            </div>
+<div class="auth-container">
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-md-6 col-lg-5">
+                <div class="auth-card floating-card">
+                    <div class="text-center mb-4">
+                        <div class="auth-logo mb-3">
+                            <span class="gradient-text">🔐</span>
+                        </div>
+                        <h2 class="auth-title">Welcome Back</h2>
+                        <p class="auth-subtitle">Sign in to access your encrypted vault</p>
+                    </div>
 
-            <div class="oauth-buttons">
-                {% if config.GOOGLE_CLIENT_ID %}
-                <a href="{{ url_for('oauth_login', provider='google') }}" class="btn btn-outline-primary w-100 mb-3">
-                    <i class="fab fa-google me-2"></i>Continue with Google
-                </a>
-                {% endif %}
-                
-                {% if config.GITHUB_CLIENT_ID %}
-                <a href="{{ url_for('oauth_login', provider='github') }}" class="btn btn-outline-dark w-100 mb-3">
-                    <i class="fab fa-github me-2"></i>Continue with GitHub
-                </a>
-                {% endif %}
-                
-                {% if not config.GOOGLE_CLIENT_ID and not config.GITHUB_CLIENT_ID %}
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    OAuth providers are not configured. Please set up Google or GitHub OAuth to enable login.
+                    <div class="oauth-buttons">
+                        {% if config.GOOGLE_CLIENT_ID %}
+                        <a href="{{ url_for('oauth_login', provider='google') }}" class="btn btn-social btn-google mb-3" id="googleLogin">
+                            <i class="fab fa-google me-2"></i>Continue with Google
+                        </a>
+                        {% endif %}
+                        
+                        {% if config.GITHUB_CLIENT_ID %}
+                        <a href="{{ url_for('oauth_login', provider='github') }}" class="btn btn-social btn-github mb-3" id="githubLogin">
+                            <i class="fab fa-github me-2"></i>Continue with GitHub
+                        </a>
+                        {% endif %}
+                        
+                        {% if not config.GOOGLE_CLIENT_ID and not config.GITHUB_CLIENT_ID %}
+                        <div class="config-notice">
+                            <div class="notice-icon">⚙️</div>
+                            <h6>OAuth Setup Required</h6>
+                            <p>OAuth providers need to be configured. For demo purposes, you can still explore the platform!</p>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-primary demo-btn">
+                                🔍 Explore Demo
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="auth-divider">
+                        <span>or</span>
+                    </div>
+
+                    <!-- Demo Login for Testing -->
+                    <div class="demo-section">
+                        <h6 class="demo-title">🚀 Quick Demo Access</h6>
+                        <p class="demo-description">Experience CyberCloak instantly without account setup</p>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg glow-btn w-100 demo-access">
+                            ✨ Try Demo Now
+                        </a>
+                    </div>
+
+                    <div class="security-features mt-4">
+                        <h6 class="features-title">🛡️ Why CyberCloak?</h6>
+                        <div class="feature-list">
+                            <div class="feature-item">
+                                <span class="feature-icon">🔒</span>
+                                <span>AES-256 Military Encryption</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">👻</span>
+                                <span>Invisible Steganography</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">🚫</span>
+                                <span>Zero Data Logging</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">⚡</span>
+                                <span>Instant Processing</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                {% endif %}
-            </div>
-
-            <div class="text-center mt-4">
-                <p class="small text-muted">
-                    Don't have an account? Sign up with OAuth above to get started.
-                </p>
-            </div>
-
-            <div class="security-note mt-4 p-3">
-                <h6><i class="fas fa-lock me-2"></i>Secure Authentication</h6>
-                <ul class="small text-muted mb-0">
-                    <li>We use OAuth for secure authentication</li>
-                    <li>No passwords stored on our servers</li>
-                    <li>Your data remains encrypted and private</li>
-                </ul>
+                
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('index') }}" class="back-link">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Home
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
 
-<div class="text-center mt-4">
-    <a href="{{ url_for('index') }}" class="btn btn-link">
-        <i class="fas fa-arrow-left me-2"></i>Back to Home
-    </a>
-</div>
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add loading states to OAuth buttons
+    document.querySelectorAll('.btn-social').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const originalText = this.innerHTML;
+            this.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Connecting...';
+            this.style.pointerEvents = 'none';
+            
+            // Restore if navigation fails
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.style.pointerEvents = 'auto';
+            }, 5000);
+        });
+    });
+    
+    // Add smooth animations to demo access
+    const demoBtn = document.querySelector('.demo-access');
+    if (demoBtn) {
+        demoBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Show loading animation
+            const originalText = this.innerHTML;
+            this.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Initializing Demo...';
+            
+            // Animate and redirect
+            setTimeout(() => {
+                window.location.href = this.href;
+            }, 1500);
+        });
+    }
+    
+    // Add pulse animation to security features
+    const features = document.querySelectorAll('.feature-item');
+    features.forEach((feature, index) => {
+        feature.style.animationDelay = `${index * 0.2}s`;
+        feature.classList.add('animate-feature');
+    });
+});
+</script>
 {% endblock %}

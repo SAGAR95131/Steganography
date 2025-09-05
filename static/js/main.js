@@ -16,61 +16,314 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 500);
 });
 
-// Theme Management
+// Theme Management System
 function initializeTheme() {
-    // Load saved theme or default
+    const themeSelector = createThemeSelector();
     const savedTheme = localStorage.getItem('cybercloak-theme') || 'default';
     applyTheme(savedTheme);
+    updateThemeSelector(savedTheme);
+}
+
+function createThemeSelector() {
+    const existing = document.querySelector('.theme-selector');
+    if (existing) return existing;
     
-    // Theme switcher buttons
-    document.querySelectorAll('.theme-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const theme = this.getAttribute('data-theme');
+    const selector = document.createElement('div');
+    selector.className = 'theme-selector';
+    selector.innerHTML = `
+        <div class="theme-toggle">
+            <div class="theme-icon">🎨</div>
+            <div class="theme-dropdown">
+                <div class="theme-option" data-theme="default">
+                    <div class="theme-preview default"></div>
+                    <span>Default</span>
+                </div>
+                <div class="theme-option" data-theme="cyberpunk">
+                    <div class="theme-preview cyberpunk"></div>
+                    <span>Cyberpunk</span>
+                </div>
+                <div class="theme-option" data-theme="ocean">
+                    <div class="theme-preview ocean"></div>
+                    <span>Ocean</span>
+                </div>
+                <div class="theme-option" data-theme="sunset">
+                    <div class="theme-preview sunset"></div>
+                    <span>Sunset</span>
+                </div>
+                <div class="theme-option" data-theme="neon">
+                    <div class="theme-preview neon"></div>
+                    <span>Neon</span>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(selector);
+    
+    // Add event listeners
+    selector.querySelector('.theme-icon').addEventListener('click', () => {
+        selector.classList.toggle('active');
+    });
+    
+    selector.querySelectorAll('.theme-option').forEach(option => {
+        option.addEventListener('click', (e) => {
+            const theme = e.currentTarget.dataset.theme;
             applyTheme(theme);
             localStorage.setItem('cybercloak-theme', theme);
-            
-            // Visual feedback
-            showNotification(`Theme changed to ${theme}`, 'success');
+            selector.classList.remove('active');
+            updateThemeSelector(theme);
         });
     });
+    
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+        if (!selector.contains(e.target)) {
+            selector.classList.remove('active');
+        }
+    });
+    
+    return selector;
 }
 
 function applyTheme(theme) {
-    document.body.setAttribute('data-theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
     
-    // Update active state in dropdown
-    document.querySelectorAll('.theme-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.getAttribute('data-theme') === theme) {
-            btn.classList.add('active');
+    // Update CSS variables based on theme
+    const root = document.documentElement;
+    const themes = {
+        default: {
+            '--primary-gradient': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            '--secondary-gradient': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+            '--bg-dark': '#0c0c0c',
+            '--shadow-neon': '0 0 30px rgba(102, 126, 234, 0.3)'
+        },
+        cyberpunk: {
+            '--primary-gradient': 'linear-gradient(135deg, #ff0080 0%, #8000ff 100%)',
+            '--secondary-gradient': 'linear-gradient(135deg, #00ffff 0%, #0080ff 100%)',
+            '--bg-dark': '#0a0a0a',
+            '--shadow-neon': '0 0 30px rgba(255, 0, 128, 0.5)'
+        },
+        ocean: {
+            '--primary-gradient': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+            '--secondary-gradient': 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+            '--bg-dark': '#0d1421',
+            '--shadow-neon': '0 0 30px rgba(79, 172, 254, 0.4)'
+        },
+        sunset: {
+            '--primary-gradient': 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+            '--secondary-gradient': 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+            '--bg-dark': '#1a0e0a',
+            '--shadow-neon': '0 0 30px rgba(250, 112, 154, 0.4)'
+        },
+        neon: {
+            '--primary-gradient': 'linear-gradient(135deg, #00ff41 0%, #00d4ff 100%)',
+            '--secondary-gradient': 'linear-gradient(135deg, #ff006e 0%, #8338ec 100%)',
+            '--bg-dark': '#050505',
+            '--shadow-neon': '0 0 30px rgba(0, 255, 65, 0.5)'
+        }
+    };
+    
+    if (themes[theme]) {
+        Object.entries(themes[theme]).forEach(([property, value]) => {
+            root.style.setProperty(property, value);
+        });
+    }
+}
+
+function updateThemeSelector(activeTheme) {
+    const selector = document.querySelector('.theme-selector');
+    if (selector) {
+        selector.querySelectorAll('.theme-option').forEach(option => {
+            option.classList.toggle('active', option.dataset.theme === activeTheme);
+        });
+    }
+}
+
+// Scroll Animations
+function initializeScrollAnimations() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('animated');
+                }, index * 100);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    // Observe elements for animation
+    document.querySelectorAll('.floating-card, .workflow-step, .stat-item').forEach(el => {
+        el.classList.add('animate-on-scroll');
+        observer.observe(el);
+    });
+}
+
+// Counter Animation
+function initializeCounters() {
+    const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounter(entry.target);
+                counterObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    document.querySelectorAll('.stat-number').forEach(counter => {
+        counterObserver.observe(counter);
+    });
+}
+
+function animateCounter(element) {
+    const target = parseFloat(element.getAttribute('data-count'));
+    const duration = 2000;
+    const increment = target / (duration / 16);
+    let current = 0;
+    
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            current = target;
+            clearInterval(timer);
+        }
+        
+        if (target >= 1000) {
+            element.textContent = Math.floor(current).toLocaleString();
+        } else {
+            element.textContent = current.toFixed(1);
+        }
+    }, 16);
+}
+
+// Particle System
+function initializeParticles() {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = '1';
+    canvas.style.opacity = '0.3';
+    document.body.appendChild(canvas);
+    
+    let particles = [];
+    let animationId;
+    
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    
+    function createParticle() {
+        return {
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            size: Math.random() * 2 + 1,
+            opacity: Math.random() * 0.5 + 0.2,
+            color: `hsl(${Math.random() * 60 + 240}, 70%, 60%)`
+        };
+    }
+    
+    function initParticles() {
+        particles = [];
+        for (let i = 0; i < 50; i++) {
+            particles.push(createParticle());
+        }
+    }
+    
+    function updateParticles() {
+        particles.forEach(particle => {
+            particle.x += particle.vx;
+            particle.y += particle.vy;
+            
+            if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
+            if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
+        });
+    }
+    
+    function drawParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        particles.forEach(particle => {
+            ctx.beginPath();
+            ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            ctx.fillStyle = particle.color;
+            ctx.globalAlpha = particle.opacity;
+            ctx.fill();
+        });
+        
+        // Draw connections
+        particles.forEach((particle, i) => {
+            particles.slice(i + 1).forEach(otherParticle => {
+                const dx = particle.x - otherParticle.x;
+                const dy = particle.y - otherParticle.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 100) {
+                    ctx.beginPath();
+                    ctx.moveTo(particle.x, particle.y);
+                    ctx.lineTo(otherParticle.x, otherParticle.y);
+                    ctx.strokeStyle = 'rgba(102, 126, 234, 0.2)';
+                    ctx.globalAlpha = (100 - distance) / 100 * 0.5;
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+            });
+        });
+    }
+    
+    function animate() {
+        updateParticles();
+        drawParticles();
+        animationId = requestAnimationFrame(animate);
+    }
+    
+    resizeCanvas();
+    initParticles();
+    animate();
+    
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        initParticles();
+    });
+    
+    // Pause animation when page is not visible
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            cancelAnimationFrame(animationId);
+        } else {
+            animate();
         }
     });
 }
 
-// Drag and Drop File Upload
+// Drag and Drop functionality
 function initializeDragAndDrop() {
-    const uploadAreas = document.querySelectorAll('.upload-area');
-    
-    uploadAreas.forEach(area => {
+    document.querySelectorAll('.upload-zone').forEach(zone => {
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            area.addEventListener(eventName, preventDefaults, false);
+            zone.addEventListener(eventName, preventDefaults, false);
         });
         
         ['dragenter', 'dragover'].forEach(eventName => {
-            area.addEventListener(eventName, () => area.classList.add('dragover'), false);
+            zone.addEventListener(eventName, highlight, false);
         });
         
         ['dragleave', 'drop'].forEach(eventName => {
-            area.addEventListener(eventName, () => area.classList.remove('dragover'), false);
+            zone.addEventListener(eventName, unhighlight, false);
         });
         
-        area.addEventListener('drop', handleDrop, false);
-        area.addEventListener('click', () => {
-            const fileInput = area.querySelector('input[type="file"]') || 
-                            document.getElementById('inputImage');
-            if (fileInput) fileInput.click();
-        });
+        zone.addEventListener('drop', handleDrop, false);
     });
     
     function preventDefaults(e) {
@@ -78,161 +331,159 @@ function initializeDragAndDrop() {
         e.stopPropagation();
     }
     
+    function highlight(e) {
+        e.currentTarget.classList.add('drag-over');
+    }
+    
+    function unhighlight(e) {
+        e.currentTarget.classList.remove('drag-over');
+    }
+    
     function handleDrop(e) {
-        const dt = e.dataTransfer;
-        const files = dt.files;
+        const files = e.dataTransfer.files;
+        const input = e.currentTarget.querySelector('input[type="file"]') || 
+                     document.querySelector('input[type="file"]');
         
-        if (files.length > 0) {
-            const fileInput = e.target.querySelector('input[type="file"]') || 
-                            document.getElementById('inputImage');
-            if (fileInput) {
-                fileInput.files = files;
-                fileInput.dispatchEvent(new Event('change'));
-            }
+        if (files.length > 0 && input) {
+            input.files = files;
+            input.dispatchEvent(new Event('change'));
         }
     }
 }
 
-// Form Enhancements
+// Form enhancements
 function initializeForms() {
-    // Auto-resize textareas
-    document.querySelectorAll('textarea').forEach(textarea => {
-        textarea.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = this.scrollHeight + 'px';
-        });
-    });
-    
-    // Form validation feedback
+    // Enhance all forms with smooth validation
     document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', function(e) {
-            if (!form.checkValidity()) {
-                e.preventDefault();
-                e.stopPropagation();
-                showNotification('Please fill in all required fields', 'error');
-            }
-            form.classList.add('was-validated');
-        });
+        form.addEventListener('submit', handleFormSubmit);
     });
     
-    // Password strength indicator
-    const passwordInputs = document.querySelectorAll('input[type="password"]');
-    passwordInputs.forEach(input => {
-        if (input.id === 'encryptionPassword') {
-            input.addEventListener('input', updatePasswordStrength);
-        }
+    // Add real-time validation
+    document.querySelectorAll('input, textarea, select').forEach(field => {
+        field.addEventListener('blur', validateField);
+        field.addEventListener('input', clearFieldError);
     });
 }
 
-function updatePasswordStrength(e) {
-    const password = e.target.value;
-    const strength = calculatePasswordStrength(password);
+function handleFormSubmit(e) {
+    const form = e.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
     
-    // Remove existing strength indicator
-    const existingIndicator = e.target.parentNode.querySelector('.password-strength');
-    if (existingIndicator) {
-        existingIndicator.remove();
-    }
-    
-    if (password.length > 0) {
-        const indicator = document.createElement('div');
-        indicator.className = 'password-strength mt-1';
-        indicator.innerHTML = `
-            <div class="progress" style="height: 6px;">
-                <div class="progress-bar bg-${strength.color}" 
-                     style="width: ${strength.percentage}%"></div>
-            </div>
-            <small class="text-${strength.color}">${strength.text}</small>
-        `;
-        e.target.parentNode.appendChild(indicator);
+    if (submitBtn) {
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Sending...';
+        submitBtn.disabled = true;
+        
+        // Re-enable after 3 seconds if no redirect
+        setTimeout(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }, 3000);
     }
 }
 
-function calculatePasswordStrength(password) {
-    let score = 0;
+function validateField(e) {
+    const field = e.target;
+    const value = field.value.trim();
+    const type = field.type;
     
-    if (password.length >= 8) score += 25;
-    if (password.match(/[a-z]/)) score += 25;
-    if (password.match(/[A-Z]/)) score += 25;
-    if (password.match(/[0-9]/)) score += 15;
-    if (password.match(/[^a-zA-Z0-9]/)) score += 10;
+    clearFieldError(e);
     
-    if (score < 30) return { color: 'danger', text: 'Weak', percentage: 25 };
-    if (score < 60) return { color: 'warning', text: 'Fair', percentage: 50 };
-    if (score < 90) return { color: 'info', text: 'Good', percentage: 75 };
-    return { color: 'success', text: 'Strong', percentage: 100 };
+    if (field.required && !value) {
+        showFieldError(field, 'This field is required');
+        return false;
+    }
+    
+    if (type === 'email' && value && !isValidEmail(value)) {
+        showFieldError(field, 'Please enter a valid email address');
+        return false;
+    }
+    
+    if (type === 'password' && value && value.length < 6) {
+        showFieldError(field, 'Password must be at least 6 characters');
+        return false;
+    }
+    
+    return true;
 }
 
-// Animations
+function clearFieldError(e) {
+    const field = e.target;
+    const errorDiv = field.parentNode.querySelector('.field-error');
+    if (errorDiv) {
+        errorDiv.remove();
+    }
+    field.classList.remove('is-invalid');
+}
+
+function showFieldError(field, message) {
+    field.classList.add('is-invalid');
+    
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'field-error';
+    errorDiv.textContent = message;
+    field.parentNode.appendChild(errorDiv);
+}
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// Animation system
 function initializeAnimations() {
-    // Intersection Observer for fade-in animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-fade-in');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
-    
-    // Observe elements for animation
-    document.querySelectorAll('.feature-card, .step-card, .stat-card').forEach(el => {
-        observer.observe(el);
+    // Stagger animations for cards
+    document.querySelectorAll('.floating-card').forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
     });
     
     // Add hover effects
-    document.querySelectorAll('.btn').forEach(btn => {
-        btn.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-2px)';
+    document.querySelectorAll('.glow-btn').forEach(btn => {
+        btn.addEventListener('mouseenter', () => {
+            btn.style.transform = 'translateY(-3px) scale(1.05)';
         });
         
-        btn.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform = 'translateY(0) scale(1)';
         });
     });
 }
 
-// Notification System
-function showNotification(message, type = 'info', duration = 5000) {
+// Notification system
+function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
-    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-    notification.style.cssText = `
-        top: 20px;
-        right: 20px;
-        z-index: 9999;
-        min-width: 300px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    `;
-    
-    const iconMap = {
-        success: 'check-circle',
-        error: 'exclamation-triangle',
-        warning: 'exclamation-triangle',
-        info: 'info-circle'
-    };
-    
+    notification.className = `notification notification-${type}`;
     notification.innerHTML = `
-        <i class="fas fa-${iconMap[type]} me-2"></i>
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <div class="notification-content">
+            <div class="notification-icon">${getNotificationIcon(type)}</div>
+            <div class="notification-message">${message}</div>
+            <button class="notification-close">&times;</button>
+        </div>
     `;
     
     document.body.appendChild(notification);
     
-    // Auto remove
+    // Auto remove after 5 seconds
     setTimeout(() => {
-        if (notification.parentNode) {
-            notification.remove();
-        }
-    }, duration);
+        notification.remove();
+    }, 5000);
+    
+    // Remove on click
+    notification.querySelector('.notification-close').addEventListener('click', () => {
+        notification.remove();
+    });
 }
 
-// Utility Functions
+function getNotificationIcon(type) {
+    const icons = {
+        success: '✅',
+        error: '❌',
+        warning: '⚠️',
+        info: 'ℹ️'
+    };
+    return icons[type] || icons.info;
+}
+
+// Utility functions
 function formatFileSize(bytes) {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -259,64 +510,7 @@ function copyToClipboard(text) {
     });
 }
 
-// Loading States
-function showLoading(element, text = 'Loading...') {
-    element.classList.add('loading');
-    element.disabled = true;
-    element.dataset.originalText = element.innerHTML;
-    element.innerHTML = `
-        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-        ${text}
-    `;
-}
-
-function hideLoading(element) {
-    element.classList.remove('loading');
-    element.disabled = false;
-    if (element.dataset.originalText) {
-        element.innerHTML = element.dataset.originalText;
-        delete element.dataset.originalText;
-    }
-}
-
-// Image Preview
-function previewImage(input, previewElement) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            previewElement.src = e.target.result;
-            previewElement.style.display = 'block';
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-// Progress Bar
-function updateProgress(percentage, element) {
-    if (element) {
-        element.style.width = percentage + '%';
-        element.setAttribute('aria-valuenow', percentage);
-        element.textContent = Math.round(percentage) + '%';
-    }
-}
-
-// File Validation
-function validateImageFile(file) {
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'];
-    const maxSize = 16 * 1024 * 1024; // 16MB
-    
-    if (!allowedTypes.includes(file.type)) {
-        throw new Error('Please select a valid image file (JPEG, PNG, GIF, BMP, WebP)');
-    }
-    
-    if (file.size > maxSize) {
-        throw new Error('File size must be less than 16MB');
-    }
-    
-    return true;
-}
-
-// API Helper Functions
+// API call wrapper
 async function makeAPICall(url, options = {}) {
     try {
         const response = await fetch(url, {
@@ -344,10 +538,8 @@ window.CyberCloak = {
     formatFileSize,
     formatDate,
     copyToClipboard,
-    showLoading,
-    hideLoading,
-    previewImage,
-    updateProgress,
-    validateImageFile,
-    makeAPICall
+    makeAPICall,
+    initializeCounters,
+    animateCounter,
+    applyTheme
 };
