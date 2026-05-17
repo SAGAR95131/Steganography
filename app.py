@@ -30,12 +30,23 @@ from models import (db, User, EncryptionJob, ContactMessage, PasswordReset, File
                    AuditLog, TwoFactorAuth, Notification, UserProfile, Follow, Post, PostLike, 
                    Comment, CommentLike, Workspace, WorkspaceMember, CollaborationSession, 
                    ShareRequest, ActivityFeed)
-from steganography import SteganoTool
-from encryption import EncryptionTool
-from image_processor import ImageProcessor
+# Lazy-load heavy modules to avoid cv2/numpy import at startup (breaks Vercel)
+def get_stegano():
+    from steganography import SteganoTool
+    return SteganoTool()
 
-# Initialize the processor globally
-processor = ImageProcessor()
+def get_encryption():
+    from encryption import EncryptionTool
+    return EncryptionTool()
+
+# Lazy-load ImageProcessor to avoid heavy cv2/numpy import at startup (breaks Vercel)
+_processor = None
+def get_processor():
+    global _processor
+    if _processor is None:
+        from image_processor import ImageProcessor
+        _processor = ImageProcessor()
+    return _processor
 
 # Load environment variables
 load_dotenv()
