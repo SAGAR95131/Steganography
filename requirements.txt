@@ -12,7 +12,7 @@ psycopg2-binary==2.9.10
 
 # Image processing
 Pillow==11.3.0
-opencv-python==4.11.0.86
+opencv-python-headless==4.11.0.86
 numpy==2.3.2
 
 # Steganography
@@ -37,5 +37,3 @@ qrcode==7.4.2
 # Cloud Storage
 boto3==1.34.0
 
-# Production server
-gunicorn==23.0.0
