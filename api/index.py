@@ -1,23 +1,27 @@
 import sys
 import os
 import traceback
+from flask import Flask
 
-# Add the parent directory to path so we can import app
+# Add the parent directory to path so we can import the real app
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+_load_error = None
 
 try:
     from app import app
-    application = app
 except Exception as e:
-    # If the app fails to load, return the error as a plain HTTP response
-    # so we can see exactly what's crashing
-    error_details = traceback.format_exc()
+    _load_error = traceback.format_exc()
+    # Create a minimal fallback Flask app that shows the real error
+    app = Flask(__name__)
 
-    def app(environ, start_response):
-        status = '500 Internal Server Error'
-        headers = [('Content-Type', 'text/plain')]
-        start_response(status, headers)
-        body = f"STARTUP ERROR:\n\n{str(e)}\n\n--- Full Traceback ---\n{error_details}"
-        return [body.encode('utf-8')]
-
-    application = app
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def show_error(path):
+        return (
+            f"<pre style='font-family:monospace;padding:20px'>"
+            f"<b>STARTUP ERROR — fix this to get the app running:</b>\n\n"
+            f"{_load_error}"
+            f"</pre>",
+            500
+        )
