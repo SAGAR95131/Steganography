@@ -37,3 +37,5 @@ qrcode==7.4.2
 # Cloud Storage
 boto3==1.34.0
 
+# SMS
+twilio==9.4.0
