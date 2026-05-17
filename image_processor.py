@@ -2,10 +2,108 @@ import cv2
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
 import os
+import io
+from steganography import SteganoTool
+from encryption import EncryptionTool
 
 class ImageProcessor:
     def __init__(self):
-        pass
+        self.steganography = SteganoTool()
+        self.encryption = EncryptionTool()
+    
+    def hide_message(self, image_data, message, password=None):
+        """Hide message in image data using steganography and optional encryption"""
+        try:
+            # Convert image data to numpy array
+            nparr = np.frombuffer(image_data, np.uint8)
+            img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            
+            if img is None:
+                return None
+            
+            # Encrypt message if password provided
+            if password:
+                encrypted_message = self.encryption.encrypt_data(message, password)
+                if not encrypted_message:
+                    return None
+                message_to_hide = encrypted_message
+            else:
+                message_to_hide = message
+            
+            # Add delimiter to message
+            message_with_delimiter = message_to_hide + self.steganography.delimiter
+            
+            # Convert message to binary
+            binary_message = ''.join([format(ord(char), '08b') for char in message_with_delimiter])
+            
+            # Check if message can fit in image
+            total_pixels = img.shape[0] * img.shape[1]
+            if len(binary_message) > total_pixels * 3:  # 3 channels (BGR)
+                return None
+            
+            # Flatten image array
+            img_flat = img.flatten()
+            
+            # Hide message in LSB
+            for i in range(len(binary_message)):
+                img_flat[i] = (img_flat[i] & 0xFE) | int(binary_message[i])
+            
+            # Reshape back to original image dimensions
+            img_with_message = img_flat.reshape(img.shape)
+            
+            # Encode image back to bytes
+            _, buffer = cv2.imencode('.png', img_with_message)
+            return buffer.tobytes()
+            
+        except Exception as e:
+            print(f"Error hiding message: {str(e)}")
+            return None
+    
+    def extract_message(self, image_data, password=None):
+        """Extract hidden message from image data"""
+        try:
+            # Convert image data to numpy array
+            nparr = np.frombuffer(image_data, np.uint8)
+            img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            
+            if img is None:
+                return None
+            
+            # Flatten image array
+            img_flat = img.flatten()
+            
+            # Extract LSBs
+            binary_message = ""
+            for pixel in img_flat:
+                binary_message += str(int(pixel) & 1)
+            
+            # Convert binary to text
+            message = ""
+            for i in range(0, len(binary_message), 8):
+                if i + 8 <= len(binary_message):
+                    byte = binary_message[i:i+8]
+                    char = chr(int(byte, 2))
+                    message += char
+                    
+                    # Check for delimiter
+                    if message.endswith(self.steganography.delimiter):
+                        extracted_message = message[:-len(self.steganography.delimiter)]
+                        
+                        # Try to decrypt if password provided
+                        if password:
+                            decrypted_message = self.encryption.decrypt_data(extracted_message, password)
+                            if decrypted_message:
+                                return decrypted_message
+                            else:
+                                return extracted_message  # Return as-is if decryption fails
+                        else:
+                            return extracted_message
+            
+            return None
+            
+        except Exception as e:
+            print(f"Error extracting message: {str(e)}")
+            return None
     
     def convert_format(self, input_path, output_path, target_format, quality=85):
         """Convert image format"""

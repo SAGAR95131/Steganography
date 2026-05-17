@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user.name }} - CyberCloak{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Profile Header -->
+        <div class="col-12">
+            <div class="glass-card mb-4">
+                <div class="profile-header">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center">
+                            <div class="profile-avatar mb-3">
+                                <img src="{{ user.avatar_url or 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNjAiIHI9IjYwIiBmaWxsPSIjNjM2ZWVhIi8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNDUiIHI9IjIyLjUiIGZpbGw9IiNmZmZmZmYiLz4KPHBhdGggZD0iTTEwNSAxMDMuNTM1Yy0uNjI5LS4yNzYtMS43NDctLjQ0LTEuOTc0LS40NEg3Ny41YzAtMS45NTYtMS42MjItMy41LTMuNS0zLjVoLThjMC0xLjk1NiAxLjYyMi0zLjUgMy41LTMuNWgzYzEuOTU2IDAgMy41IDEuNjIyIDMuNSAzLjV2NGMwIDEuOTU2LTEuNjIyIDMuNS0zLjUgMy41SDI0LjVjLS40OTkgMC0uOTU5LjE4OS0xLjQ3NC4zNDRsLTEuNSAxLjA5di4zMDJoMTJ2LTEwLjUzNXoiIGZpbGw9IiNmZmZmZmYiLz4KPHN2Zy8+' }}"
+                                     alt="{{ user.name }}" class="rounded-circle" width="120" height="120">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h2 class="mb-1">{{ user.name }}</h2>
+                            <p class="text-muted mb-2">@{{ user.username }}</p>
+                            {% if profile.bio %}
+                            <p class="mb-2">{{ profile.bio }}</p>
+                            {% endif %}
+                            {% if profile.location %}
+                            <p class="text-muted mb-2">
+                                <i class="fas fa-map-marker-alt me-1"></i>{{ profile.location }}
+                            </p>
+                            {% endif %}
+                            {% if profile.website %}
+                            <p class="mb-2">
+                                <a href="{{ profile.website }}" target="_blank" class="text-decoration-none">
+                                    <i class="fas fa-globe me-1"></i>{{ profile.website }}
+                                </a>
+                            </p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3 text-end">
+                            <div class="profile-stats mb-3">
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <div class="stat-item">
+                                            <h4 class="text-primary mb-1">{{ profile.followers_count }}</h4>
+                                            <small class="text-muted">Followers</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="stat-item">
+                                            <h4 class="text-success mb-1">{{ profile.following_count }}</h4>
+                                            <small class="text-muted">Following</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="stat-item">
+                                            <h4 class="text-info mb-1">{{ posts|length }}</h4>
+                                            <small class="text-muted">Posts</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if user.id != current_user.id %}
+                            <button class="btn btn-primary follow-btn" data-user-id="{{ user.id }}" 
+                                    data-is-following="{{ is_following|lower }}">
+                                <i class="fas fa-user-plus me-1"></i>
+                                <span class="follow-text">{{ 'Unfollow' if is_following else 'Follow' }}</span>
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Profile Content -->
+        <div class="col-lg-8">
+            <!-- Posts -->
+            <div class="glass-card">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h4 class="mb-0">
+                        <i class="fas fa-list me-2"></i>Posts
+                    </h4>
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-outline-primary active" data-filter="all">All</button>
+                        <button class="btn btn-outline-primary" data-filter="achievements">Achievements</button>
+                        <button class="btn btn-outline-primary" data-filter="questions">Questions</button>
+                    </div>
+                </div>
+                
+                <div id="postsContainer">
+                    {% for post in posts %}
+                    <div class="post-card glass-card mb-3" data-post-type="{{ post.post_type }}">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="avatar me-3">
+                                <img src="{{ post.user.avatar_url or 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2MzZlZWEiLz4KPGNpcmNsZSBjeD0iMjAiIGN5PSIxNiIgcj0iNiIgZmlsbD0iI2ZmZmZmYiIvPgo8cGF0aCBkPSJNMzggMzQuMzYxYy0uODc5LS42NTMtMS45OTUtMS4wMzYtMi45ODctMS4wMzZIMjUuNWMwLTIuMzY2LTEuOTE3LTQuMjUtNC4yNS00LjI1a00wLTEuOTE3IDIuMTI1LTEuOTE3aDVjMi4zNjYgMCA0LjI1IDEuOTE3IDQuMjUgNC4yNXY0YzAgMi4zNjYtMS45MTcgNC4yNS00LjI1IDQuMjVIMTQuNWMtMS4xOTkgMC0yLjI0My4zNzYtMi45ODcgMS4wMzZMMy4yNSAzOC4wNzA2djAuNzI5M0gzOFYyNC4wNzA2eiIgZmlsbD0iI2ZmZmZmYiIvPgo8L3N2Zz4K' }}"
+                                     alt="{{ post.user.name }}" class="rounded-circle" width="40" height="40">
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h6 class="mb-0">{{ post.user.name }}</h6>
+                                        <small class="text-muted">@{{ post.user.username }}</small>
+                                    </div>
+                                    <small class="text-muted">{{ post.created_at.strftime('%b %d, %Y at %I:%M %p') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="post-content mb-3">
+                            <p class="mb-2">{{ post.content }}</p>
+                            {% if post.file %}
+                            <div class="post-file-attachment">
+                                <div class="file-preview">
+                                    <i class="fas fa-file me-2"></i>
+                                    <span>{{ post.file.original_filename }}</span>
+                                    <a href="{{ url_for('download_file', file_id=post.file.id) }}" class="btn btn-sm btn-outline-primary ms-2">
+                                        <i class="fas fa-download me-1"></i>Download
+                                    </a>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="post-actions d-flex align-items-center">
+                            <button class="btn btn-sm btn-outline-danger me-3 like-btn" data-post-id="{{ post.id }}">
+                                <i class="fas fa-heart me-1"></i>
+                                <span class="like-count">{{ post.likes_count }}</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary me-3 comment-btn" data-post-id="{{ post.id }}">
+                                <i class="fas fa-comment me-1"></i>
+                                <span class="comment-count">{{ post.comments_count }}</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline-success share-btn" data-post-id="{{ post.id }}">
+                                <i class="fas fa-share me-1"></i>Share
+                            </button>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-user fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">No posts yet</h4>
+                        <p class="text-muted">This user hasn't shared any posts yet.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- About -->
+            <div class="glass-card mb-4">
+                <h5 class="mb-3">
+                    <i class="fas fa-info-circle me-2"></i>About
+                </h5>
+                <div class="about-content">
+                    <p class="text-muted mb-3">
+                        Member since {{ user.created_at.strftime('%B %Y') }}
+                    </p>
+                    {% if profile.bio %}
+                    <p>{{ profile.bio }}</p>
+                    {% else %}
+                    <p class="text-muted">No bio available</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Social Links -->
+            {% if profile.social_links %}
+            <div class="glass-card mb-4">
+                <h5 class="mb-3">
+                    <i class="fas fa-link me-2"></i>Social Links
+                </h5>
+                <div class="social-links">
+                    <!-- Social links would be rendered here -->
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Recent Activity -->
+            <div class="glass-card">
+                <h5 class="mb-3">
+                    <i class="fas fa-history me-2"></i>Recent Activity
+                </h5>
+                <div id="userActivity">
+                    <p class="text-muted">No recent activity</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Follow/Unfollow functionality
+    const followBtn = document.querySelector('.follow-btn');
+    if (followBtn) {
+        followBtn.addEventListener('click', function() {
+            const userId = this.dataset.userId;
+            const isFollowing = this.dataset.isFollowing === 'true';
+            
+            const url = isFollowing ? `/api/unfollow/${userId}` : `/api/follow/${userId}`;
+            
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update button state
+                    this.dataset.isFollowing = (!isFollowing).toString();
+                    const followText = this.querySelector('.follow-text');
+                    followText.textContent = isFollowing ? 'Follow' : 'Unfollow';
+                    
+                    // Update follower count
+                    const followersCount = document.querySelector('.stat-item h4');
+                    const currentCount = parseInt(followersCount.textContent);
+                    followersCount.textContent = isFollowing ? currentCount - 1 : currentCount + 1;
+                    
+                    showAlert('success', data.message);
+                } else {
+                    showAlert('error', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('error', 'Failed to update follow status');
+            });
+        });
+    }
+    
+    // Post filtering
+    const filterButtons = document.querySelectorAll('[data-filter]');
+    const posts = document.querySelectorAll('.post-card');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const filter = this.dataset.filter;
+            
+            // Update active button
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter posts
+            posts.forEach(post => {
+                if (filter === 'all' || post.dataset.postType === filter) {
+                    post.style.display = 'block';
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+        });
+    });
+    
+    // Like post functionality
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.like-btn')) {
+            const postId = e.target.closest('.like-btn').dataset.postId;
+            likePost(postId);
+        }
+    });
+    
+    function likePost(postId) {
+        fetch(`/api/posts/${postId}/like`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const likeBtn = document.querySelector(`[data-post-id="${postId}"] .like-btn`);
+                const likeCount = likeBtn.querySelector('.like-count');
+                likeCount.textContent = parseInt(likeCount.textContent) + 1;
+                likeBtn.classList.add('liked');
+            } else {
+                showAlert('error', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('error', 'Failed to like post');
+        });
+    }
+    
+    function showAlert(type, message) {
+        // Create and show alert
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type === 'error' ? 'danger' : 'success'} alert-dismissible fade show`;
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.insertBefore(alertDiv, document.body.firstChild);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.parentNode.removeChild(alertDiv);
+            }
+        }, 5000);
+    }
+});
+</script>
+{% endblock %}

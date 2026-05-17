@@ -1,0 +1,468 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications - CyberCloak{% endblock %}
+
+{% block content %}
+<div class="notifications-container">
+    <div class="container">
+        <!-- Header -->
+        <div class="notifications-header">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="notifications-title">
+                        <i class="fas fa-bell me-3"></i>Notifications
+                    </h1>
+                    <p class="notifications-subtitle">Stay updated with your account activity</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="notifications-actions">
+                        <button class="btn btn-outline-primary me-2" onclick="markAllAsRead()">
+                            <i class="fas fa-check-double me-2"></i>Mark All Read
+                        </button>
+                        <button class="btn btn-outline-danger" onclick="clearAllNotifications()">
+                            <i class="fas fa-trash me-2"></i>Clear All
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Stats -->
+        <div class="row g-4 mb-4">
+            <div class="col-xl-3 col-md-6">
+                <div class="notification-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="totalNotifications">0</h3>
+                        <p class="stat-label">Total Notifications</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="notification-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-envelope-open"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="readNotifications">0</h3>
+                        <p class="stat-label">Read</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="notification-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="unreadNotifications">0</h3>
+                        <p class="stat-label">Unread</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="notification-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="urgentNotifications">0</h3>
+                        <p class="stat-label">Urgent</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Filters -->
+        <div class="notification-filters mb-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-filter="all" onclick="filterNotifications('all')">
+                            All Notifications
+                        </button>
+                        <button class="filter-tab" data-filter="unread" onclick="filterNotifications('unread')">
+                            Unread
+                        </button>
+                        <button class="filter-tab" data-filter="read" onclick="filterNotifications('read')">
+                            Read
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="filter-controls">
+                        <select class="form-select me-2" id="typeFilter">
+                            <option value="">All Types</option>
+                            <option value="info">Info</option>
+                            <option value="success">Success</option>
+                            <option value="warning">Warning</option>
+                            <option value="error">Error</option>
+                        </select>
+                        <select class="form-select" id="timeFilter">
+                            <option value="">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications List -->
+        <div class="notifications-list" id="notificationsList">
+            <div class="loading-spinner" id="loadingSpinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Loading notifications...</span>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-icon">
+                <i class="fas fa-bell-slash"></i>
+            </div>
+            <h4>No Notifications</h4>
+            <p>You're all caught up! No new notifications at the moment.</p>
+        </div>
+
+        <!-- Load More Button -->
+        <div class="text-center mt-4" id="loadMoreContainer" style="display: none;">
+            <button class="btn btn-outline-primary" onclick="loadMoreNotifications()">
+                <i class="fas fa-plus me-2"></i>Load More
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Notification Detail Modal -->
+<div class="modal fade" id="notificationModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="notificationTitle">
+                    <i class="fas fa-bell me-2"></i>Notification
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="notification-detail">
+                    <div class="notification-meta">
+                        <span class="notification-type" id="notificationType"></span>
+                        <span class="notification-time" id="notificationTime"></span>
+                    </div>
+                    <div class="notification-message" id="notificationMessage"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="notificationAction" style="display: none;">
+                    <i class="fas fa-external-link-alt me-2"></i>View Details
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let notifications = [];
+let currentFilter = 'all';
+let currentPage = 1;
+let hasMore = true;
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadNotifications();
+    setupFilters();
+    
+    // Auto-refresh notifications every 30 seconds
+    setInterval(loadNotifications, 30000);
+});
+
+function loadNotifications() {
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    loadingSpinner.style.display = 'block';
+    
+    fetch('/notifications')
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            notifications = data.notifications;
+            updateNotificationStats();
+            renderNotifications();
+        } else {
+            console.error('Failed to load notifications:', data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error loading notifications:', error);
+    })
+    .finally(() => {
+        loadingSpinner.style.display = 'none';
+    });
+}
+
+function updateNotificationStats() {
+    const total = notifications.length;
+    const read = notifications.filter(n => n.is_read).length;
+    const unread = total - read;
+    const urgent = notifications.filter(n => n.type === 'error' || n.type === 'warning').length;
+    
+    document.getElementById('totalNotifications').textContent = total;
+    document.getElementById('readNotifications').textContent = read;
+    document.getElementById('unreadNotifications').textContent = unread;
+    document.getElementById('urgentNotifications').textContent = urgent;
+}
+
+function renderNotifications() {
+    const container = document.getElementById('notificationsList');
+    const emptyState = document.getElementById('emptyState');
+    
+    let filteredNotifications = filterNotificationsByType(notifications);
+    
+    if (filteredNotifications.length === 0) {
+        container.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+    }
+    
+    emptyState.style.display = 'none';
+    
+    const notificationsHTML = filteredNotifications.map(notification => {
+        const typeIcon = getNotificationIcon(notification.type);
+        const typeClass = `notification-${notification.type}`;
+        const readClass = notification.is_read ? 'read' : 'unread';
+        const timeAgo = getTimeAgo(notification.created_at);
+        
+        return `
+            <div class="notification-item ${typeClass} ${readClass}" data-notification-id="${notification.id}">
+                <div class="notification-icon">
+                    <i class="${typeIcon}"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h6 class="notification-title">${notification.title}</h6>
+                        <span class="notification-time">${timeAgo}</span>
+                    </div>
+                    <p class="notification-message">${notification.message}</p>
+                    ${notification.action_url ? `<div class="notification-actions">
+                        <a href="${notification.action_url}" class="btn btn-sm btn-outline-primary">View Details</a>
+                    </div>` : ''}
+                </div>
+                <div class="notification-actions">
+                    ${!notification.is_read ? `
+                        <button class="btn btn-sm btn-outline-primary" onclick="markAsRead('${notification.id}')">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    ` : ''}
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteNotification('${notification.id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    container.innerHTML = notificationsHTML;
+}
+
+function filterNotifications(filter) {
+    currentFilter = filter;
+    
+    // Update active tab
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+    
+    renderNotifications();
+}
+
+function filterNotificationsByType(notifications) {
+    let filtered = notifications;
+    
+    // Filter by read status
+    if (currentFilter === 'unread') {
+        filtered = filtered.filter(n => !n.is_read);
+    } else if (currentFilter === 'read') {
+        filtered = filtered.filter(n => n.is_read);
+    }
+    
+    // Filter by type
+    const typeFilter = document.getElementById('typeFilter').value;
+    if (typeFilter) {
+        filtered = filtered.filter(n => n.type === typeFilter);
+    }
+    
+    // Filter by time
+    const timeFilter = document.getElementById('timeFilter').value;
+    if (timeFilter) {
+        const now = new Date();
+        const filterDate = new Date();
+        
+        switch(timeFilter) {
+            case 'today':
+                filterDate.setHours(0, 0, 0, 0);
+                break;
+            case 'week':
+                filterDate.setDate(now.getDate() - 7);
+                break;
+            case 'month':
+                filterDate.setMonth(now.getMonth() - 1);
+                break;
+        }
+        
+        filtered = filtered.filter(n => new Date(n.created_at) >= filterDate);
+    }
+    
+    return filtered;
+}
+
+function setupFilters() {
+    document.getElementById('typeFilter').addEventListener('change', renderNotifications);
+    document.getElementById('timeFilter').addEventListener('change', renderNotifications);
+}
+
+function getNotificationIcon(type) {
+    const icons = {
+        'info': 'fas fa-info-circle',
+        'success': 'fas fa-check-circle',
+        'warning': 'fas fa-exclamation-triangle',
+        'error': 'fas fa-times-circle'
+    };
+    return icons[type] || 'fas fa-bell';
+}
+
+function getTimeAgo(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+    
+    if (diffInSeconds < 60) {
+        return 'Just now';
+    } else if (diffInSeconds < 3600) {
+        const minutes = Math.floor(diffInSeconds / 60);
+        return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    } else if (diffInSeconds < 86400) {
+        const hours = Math.floor(diffInSeconds / 3600);
+        return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    } else if (diffInSeconds < 2592000) {
+        const days = Math.floor(diffInSeconds / 86400);
+        return `${days} day${days > 1 ? 's' : ''} ago`;
+    } else {
+        return date.toLocaleDateString();
+    }
+}
+
+function markAsRead(notificationId) {
+    fetch(`/notifications/mark-read/${notificationId}`, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update local state
+            const notification = notifications.find(n => n.id === notificationId);
+            if (notification) {
+                notification.is_read = true;
+            }
+            updateNotificationStats();
+            renderNotifications();
+        }
+    })
+    .catch(error => {
+        console.error('Error marking notification as read:', error);
+    });
+}
+
+function markAllAsRead() {
+    const unreadNotifications = notifications.filter(n => !n.is_read);
+    
+    if (unreadNotifications.length === 0) {
+        alert('No unread notifications to mark as read');
+        return;
+    }
+    
+    if (confirm(`Mark ${unreadNotifications.length} notifications as read?`)) {
+        // Mark all as read locally
+        notifications.forEach(n => n.is_read = true);
+        updateNotificationStats();
+        renderNotifications();
+        
+        // Here you would typically send a request to mark all as read on the server
+        console.log('Marking all notifications as read...');
+    }
+}
+
+function deleteNotification(notificationId) {
+    if (confirm('Are you sure you want to delete this notification?')) {
+        // Remove from local state
+        notifications = notifications.filter(n => n.id !== notificationId);
+        updateNotificationStats();
+        renderNotifications();
+        
+        // Here you would typically send a delete request to the server
+        console.log('Deleting notification:', notificationId);
+    }
+}
+
+function clearAllNotifications() {
+    if (notifications.length === 0) {
+        alert('No notifications to clear');
+        return;
+    }
+    
+    if (confirm(`Clear all ${notifications.length} notifications?`)) {
+        fetch('/notifications/clear-all', {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                notifications = [];
+                updateNotificationStats();
+                renderNotifications();
+            } else {
+                alert('Failed to clear notifications');
+            }
+        })
+        .catch(error => {
+            console.error('Error clearing notifications:', error);
+            alert('Failed to clear notifications');
+        });
+    }
+}
+
+function loadMoreNotifications() {
+    // Implementation for pagination
+    console.log('Loading more notifications...');
+}
+
+function showNotificationDetail(notificationId) {
+    const notification = notifications.find(n => n.id === notificationId);
+    if (!notification) return;
+    
+    document.getElementById('notificationTitle').innerHTML = `<i class="fas fa-bell me-2"></i>${notification.title}`;
+    document.getElementById('notificationType').textContent = notification.type.toUpperCase();
+    document.getElementById('notificationTime').textContent = getTimeAgo(notification.created_at);
+    document.getElementById('notificationMessage').textContent = notification.message;
+    
+    const actionBtn = document.getElementById('notificationAction');
+    if (notification.action_url) {
+        actionBtn.style.display = 'inline-block';
+        actionBtn.onclick = () => window.location.href = notification.action_url;
+    } else {
+        actionBtn.style.display = 'none';
+    }
+    
+    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    modal.show();
+}
+</script>
+{% endblock %}

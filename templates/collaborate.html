@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+{% block title %}Collaborate - CyberCloak{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="glass-card mb-4">
+                <div class="text-center">
+                    <h2 class="mb-3">
+                        <i class="fas fa-handshake me-2"></i>Collaboration Hub
+                    </h2>
+                    <p class="text-muted mb-4">
+                        Work together on encryption projects, share files securely, and collaborate in real-time with your team.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Collaboration Features -->
+        <div class="col-lg-8">
+            <div class="row">
+                <!-- Real-time Collaboration -->
+                <div class="col-md-6 mb-4">
+                    <div class="glass-card h-100">
+                        <div class="text-center mb-3">
+                            <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                            <h4>Real-time Collaboration</h4>
+                        </div>
+                        <p class="text-muted mb-4">
+                            Work together on encryption tasks in real-time. See what your team members are doing and collaborate seamlessly.
+                        </p>
+                        <div class="d-grid">
+                            <button class="btn btn-primary" onclick="startCollaboration()">
+                                <i class="fas fa-play me-2"></i>Start Session
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- File Sharing -->
+                <div class="col-md-6 mb-4">
+                    <div class="glass-card h-100">
+                        <div class="text-center mb-3">
+                            <i class="fas fa-share-alt fa-3x text-success mb-3"></i>
+                            <h4>Secure File Sharing</h4>
+                        </div>
+                        <p class="text-muted mb-4">
+                            Share encrypted files with your team members. Control access levels and track who has access to what.
+                        </p>
+                        <div class="d-grid">
+                            <button class="btn btn-success" onclick="shareFiles()">
+                                <i class="fas fa-share me-2"></i>Share Files
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Team Workspaces -->
+                <div class="col-md-6 mb-4">
+                    <div class="glass-card h-100">
+                        <div class="text-center mb-3">
+                            <i class="fas fa-project-diagram fa-3x text-info mb-3"></i>
+                            <h4>Team Workspaces</h4>
+                        </div>
+                        <p class="text-muted mb-4">
+                            Create dedicated workspaces for your projects. Organize files, manage team members, and track progress.
+                        </p>
+                        <div class="d-grid">
+                            <button class="btn btn-info" onclick="manageWorkspaces()">
+                                <i class="fas fa-cog me-2"></i>Manage Workspaces
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Communication -->
+                <div class="col-md-6 mb-4">
+                    <div class="glass-card h-100">
+                        <div class="text-center mb-3">
+                            <i class="fas fa-comments fa-3x text-warning mb-3"></i>
+                            <h4>Team Communication</h4>
+                        </div>
+                        <p class="text-muted mb-4">
+                            Communicate with your team through comments, notifications, and activity feeds. Stay updated on project progress.
+                        </p>
+                        <div class="d-grid">
+                            <button class="btn btn-warning" onclick="openChat()">
+                                <i class="fas fa-comment me-2"></i>Open Chat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Active Sessions -->
+            <div class="glass-card">
+                <h4 class="mb-3">
+                    <i class="fas fa-clock me-2"></i>Active Collaboration Sessions
+                </h4>
+                <div id="activeSessions">
+                    <div class="text-center py-4">
+                        <i class="fas fa-clock fa-2x text-muted mb-3"></i>
+                        <p class="text-muted">No active collaboration sessions</p>
+                        <button class="btn btn-primary" onclick="startCollaboration()">
+                            <i class="fas fa-plus me-2"></i>Start New Session
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Quick Actions -->
+            <div class="glass-card mb-4">
+                <h5 class="mb-3">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h5>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary" onclick="startCollaboration()">
+                        <i class="fas fa-play me-2"></i>Start Collaboration
+                    </button>
+                    <button class="btn btn-outline-success" onclick="shareFiles()">
+                        <i class="fas fa-share me-2"></i>Share Files
+                    </button>
+                    <button class="btn btn-outline-info" onclick="createWorkspace()">
+                        <i class="fas fa-plus me-2"></i>Create Workspace
+                    </button>
+                    <button class="btn btn-outline-warning" onclick="inviteTeam()">
+                        <i class="fas fa-user-plus me-2"></i>Invite Team
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Team Members -->
+            <div class="glass-card mb-4">
+                <h5 class="mb-3">
+                    <i class="fas fa-users me-2"></i>Team Members
+                </h5>
+                <div id="teamMembers">
+                    <div class="team-member d-flex align-items-center mb-3">
+                        <img src="{{ current_user.avatar_url or 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2MzZlZWEiLz4KPGNpcmNsZSBjeD0iMjAiIGN5PSIxNiIgcj0iNiIgZmlsbD0iI2ZmZmZmYiIvPgo8cGF0aCBkPSJNMzggMzQuMzYxYy0uODc5LS42NTMtMS45OTUtMS4wMzYtMi45ODctMS4wMzZIMjUuNWMwLTIuMzY2LTEuOTE3LTQuMjUtNC4yNS00LjI1a00wLTEuOTE3IDIuMTI1LTEuOTE3aDVjMi4zNjYgMCA0LjI1IDEuOTE3IDQuMjUgNC4yNXY0YzAgMi4zNjYtMS45MTcgNC4yNS00LjI1IDQuMjVIMTQuNWMtMS4xOTkgMC0yLjI0My4zNzYtMi45ODcgMS4wMzZMMy4yNSAzOC4wNzA2djAuNzI5M0gzOFYyNC4wNzA2eiIgZmlsbD0iI2ZmZmZmYiIvPgo8L3N2Zz4K' }}"
+                             alt="{{ current_user.name }}" class="rounded-circle me-3" width="40" height="40">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-0">{{ current_user.name }}</h6>
+                            <small class="text-muted">You</small>
+                        </div>
+                        <span class="badge bg-success">Online</span>
+                    </div>
+                    <p class="text-muted text-center">No other team members yet</p>
+                </div>
+            </div>
+            
+            <!-- Collaboration Tips -->
+            <div class="glass-card">
+                <h5 class="mb-3">
+                    <i class="fas fa-lightbulb me-2"></i>Collaboration Tips
+                </h5>
+                <div class="tips-list">
+                    <div class="tip-item mb-3">
+                        <h6 class="text-primary">Use Workspaces</h6>
+                        <p class="text-muted small">Create separate workspaces for different projects to keep things organized.</p>
+                    </div>
+                    <div class="tip-item mb-3">
+                        <h6 class="text-success">Share Securely</h6>
+                        <p class="text-muted small">Always use encrypted sharing when working with sensitive files.</p>
+                    </div>
+                    <div class="tip-item mb-3">
+                        <h6 class="text-info">Communicate Clearly</h6>
+                        <p class="text-muted small">Use comments and notifications to keep everyone informed about changes.</p>
+                    </div>
+                    <div class="tip-item">
+                        <h6 class="text-warning">Track Changes</h6>
+                        <p class="text-muted small">Monitor activity feeds to stay updated on what your team is working on.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Start Collaboration Modal -->
+<div class="modal fade" id="startCollaborationModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h5 class="modal-title">Start Collaboration Session</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="startCollaborationForm">
+                    <div class="mb-3">
+                        <label class="form-label">Session Type</label>
+                        <select class="form-select" id="sessionType">
+                            <option value="encryption">Encryption Task</option>
+                            <option value="decryption">Decryption Task</option>
+                            <option value="steganography">Steganography Task</option>
+                            <option value="general">General Discussion</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Workspace</label>
+                        <select class="form-select" id="workspaceSelect">
+                            <option value="">Select a workspace</option>
+                            <!-- Workspaces will be loaded here -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">File (Optional)</label>
+                        <input type="file" class="form-control" id="sessionFile" accept="image/*,.pdf,.doc,.docx">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="sessionDescription" rows="3" 
+                                placeholder="Describe what you'll be working on"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="startSessionBtn">Start Session</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Start collaboration
+    window.startCollaboration = function() {
+        const modal = new bootstrap.Modal(document.getElementById('startCollaborationModal'));
+        modal.show();
+    };
+    
+    const startSessionBtn = document.getElementById('startSessionBtn');
+    startSessionBtn.addEventListener('click', function() {
+        const sessionType = document.getElementById('sessionType').value;
+        const workspaceId = document.getElementById('workspaceSelect').value;
+        const description = document.getElementById('sessionDescription').value.trim();
+        
+        if (!workspaceId) {
+            showAlert('error', 'Please select a workspace');
+            return;
+        }
+        
+        // This would typically start a collaboration session
+        showAlert('success', 'Collaboration session started successfully');
+        document.getElementById('startCollaborationModal').querySelector('.btn-close').click();
+    });
+    
+    // Other collaboration functions
+    window.shareFiles = function() {
+        showAlert('info', 'File sharing functionality coming soon');
+    };
+    
+    window.manageWorkspaces = function() {
+        window.location.href = '/workspaces';
+    };
+    
+    window.createWorkspace = function() {
+        window.location.href = '/workspaces';
+    };
+    
+    window.openChat = function() {
+        showAlert('info', 'Team chat functionality coming soon');
+    };
+    
+    window.inviteTeam = function() {
+        showAlert('info', 'Team invitation functionality coming soon');
+    };
+    
+    function showAlert(type, message) {
+        // Create and show alert
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type === 'success' ? 'success' : 'info'} alert-dismissible fade show`;
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.insertBefore(alertDiv, document.body.firstChild);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.parentNode.removeChild(alertDiv);
+            }
+        }, 5000);
+    }
+});
+</script>
+{% endblock %}

@@ -1,236 +1,2290 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard - CyberCloak{% endblock %}
+{% block title %}CyberCloak Dashboard{% endblock %}
+
+{% block head %}
+<!-- Chart.js for analytics -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+{% endblock %}
+
 
 {% block content %}
-<div class="dashboard-header mb-4">
-    <div class="row align-items-center">
-        <div class="col-md-8">
-            <h1><i class="fas fa-tachometer-alt me-2"></i>Dashboard</h1>
-            <p class="text-muted">Welcome back, {{ current_user.name }}! Manage your encrypted files and steganographic operations.</p>
-        </div>
-        <div class="col-md-4 text-end">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                <i class="fas fa-plus me-2"></i>New Encryption
-            </button>
-        </div>
-    </div>
-</div>
+<!-- CyberCloak Advanced Dashboard -->
+<div class="dashboard" id="cybercloak-dashboard">
 
-<div class="row g-4 mb-4">
-    <div class="col-md-3">
-        <div class="stat-card p-3">
-            <div class="d-flex align-items-center">
-                <div class="stat-icon">
-                    <i class="fas fa-file-image text-primary"></i>
+    <!-- Advanced Sidebar -->
+    <aside class="dashboard-sidebar" id="dashboard-sidebar">
+        <!-- Sidebar Header -->
+        <header class="sidebar-header">
+            <div class="brand-section">
+                <div class="brand-logo">
+                    <i class="fas fa-shield-alt"></i>
                 </div>
-                <div class="ms-3">
-                    <h3 class="mb-1">{{ jobs|length }}</h3>
-                    <p class="text-muted mb-0">Total Files</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3">
-        <div class="stat-card p-3">
-            <div class="d-flex align-items-center">
-                <div class="stat-icon">
-                    <i class="fas fa-check-circle text-success"></i>
-                </div>
-                <div class="ms-3">
-                    <h3 class="mb-1">{{ jobs|selectattr('status', 'equalto', 'completed')|list|length }}</h3>
-                    <p class="text-muted mb-0">Completed</p>
+                <div class="brand-info">
+                    <h5>CyberCloak</h5>
+                    <span>Pro Edition</span>
                 </div>
             </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3">
-        <div class="stat-card p-3">
-            <div class="d-flex align-items-center">
-                <div class="stat-icon">
-                    <i class="fas fa-shield-alt text-warning"></i>
-                </div>
-                <div class="ms-3">
-                    <h3 class="mb-1">{{ jobs|selectattr('has_password', 'equalto', true)|list|length }}</h3>
-                    <p class="text-muted mb-0">Encrypted</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3">
-        <div class="stat-card p-3">
-            <div class="d-flex align-items-center">
-                <div class="stat-icon">
-                    <i class="fas fa-download text-info"></i>
-                </div>
-                <div class="ms-3">
-                    <h3 class="mb-1">{{ (jobs|sum(attribute='file_size', start=0) / 1024 / 1024)|round(1) }}</h3>
-                    <p class="text-muted mb-0">MB Total</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="card">
-    <div class="card-header">
-        <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Jobs</h5>
-    </div>
-    <div class="card-body">
-        {% if jobs %}
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Original File</th>
-                        <th>Message Preview</th>
-                        <th>Status</th>
-                        <th>Size</th>
-                        <th>Created</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for job in jobs %}
-                    <tr>
-                        <td>
-                            <i class="fas fa-file-image text-muted me-2"></i>
-                            {{ job.original_filename|truncate(30) }}
-                        </td>
-                        <td>
-                            <span class="text-muted">{{ job.message|truncate(40) }}</span>
-                            {% if job.has_password %}
-                                <i class="fas fa-lock text-warning ms-2" title="Encrypted"></i>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if job.status == 'completed' %}
-                                <span class="badge bg-success">
-                                    <i class="fas fa-check me-1"></i>Completed
-                                </span>
-                            {% elif job.status == 'pending' %}
-                                <span class="badge bg-warning">
-                                    <i class="fas fa-clock me-1"></i>Pending
-                                </span>
-                            {% else %}
-                                <span class="badge bg-danger">
-                                    <i class="fas fa-times me-1"></i>Failed
-                                </span>
-                            {% endif %}
-                        </td>
-                        <td>{{ (job.file_size / 1024)|round(1) }} KB</td>
-                        <td>{{ job.created_at.strftime('%m/%d %H:%M') }}</td>
-                        <td>
-                            {% if job.status == 'completed' and job.encrypted_filename %}
-                                <a href="{{ url_for('download_file', filename=job.encrypted_filename) }}" 
-                                   class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-download me-1"></i>Download
+            <div class="user-profile-card">
+                <div class="user-avatar-wrapper">
+                    <img src="{{ current_user.avatar_url or 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2MzZlZWEiLz4KPGNpcmNsZSBjeD0iMjAiIGN5PSIxNiIgcj0iNiIgZmlsbD0iI2ZmZmZmYiIvPgo8cGF0aCBkPSJNMzggMzQuMzYxYy0uODc5LS42NTMtMS45OTUtMS4wMzYtMi45ODctMS4wMzZIMjUuNWMwLTIuMzY2LTEuOTE3LTQuMjUtNC4yNS00LjI1a00wLTEuOTE3IDIuMTI1LTEuOTE3aDVjMi4zNjYgMCA0LjI1IDEuOTE3IDQuMjUgNC4yNXY0YzAgMi4zNjYtMS45MTcgNC4yNS00LjI1IDQuMjVIMTQuNWMtMS4xOTkgMC0yLjI0My4zNzYtMi45ODcgMS4wMzZMMy4yNSAzOC4wNzA2djAuNzI5M0gzOFYyNC4wNzA2eiIgZmlsbD0iI2ZmZmZmYiIvPgo8L3N2Zz4K' }}"
+                         alt="Avatar" class="user-avatar">
+                    <div class="user-status online"></div>
+                </div>
+                <div class="user-details">
+                    <h6 class="user-name">{{ current_user.name }}</h6>
+                    <p class="user-role">Premium User</p>
+                    <div class="user-stats">
+                        <span class="stat-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <small>Level 5</small>
+                        </span>
+                        <span class="stat-item">
+                            <i class="fas fa-trophy"></i>
+                            <small>Pro</small>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Menu -->
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <h6 class="nav-section-title">Dashboard</h6>
+                <a href="#home" class="nav-item active" data-section="home">
+                    <div class="nav-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <span class="nav-text">Overview</span>
+                    <div class="nav-indicator"></div>
+                </a>
+                <a href="#analytics" class="nav-item" data-section="analytics">
+                    <div class="nav-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <span class="nav-text">Analytics</span>
+                    <div class="nav-indicator"></div>
+                </a>
+                <a href="#activity" class="nav-item" data-section="activity">
+                    <div class="nav-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <span class="nav-text">Activity Log</span>
+                    <div class="nav-indicator"></div>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <h6 class="nav-section-title">Steganography</h6>
+                <a href="#encrypt" class="nav-item" data-section="encrypt">
+                    <div class="nav-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <span class="nav-text">Hide Message</span>
+                    <div class="nav-indicator"></div>
+                </a>
+                <a href="#decrypt" class="nav-item" data-section="decrypt">
+                    <div class="nav-icon">
+                        <i class="fas fa-unlock"></i>
+                    </div>
+                    <span class="nav-text">Extract Message</span>
+                    <div class="nav-indicator"></div>
+                </a>
+                <a href="#batch" class="nav-item" data-section="batch">
+                    <div class="nav-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <span class="nav-text">Batch Processing</span>
+                    <div class="nav-indicator"></div>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <h6 class="nav-section-title">AI Tools</h6>
+                <a href="#ai" class="nav-item" data-section="ai">
+                    <div class="nav-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <span class="nav-text">Message Generator</span>
+                    <div class="nav-indicator"></div>
+                </a>
+                <a href="#templates" class="nav-item" data-section="templates">
+                    <div class="nav-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <span class="nav-text">Templates</span>
+                    <div class="nav-indicator"></div>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <h6 class="nav-section-title">Management</h6>
+                <a href="#files" class="nav-item" data-section="files">
+                    <div class="nav-icon">
+                        <i class="fas fa-folder"></i>
+                    </div>
+                    <span class="nav-text">File Manager</span>
+                    <div class="nav-indicator"></div>
+                </a>
+                <a href="#security" class="nav-item" data-section="security">
+                    <div class="nav-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <span class="nav-text">Security Center</span>
+                    <div class="nav-indicator"></div>
+                </a>
+                <a href="#settings" class="nav-item" data-section="settings">
+                    <div class="nav-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <span class="nav-text">Settings</span>
+                    <div class="nav-indicator"></div>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Sidebar Footer -->
+        <footer class="sidebar-footer">
+            <div class="sidebar-footer-content">
+                <div class="storage-info">
+                    <div class="storage-bar">
+                        <div class="storage-used" style="width: 65%"></div>
+                    </div>
+                    <small>2.1 GB of 5 GB used</small>
+                </div>
+                <a href="{{ url_for('logout') }}" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </footer>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main" id="dashboard-main">
+
+        <!-- Advanced Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle sidebar">
+                        <i class="fas fa-bars"></i>
+                    </button>
+
+                    <div class="breadcrumb">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb-list">
+                                <li class="breadcrumb-item">
+                                    <i class="fas fa-home"></i>
+                                    <span>Dashboard</span>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    <span id="current-section-name">Overview</span>
+                                </li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+
+                <div class="header-center">
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" placeholder="Search files, messages..." class="search-input" id="globalSearch">
+                        <div class="search-suggestions" id="searchSuggestions" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <div class="header-actions">
+                        <button class="action-btn" onclick="switchToSection('ai')" title="Quick AI Access">
+                            <i class="fas fa-brain"></i>
+                        </button>
+                        <button class="action-btn" onclick="switchToSection('encrypt')" title="Quick Encrypt">
+                            <i class="fas fa-lock"></i>
+                        </button>
+                        <button class="action-btn" onclick="switchToSection('analytics')" title="View Analytics">
+                            <i class="fas fa-chart-line"></i>
+                        </button>
+                    </div>
+
+                    <div class="header-notifications">
+                        <button class="notification-btn" onclick="toggleNotifications()">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge" id="notificationCount">3</span>
+                        </button>
+                        <div class="notification-dropdown" id="notificationDropdown" style="display: none;">
+                            <div class="notification-header">
+                                <h6>Notifications</h6>
+                                <button class="mark-read-btn" onclick="markAllRead()">Mark all read</button>
+                            </div>
+                            <div class="notification-list">
+                                <div class="notification-item unread">
+                                    <div class="notification-icon">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">Encryption completed</div>
+                                        <div class="notification-message">Your file has been successfully encrypted</div>
+                                        <div class="notification-time">2 min ago</div>
+                                    </div>
+                                </div>
+                                <div class="notification-item">
+                                    <div class="notification-icon">
+                                        <i class="fas fa-brain"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">AI message generated</div>
+                                        <div class="notification-message">New secure message ready</div>
+                                        <div class="notification-time">15 min ago</div>
+                                    </div>
+                                </div>
+                                <div class="notification-item">
+                                    <div class="notification-icon">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">Security update</div>
+                                        <div class="notification-message">Your account security has been enhanced</div>
+                                        <div class="notification-time">1 hour ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="header-profile">
+                        <div class="profile-trigger" onclick="toggleProfileMenu()">
+                            <img src="{{ current_user.avatar_url or 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiM2MzZlZWEiLz4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxMiIgcj0iNSIgZmlsbD0iI2ZmZmZmYiIvPgo8cGF0aCBkPSJNMjggMjYuNjkzYy0uNjQ5LS40OTQtMS41NDYtLjc4LTEuOTY5LS43OEgxOC41YzAtMi4xNDYtMS43MjMtMy44NjctMy44NjctMy44NjdIMTZjMC0yLjE0NiAxLjcyMy0zLjg2NyAzLjg2Ny0zLjg2N2gzYzIuMTQ2IDAgMy44NjcgMS43MjMgMy44NjcgMy44Njd2M2MwIDIuMTQ2LTEuNzIzIDMuODY3LTMuODY3IDMuODY3SDYuNWMtLjQyMyAwLTEuMzIwLjI4Ni0xLjk2OS43OEw0IDI5LjYwNzZ2LjM5NGgzNHYtMy42OTN6IiBmaWxsPSIjZmZmZmZmIi8+Cjwvc3ZnPgo=' }}"
+                             alt="Profile" class="profile-avatar">
+                            <div class="profile-status online"></div>
+                        </div>
+                        <div class="profile-dropdown" id="profileDropdown" style="display: none;">
+                            <div class="profile-menu-header">
+                                <img src="{{ current_user.avatar_url or 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2MzZlZWEiLz4KPGNpcmNsZSBjeD0iMjAiIGN5PSIxNiIgcj0iNiIgZmlsbD0iI2ZmZmZmYiIvPgo8cGF0aCBkPSJNMzggMzQuMzYxYy0uODc5LS42NTMtMS45OTUtMS4wMzYtMi45ODctMS4wMzZIMjUuNWMwLTIuMzY2LTEuOTE3LTQuMjUtNC4yNS00LjI1a00wLTEuOTE3IDIuMTI1LTEuOTE3aDVjMi4zNjYgMCA0LjI1IDEuOTE3IDQuMjUgNC4yNXY0YzAgMi4zNjYtMS45MTcgNC4yNS00LjI1IDQuMjVIMTQuNWMtMS4xOTkgMC0yLjI0My4zNzYtMi45ODcgMS4wMzZMMy4yNSAzOC4wNzA2djAuNzI5M0gzOFYyNC4wNzA2eiIgZmlsbD0iI2ZmZmZmYiIvPgo8L3N2Zz4K' }}"
+                                     alt="Profile" class="profile-menu-avatar">
+                                <div class="profile-menu-info">
+                                    <h6>{{ current_user.name }}</h6>
+                                    <span>{{ current_user.email }}</span>
+                                    <div class="user-status-badge">
+                                        <i class="fas fa-crown"></i>
+                                        <small>Premium</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="profile-menu-items">
+                                <a href="#" class="profile-menu-item" onclick="switchToSection('settings')">
+                                    <i class="fas fa-user-cog"></i>
+                                    <span>Account Settings</span>
                                 </a>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <div class="text-center py-4">
-            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-            <h5>No files yet</h5>
-            <p class="text-muted">Upload your first image to get started with steganography!</p>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                <i class="fas fa-plus me-2"></i>Upload First File
-            </button>
-        </div>
-        {% endif %}
-    </div>
-</div>
-
-<!-- Upload Modal -->
-<div class="modal fade" id="uploadModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-upload me-2"></i>New Steganographic Encryption
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                <a href="#" class="profile-menu-item" onclick="switchToSection('security')">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Security & Privacy</span>
+                                </a>
+                                <a href="#" class="profile-menu-item">
+                                    <i class="fas fa-bell"></i>
+                                    <span>Notifications</span>
+                                    <span class="notification-count">3</span>
+                                </a>
+                                <a href="#" class="profile-menu-item">
+                                    <i class="fas fa-palette"></i>
+                                    <span>Theme & Appearance</span>
+                                </a>
+                                <a href="#" class="profile-menu-item">
+                                    <i class="fas fa-download"></i>
+                                    <span>Export Data</span>
+                                </a>
+                                <div class="profile-menu-divider"></div>
+                                <a href="#" class="profile-menu-item">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span>Help & Support</span>
+                                </a>
+                                <a href="#" class="profile-menu-item">
+                                    <i class="fas fa-star"></i>
+                                    <span>Rate & Review</span>
+                                </a>
+                                <div class="profile-menu-divider"></div>
+                                <a href="{{ url_for('logout') }}" class="profile-menu-item logout">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Sign Out</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body">
-                <div id="uploadSteps">
-                    <!-- Step 1: Upload Image -->
-                    <div class="step" id="step1">
-                        <h6><i class="fas fa-image me-2"></i>Step 1: Choose Cover Image</h6>
-                        <div class="upload-area mb-3" id="uploadArea">
-                            <input type="file" id="inputImage" accept="image/*" style="display: none;">
-                            <div class="text-center p-4">
-                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
-                                <p>Drag & drop an image here or click to browse</p>
-                                <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('inputImage').click()">
-                                    Choose File
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+
+            <!-- Home Section -->
+            <section class="section active" id="home-section">
+
+                <!-- Hero Welcome Section -->
+                <div class="hero-dashboard">
+                    <div class="hero-content">
+                        <div class="hero-text">
+                            <div class="hero-badge animate-pulse">
+                                <i class="fas fa-crown"></i>
+                                <span>Premium Account</span>
+                            </div>
+                            <h1 class="hero-title">
+                                Welcome back, <span class="hero-highlight gradient-text">{{ current_user.name }}</span>
+                            </h1>
+                            <p class="hero-subtitle">
+                                Your digital fortress is secure. Ready to hide your secrets with military-grade steganography?
+                            </p>
+                            <div class="hero-features">
+                                <div class="feature-tag">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>AES-256 Encryption</span>
+                                </div>
+                                <div class="feature-tag">
+                                    <i class="fas fa-brain"></i>
+                                    <span>AI Assistant</span>
+                                </div>
+                                <div class="feature-tag">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>Analytics</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hero-visual">
+                            <div class="hero-stats-circle">
+                                <div class="circle-content">
+                                    <div class="circle-number">{{ jobs|length if jobs else 0 }}</div>
+                                    <div class="circle-label">Files Protected</div>
+                                </div>
+                                <svg class="circle-progress" width="120" height="120">
+                                    <circle cx="60" cy="60" r="55" stroke="rgba(102, 126, 234, 0.2)" stroke-width="4" fill="none"/>
+                                    <circle cx="60" cy="60" r="55" stroke="var(--primary)" stroke-width="4" fill="none"
+                                            stroke-dasharray="345" stroke-dashoffset="35" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <div class="hero-decoration">
+                                <div class="floating-element">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                                <div class="floating-element delay-1">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="floating-element delay-2">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hero-actions">
+                        <button class="btn-primary-large" onclick="switchToSection('encrypt')">
+                            <i class="fas fa-plus"></i>
+                            <span>Hide a Secret</span>
+                        </button>
+                        <button class="btn-secondary-large" onclick="switchToSection('ai')">
+                            <i class="fas fa-brain"></i>
+                            <span>AI Assistant</span>
+                        </button>
+                        <button class="btn-outline-large" onclick="switchToSection('analytics')">
+                            <i class="fas fa-chart-line"></i>
+                            <span>View Analytics</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Advanced Statistics Grid -->
+                <div class="stats-overview">
+                    <div class="stats-header">
+                        <h2 class="stats-title">
+                            <i class="fas fa-chart-bar"></i>
+                            Your Security Overview
+                        </h2>
+                        <div class="stats-period">
+                            <select class="period-select">
+                                <option value="7d">Last 7 days</option>
+                                <option value="30d" selected>Last 30 days</option>
+                                <option value="90d">Last 3 months</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card advanced">
+                            <div class="stat-header">
+                                <div class="stat-icon-wrapper">
+                                    <div class="stat-icon primary">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-meta">
+                                    <span class="stat-trend positive">
+                                        <i class="fas fa-arrow-up"></i>
+                                        +12%
+                                    </span>
+                                    <span class="stat-period">vs last month</span>
+                                </div>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">{{ jobs|length if jobs else 0 }}</div>
+                                <div class="stat-label">Encrypted Files</div>
+                                <div class="stat-description">Total files secured this month</div>
+                            </div>
+                            <div class="stat-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 75%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card advanced">
+                            <div class="stat-header">
+                                <div class="stat-icon-wrapper">
+                                    <div class="stat-icon success">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-meta">
+                                    <span class="stat-trend positive">
+                                        <i class="fas fa-equals"></i>
+                                        100%
+                                    </span>
+                                    <span class="stat-period">success rate</span>
+                                </div>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">100%</div>
+                                <div class="stat-label">Success Rate</div>
+                                <div class="stat-description">All encryption operations successful</div>
+                            </div>
+                            <div class="stat-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill success" style="width: 100%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card advanced">
+                            <div class="stat-header">
+                                <div class="stat-icon-wrapper">
+                                    <div class="stat-icon secondary">
+                                        <i class="fas fa-weight"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-meta">
+                                    <span class="stat-trend positive">
+                                        <i class="fas fa-arrow-up"></i>
+                                        +8%
+                                    </span>
+                                    <span class="stat-period">vs last week</span>
+                                </div>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">2.1</div>
+                                <div class="stat-label">GB Secured</div>
+                                <div class="stat-description">Total data protected</div>
+                            </div>
+                            <div class="stat-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 42%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card advanced">
+                            <div class="stat-header">
+                                <div class="stat-icon-wrapper">
+                                    <div class="stat-icon accent">
+                                        <i class="fas fa-brain"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-meta">
+                                    <span class="stat-trend positive">
+                                        <i class="fas fa-bolt"></i>
+                                        Active
+                                    </span>
+                                    <span class="stat-period">AI status</span>
+                                </div>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">AI</div>
+                                <div class="stat-label">Assistant</div>
+                                <div class="stat-description">Ready to generate secure messages</div>
+                            </div>
+                            <div class="stat-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill accent" style="width: 100%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Grid -->
+                <div class="actions-section">
+                    <div class="actions-header">
+                        <h2 class="actions-title">
+                            <i class="fas fa-zap"></i>
+                            Quick Actions
+                        </h2>
+                        <p class="actions-subtitle">Choose what you'd like to do today</p>
+                    </div>
+
+                    <div class="actions-grid">
+                        <div class="action-card primary" onclick="switchToSection('encrypt')">
+                            <div class="action-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div class="action-content">
+                                <h3 class="action-title">Hide a Secret</h3>
+                                <p class="action-description">Encrypt and hide messages in images using advanced steganography</p>
+                                <div class="action-meta">
+                                    <span class="action-badge">Most Used</span>
+                                    <span class="action-time">~2 min</span>
+                                </div>
+                            </div>
+                            <div class="action-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+
+                        <div class="action-card success" onclick="switchToSection('decrypt')">
+                            <div class="action-icon">
+                                <i class="fas fa-unlock"></i>
+                            </div>
+                            <div class="action-content">
+                                <h3 class="action-title">Reveal a Secret</h3>
+                                <p class="action-description">Extract hidden messages from encrypted images</p>
+                                <div class="action-meta">
+                                    <span class="action-badge">Quick</span>
+                                    <span class="action-time">~1 min</span>
+                                </div>
+                            </div>
+                            <div class="action-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+
+                        <div class="action-card secondary" onclick="switchToSection('ai')">
+                            <div class="action-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="action-content">
+                                <h3 class="action-title">AI Message Generator</h3>
+                                <p class="action-description">Generate secure, context-aware messages using AI</p>
+                                <div class="action-meta">
+                                    <span class="action-badge">Smart</span>
+                                    <span class="action-time">~30 sec</span>
+                                </div>
+                            </div>
+                            <div class="action-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+
+                        <div class="action-card accent" onclick="switchToSection('files')">
+                            <div class="action-icon">
+                                <i class="fas fa-folder"></i>
+                            </div>
+                            <div class="action-content">
+                                <h3 class="action-title">File Management</h3>
+                                <p class="action-description">Manage your encrypted files and download history</p>
+                                <div class="action-meta">
+                                    <span class="action-badge">Organize</span>
+                                    <span class="action-time">Ongoing</span>
+                                </div>
+                            </div>
+                            <div class="action-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity & Security Status -->
+                <div class="bottom-section">
+                    <div class="recent-activity">
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fas fa-history"></i>
+                                    Recent Activity
+                                </h3>
+                                <a href="#" class="section-link">View All</a>
+                            </div>
+                            <div class="activity-list">
+                                <div class="activity-item">
+                                    <div class="activity-icon success">
+                                        <i class="fas fa-lock"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-title">File encrypted successfully</div>
+                                        <div class="activity-meta">secret_image.png • 2 minutes ago</div>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon primary">
+                                        <i class="fas fa-brain"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-title">AI message generated</div>
+                                        <div class="activity-meta">Birthday message • 15 minutes ago</div>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon warning">
+                                        <i class="fas fa-key"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-title">Password updated</div>
+                                        <div class="activity-meta">Security settings • 1 hour ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="security-status">
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <i class="fas fa-shield-alt"></i>
+                                    Security Status
+                                </h3>
+                                <div class="security-score">
+                                    <span class="score-value">95</span>
+                                    <span class="score-label">/100</span>
+                                </div>
+                            </div>
+                            <div class="security-metrics">
+                                <div class="metric-item">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-lock"></i>
+                                    </div>
+                                    <div class="metric-info">
+                                        <span class="metric-label">Encryption Strength</span>
+                                        <span class="metric-value">AES-256</span>
+                                    </div>
+                                    <div class="metric-status excellent">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-user-shield"></i>
+                                    </div>
+                                    <div class="metric-info">
+                                        <span class="metric-label">Account Security</span>
+                                        <span class="metric-value">2FA Enabled</span>
+                                    </div>
+                                    <div class="metric-status excellent">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="metric-info">
+                                        <span class="metric-label">Last Backup</span>
+                                        <span class="metric-value">2 hours ago</span>
+                                    </div>
+                                    <div class="metric-status good">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Assistant Section -->
+            <section class="section" id="ai-section">
+                <header class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-brain me-3"></i>
+                        AI Assistant
+                    </h2>
+                    <p class="section-subtitle">Generate secure messages using AI for your steganography needs</p>
+                </header>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+
+                    <!-- AI Input -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">
+                                <i class="fas fa-robot me-2"></i>
+                                Message Generation
+                            </h4>
+                            <p class="card-subtitle">Describe what kind of message you want to generate</p>
+                        </div>
+
+                        <div style="padding: 2rem;">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-lightbulb me-1"></i>
+                                    Prompt
+                                </label>
+                                <textarea class="form-control" id="aiPrompt" rows="4" placeholder="e.g., Generate a secret love message, Create a mysterious riddle, Write an encrypted business communication..."></textarea>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Be specific about the type and tone of message you want
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-tag me-1"></i>
+                                    Context (Optional)
+                                </label>
+                                <input type="text" class="form-control" id="aiContext" placeholder="e.g., birthday celebration, business meeting, romantic gesture">
+                                <div class="form-text">
+                                    <i class="fas fa-question-circle me-1"></i>
+                                    Additional context to make the message more relevant
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-ruler me-1"></i>
+                                    Maximum Length
+                                </label>
+                                <select class="form-control" id="aiMaxLength">
+                                    <option value="100">Short (100 chars) - Quick notes</option>
+                                    <option value="250" selected>Medium (250 chars) - Standard messages</option>
+                                    <option value="500">Long (500 chars) - Detailed communications</option>
+                                </select>
+                            </div>
+
+                            <div style="text-align: center; margin-top: 2rem;">
+                                <button type="button" class="btn btn-primary btn-lg" onclick="generateAIMessage()" id="aiGenerateBtn">
+                                    <i class="fas fa-magic me-2"></i>
+                                    Generate Message
                                 </button>
                             </div>
                         </div>
-                        <div id="imagePreview" style="display: none;">
-                            <img id="previewImg" class="img-fluid mb-3" style="max-height: 200px;">
-                            <div id="imageAnalysis"></div>
-                        </div>
                     </div>
-                    
-                    <!-- Step 2: Enter Message -->
-                    <div class="step" id="step2" style="display: none;">
-                        <h6><i class="fas fa-comment me-2"></i>Step 2: Enter Secret Message</h6>
-                        <div class="mb-3">
-                            <label for="secretMessage" class="form-label">Your Secret Message:</label>
-                            <textarea class="form-control" id="secretMessage" rows="4" 
-                                    placeholder="Enter the message you want to hide..."></textarea>
-                            <div class="form-text">Maximum capacity will be shown based on your image.</div>
+
+                    <!-- AI Result -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">
+                                <i class="fas fa-message me-2"></i>
+                                Generated Message
+                            </h4>
                         </div>
-                        <div class="mb-3">
-                            <label for="encryptionPassword" class="form-label">Encryption Password (Optional):</label>
-                            <input type="password" class="form-control" id="encryptionPassword" 
-                                   placeholder="Leave empty for no encryption">
-                            <div class="form-text">Recommended for sensitive messages.</div>
+
+                        <div id="aiResult" style="min-height: 200px; display: flex; align-items: center; justify-content: center; padding: 2rem;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem; opacity: 0.5;">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <h5 style="color: var(--text-primary); margin-bottom: 1rem;">Ready to generate</h5>
+                                <p style="color: var(--text-secondary); text-align: center;">Enter a prompt and click "Generate Message" to create secure, AI-powered content for your steganography needs.</p>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <!-- Step 3: Process -->
-                    <div class="step" id="step3" style="display: none;">
-                        <h6><i class="fas fa-cog me-2"></i>Step 3: Processing</h6>
-                        <div class="text-center">
-                            <div class="spinner-border text-primary mb-3" role="status"></div>
-                            <p>Encrypting and hiding your message...</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Step 4: Complete -->
-                    <div class="step" id="step4" style="display: none;">
-                        <h6><i class="fas fa-check-circle me-2"></i>Step 4: Complete</h6>
-                        <div class="alert alert-success">
-                            <i class="fas fa-shield-alt me-2"></i>
-                            Your message has been successfully encrypted and hidden!
-                        </div>
-                        <div id="securityAnalysis"></div>
-                        <div class="text-center">
-                            <button type="button" class="btn btn-success" id="downloadBtn">
-                                <i class="fas fa-download me-2"></i>Download Encrypted Image
+
+                        <div id="aiActions" style="display: none; text-align: center; margin: 2rem; padding-top: 0;">
+                            <button type="button" class="btn btn-success me-2" onclick="useGeneratedMessage()">
+                                <i class="fas fa-check me-1"></i>
+                                Use This Message
+                            </button>
+                            <button type="button" class="btn" onclick="regenerateMessage()" style="background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                                <i class="fas fa-redo me-1"></i>
+                                Generate Another
                             </button>
                         </div>
                     </div>
                 </div>
+
+                <!-- AI Info Cards -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                    <div class="card">
+                        <div style="padding: 2rem; text-align: center;">
+                            <div style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h5 style="color: var(--text-primary); margin-bottom: 0.5rem;">Secure Generation</h5>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">All AI-generated content is created with security in mind, perfect for encrypted communications.</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div style="padding: 2rem; text-align: center;">
+                            <div style="font-size: 3rem; color: var(--secondary); margin-bottom: 1rem;">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h5 style="color: var(--text-primary); margin-bottom: 0.5rem;">AI Powered</h5>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Leveraging advanced AI models to create contextually appropriate and natural-sounding messages.</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div style="padding: 2rem; text-align: center;">
+                            <div style="font-size: 3rem; color: var(--accent); margin-bottom: 1rem;">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+                            <h5 style="color: var(--text-primary); margin-bottom: 0.5rem;">Fast Response</h5>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Generate messages instantly with our optimized AI processing pipeline.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Encrypt Section -->
+            <section class="section" id="encrypt-section">
+                <header class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-lock me-3"></i>
+                        Encrypt & Hide Message
+                    </h2>
+                    <p class="section-subtitle">Hide your secret messages inside images using advanced steganography</p>
+                </header>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+
+                    <!-- Upload & Encrypt Form -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">
+                                <i class="fas fa-upload me-2"></i>
+                                Upload Image & Message
+                            </h4>
+                            <p class="card-subtitle">Select an image and enter your secret message</p>
+                        </div>
+
+                        <div style="padding: 2rem;">
+                            <form id="encryptForm" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-image me-1"></i>
+                                        Select Image
+                                    </label>
+                                    <div class="upload-zone" id="imageUploadZone">
+                                        <input type="file" id="inputImage" name="input_image" accept="image/*" style="display: none;">
+                                        <div class="upload-icon">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                        </div>
+                                        <div class="upload-text">
+                                            <h5>Drop your image here</h5>
+                                            <p>or <span style="color: var(--primary); cursor: pointer;" onclick="document.getElementById('inputImage').click()">browse files</span></p>
+                                            <small>PNG, JPEG, GIF, BMP, WebP (max 16MB)</small>
+                                        </div>
+                                    </div>
+                                    <div id="imagePreview" style="display: none; margin-top: 1rem; text-align: center;">
+                                        <img id="previewImg" style="max-width: 200px; max-height: 200px; border-radius: 8px; box-shadow: var(--shadow-md);" alt="Preview">
+                                        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">Image selected successfully</p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-keyboard me-1"></i>
+                                        Secret Message
+                                    </label>
+                                    <textarea class="form-control" id="secretMessage" name="message" rows="4" placeholder="Enter your secret message here..."></textarea>
+                                    <div class="form-text">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Maximum 1000 characters. Longer messages may not fit in smaller images.
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-lock me-1"></i>
+                                        Password Protection (Optional)
+                                    </label>
+                                    <input type="password" class="form-control" id="encryptPassword" name="password" placeholder="Enter password for additional encryption">
+                                    <div class="form-text">
+                                        <i class="fas fa-shield-alt me-1"></i>
+                                        Adds AES-256 encryption to your message for extra security
+                                    </div>
+                                </div>
+
+                                <div style="text-align: center; margin-top: 2rem;">
+                                    <button type="button" class="btn btn-primary btn-lg" onclick="processEncryption()" id="encryptBtn">
+                                        <i class="fas fa-magic me-2"></i>
+                                        Encrypt & Hide Message
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Analysis & Results -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">
+                                <i class="fas fa-chart-bar me-2"></i>
+                                Analysis & Results
+                            </h4>
+                        </div>
+
+                        <div id="encryptResults" style="padding: 2rem;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem; opacity: 0.5;">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <h5 style="color: var(--text-primary); margin-bottom: 1rem;">Ready for Analysis</h5>
+                                <p style="color: var(--text-secondary); text-align: center;">Upload an image and enter a message to see security analysis and capacity information.</p>
+                            </div>
+                        </div>
+
+                        <div id="encryptActions" style="display: none; text-align: center; margin: 2rem; padding-top: 0;">
+                            <button type="button" class="btn btn-success me-2" onclick="downloadEncrypted()">
+                                <i class="fas fa-download me-1"></i>
+                                Download Encrypted Image
+                            </button>
+                            <button type="button" class="btn" onclick="resetEncryption()" style="background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                                <i class="fas fa-redo me-1"></i>
+                                Start Over
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Info -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                    <div class="card">
+                        <div style="padding: 2rem; text-align: center;">
+                            <div style="font-size: 3rem; color: var(--success); margin-bottom: 1rem;">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h5 style="color: var(--text-primary); margin-bottom: 0.5rem;">AES-256 Encryption</h5>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Your message is encrypted with military-grade AES-256 before being hidden in the image.</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div style="padding: 2rem; text-align: center;">
+                            <div style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;">
+                                <i class="fas fa-eye-slash"></i>
+                            </div>
+                            <h5 style="color: var(--text-primary); margin-bottom: 0.5rem;">Invisible Hiding</h5>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">The message is embedded in the least significant bits of image pixels, making it undetectable.</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div style="padding: 2rem; text-align: center;">
+                            <div style="font-size: 3rem; color: var(--secondary); margin-bottom: 1rem;">
+                                <i class="fas fa-file-image"></i>
+                            </div>
+                            <h5 style="color: var(--text-primary); margin-bottom: 0.5rem;">Format Preservation</h5>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">The original image quality and format are preserved - no visible changes to the naked eye.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Decrypt Section -->
+            <section class="section" id="decrypt-section">
+                <header class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-unlock me-3"></i>
+                        Extract Hidden Message
+                    </h2>
+                    <p class="section-subtitle">Reveal secret messages hidden inside encrypted images</p>
+                </header>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+
+                    <!-- Upload Encrypted Image -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">
+                                <i class="fas fa-upload me-2"></i>
+                                Upload Encrypted Image
+                            </h4>
+                            <p class="card-subtitle">Select the image containing the hidden message</p>
+                        </div>
+
+                        <div style="padding: 2rem;">
+                            <form id="decryptForm" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-image me-1"></i>
+                                        Encrypted Image
+                                    </label>
+                                    <div class="upload-zone" id="encryptedImageUploadZone">
+                                        <input type="file" id="encryptedImage" name="encrypted_image" accept="image/*" style="display: none;">
+                                        <div class="upload-icon">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                        </div>
+                                        <div class="upload-text">
+                                            <h5>Drop encrypted image here</h5>
+                                            <p>or <span style="color: var(--primary); cursor: pointer;" onclick="document.getElementById('encryptedImage').click()">browse files</span></p>
+                                            <small>PNG format required for steganography extraction</small>
+                                        </div>
+                                    </div>
+                                    <div id="encryptedImagePreview" style="display: none; margin-top: 1rem; text-align: center;">
+                                        <img id="encryptedPreviewImg" style="max-width: 200px; max-height: 200px; border-radius: 8px; box-shadow: var(--shadow-md);" alt="Encrypted Preview">
+                                        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">Encrypted image selected</p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-lock me-1"></i>
+                                        Password (if encrypted)
+                                    </label>
+                                    <input type="password" class="form-control" id="decryptPassword" name="decrypt_password" placeholder="Enter password if message was encrypted">
+                                    <div class="form-text">
+                                        <i class="fas fa-question-circle me-1"></i>
+                                        Leave empty if no password was used during encryption
+                                    </div>
+                                </div>
+
+                                <div style="text-align: center; margin-top: 2rem;">
+                                    <button type="button" class="btn btn-success btn-lg" onclick="processDecryption()" id="decryptBtn">
+                                        <i class="fas fa-search me-2"></i>
+                                        Extract Message
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Extraction Results -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">
+                                <i class="fas fa-message me-2"></i>
+                                Extracted Message
+                            </h4>
+                        </div>
+
+                        <div id="decryptResults" style="padding: 2rem;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem; opacity: 0.5;">
+                                    <i class="fas fa-message"></i>
+                                </div>
+                                <h5 style="color: var(--text-primary); margin-bottom: 1rem;">Ready for Extraction</h5>
+                                <p style="color: var(--text-secondary); text-align: center;">Upload an encrypted image to reveal any hidden messages.</p>
+                            </div>
+                        </div>
+
+                        <div id="decryptActions" style="display: none; text-align: center; margin: 2rem; padding-top: 0;">
+                            <button type="button" class="btn btn-primary me-2" onclick="copyMessage()">
+                                <i class="fas fa-copy me-1"></i>
+                                Copy Message
+                            </button>
+                            <button type="button" class="btn" onclick="resetDecryption()" style="background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+                                <i class="fas fa-redo me-1"></i>
+                                Extract Another
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Extraction Info -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                    <div class="card">
+                        <div style="padding: 2rem; text-align: center;">
+                            <div style="font-size: 3rem; color: var(--warning); margin-bottom: 1rem;">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <h5 style="color: var(--text-primary); margin-bottom: 0.5rem;">Format Critical</h5>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Only PNG images can be used for message extraction. JPEG conversion destroys hidden data.</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div style="padding: 2rem; text-align: center;">
+                            <div style="font-size: 3rem; color: var(--success); margin-bottom: 1rem;">
+                                <i class="fas fa-key"></i>
+                            </div>
+                            <h5 style="color: var(--text-primary); margin-bottom: 0.5rem;">Password Required</h5>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">If the message was password-protected during encryption, you'll need the same password to decrypt it.</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div style="padding: 2rem; text-align: center;">
+                            <div style="font-size: 3rem; color: var(--info); margin-bottom: 1rem;">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <h5 style="color: var(--text-primary); margin-bottom: 0.5rem;">Instant Results</h5>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Message extraction happens instantly - no waiting required for results.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section class="section" id="analytics-section">
+                <header class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-chart-line me-3"></i>
+                        Analytics Dashboard
+                    </h2>
+                    <p class="section-subtitle">Monitor your steganography activities and security metrics</p>
+                </header>
+
+                <!-- Analytics Controls -->
+                <div class="analytics-controls">
+                    <div class="control-group">
+                        <label>Time Range</label>
+                        <select id="analyticsTimeRange" class="form-control">
+                            <option value="7d">Last 7 days</option>
+                            <option value="30d" selected>Last 30 days</option>
+                            <option value="90d">Last 3 months</option>
+                            <option value="1y">Last year</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Metric Type</label>
+                        <select id="analyticsMetricType" class="form-control">
+                            <option value="all" selected>All Activities</option>
+                            <option value="encryption">Encryption Only</option>
+                            <option value="decryption">Decryption Only</option>
+                            <option value="ai">AI Generation</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="refreshAnalytics()">
+                        <i class="fas fa-sync-alt me-2"></i>
+                        Refresh
+                    </button>
+                </div>
+
+                <!-- Analytics Charts -->
+                <div class="analytics-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h5>Activity Overview</h5>
+                            <div class="chart-controls">
+                                <button class="btn btn-sm" onclick="exportChart('activity')">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="activityChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h5>Security Metrics</h5>
+                            <div class="chart-controls">
+                                <button class="btn btn-sm" onclick="exportChart('security')">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="securityChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h5>File Types Distribution</h5>
+                            <div class="chart-controls">
+                                <button class="btn btn-sm" onclick="exportChart('files')">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="fileTypesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h5>Performance Trends</h5>
+                            <div class="chart-controls">
+                                <button class="btn btn-sm" onclick="exportChart('performance')">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Analytics -->
+                <div class="detailed-analytics">
+                    <div class="analytics-tabs">
+                        <button class="analytics-tab active" data-tab="summary">
+                            <i class="fas fa-chart-pie"></i>
+                            <span>Summary</span>
+                        </button>
+                        <button class="analytics-tab" data-tab="timeline">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Timeline</span>
+                        </button>
+                        <button class="analytics-tab" data-tab="geography">
+                            <i class="fas fa-globe"></i>
+                            <span>Geography</span>
+                        </button>
+                        <button class="analytics-tab" data-tab="devices">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>Devices</span>
+                        </button>
+                    </div>
+
+                    <div id="analyticsContent">
+                        <!-- Summary Tab -->
+                        <div class="analytics-content active" id="summary-tab">
+                            <div class="analytics-summary">
+                                <div class="summary-metric">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <div class="metric-data">
+                                        <h4>{{ jobs|length if jobs else 0 }}</h4>
+                                        <p>Total Operations</p>
+                                        <span class="metric-change positive">+15% this month</span>
+                                    </div>
+                                </div>
+                                <div class="summary-metric">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="metric-data">
+                                        <h4>2.3s</h4>
+                                        <p>Avg. Processing Time</p>
+                                        <span class="metric-change positive">-8% faster</span>
+                                    </div>
+                                </div>
+                                <div class="summary-metric">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-file-image"></i>
+                                    </div>
+                                    <div class="metric-data">
+                                        <h4>98.5%</h4>
+                                        <p>Success Rate</p>
+                                        <span class="metric-change positive">+2.1%</span>
+                                    </div>
+                                </div>
+                                <div class="summary-metric">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-brain"></i>
+                                    </div>
+                                    <div class="metric-data">
+                                        <h4>127</h4>
+                                        <p>AI Messages Generated</p>
+                                        <span class="metric-change positive">+23% this week</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Timeline Tab -->
+                        <div class="analytics-content" id="timeline-tab">
+                            <div class="timeline-container">
+                                <div class="timeline-item">
+                                    <div class="timeline-marker">
+                                        <i class="fas fa-lock"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h6>Encryption completed</h6>
+                                        <p>Secret message hidden in image.png</p>
+                                        <small>2 hours ago</small>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-marker">
+                                        <i class="fas fa-brain"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h6>AI message generated</h6>
+                                        <p>Birthday message created using AI</p>
+                                        <small>5 hours ago</small>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-marker">
+                                        <i class="fas fa-unlock"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h6>Message extracted</h6>
+                                        <p>Hidden message retrieved from encrypted.png</p>
+                                        <small>1 day ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Geography Tab -->
+                        <div class="analytics-content" id="geography-tab">
+                            <div class="geography-container">
+                                <div class="geography-placeholder">
+                                    <i class="fas fa-globe"></i>
+                                    <h5>Geographic Analytics</h5>
+                                    <p>Activity location data will be displayed here</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Devices Tab -->
+                        <div class="analytics-content" id="devices-tab">
+                            <div class="devices-container">
+                                <div class="device-metric">
+                                    <div class="device-icon">
+                                        <i class="fas fa-desktop"></i>
+                                    </div>
+                                    <div class="device-info">
+                                        <h6>Desktop</h6>
+                                        <p>68% of activities</p>
+                                        <div class="device-bar">
+                                            <div class="device-bar-fill" style="width: 68%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="device-metric">
+                                    <div class="device-icon">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </div>
+                                    <div class="device-info">
+                                        <h6>Mobile</h6>
+                                        <p>24% of activities</p>
+                                        <div class="device-bar">
+                                            <div class="device-bar-fill" style="width: 24%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="device-metric">
+                                    <div class="device-icon">
+                                        <i class="fas fa-tablet-alt"></i>
+                                    </div>
+                                    <div class="device-info">
+                                        <h6>Tablet</h6>
+                                        <p>8% of activities</p>
+                                        <div class="device-bar">
+                                            <div class="device-bar-fill" style="width: 8%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Security Section -->
+            <section class="section" id="security-section">
+                <header class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-shield-alt me-3"></i>
+                        Security Center
+                    </h2>
+                    <p class="section-subtitle">Manage your account security and privacy settings</p>
+                </header>
+
+                <div class="security-grid">
+                    <div class="security-card">
+                        <div class="card-header">
+                            <h5>Account Security</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h6>Two-Factor Authentication</h6>
+                                    <p>Add an extra layer of security to your account</p>
+                                </div>
+                                <div class="security-action">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="toggle2FA()">
+                                        <i class="fas fa-toggle-on"></i>
+                                        Enabled
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h6>Password</h6>
+                                    <p>Last changed 30 days ago</p>
+                                </div>
+                                <div class="security-action">
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="changePassword()">
+                                        <i class="fas fa-key"></i>
+                                        Change
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h6>Login Sessions</h6>
+                                    <p>Manage active sessions</p>
+                                </div>
+                                <div class="security-action">
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="manageSessions()">
+                                        <i class="fas fa-list"></i>
+                                        View
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="security-card">
+                        <div class="card-header">
+                            <h5>Privacy Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h6>Analytics Tracking</h6>
+                                    <p>Help improve CyberCloak by sharing usage data</p>
+                                </div>
+                                <div class="security-action">
+                                    <button class="btn btn-outline-success btn-sm" onclick="toggleAnalytics()">
+                                        <i class="fas fa-toggle-on"></i>
+                                        Enabled
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h6>Data Retention</h6>
+                                    <p>Automatically delete old files after 90 days</p>
+                                </div>
+                                <div class="security-action">
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="configureRetention()">
+                                        <i class="fas fa-cog"></i>
+                                        Configure
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h6>Export Data</h6>
+                                    <p>Download all your data</p>
+                                </div>
+                                <div class="security-action">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="exportData()">
+                                        <i class="fas fa-download"></i>
+                                        Export
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Tips -->
+                <div class="security-tips">
+                    <div class="tips-title">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        Security Best Practices
+                    </div>
+                    <div class="tips-list">
+                        <div class="tip">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Use strong, unique passwords for encryption</span>
+                        </div>
+                        <div class="tip">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Enable two-factor authentication for added security</span>
+                        </div>
+                        <div class="tip">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Regularly backup your encrypted files</span>
+                        </div>
+                        <div class="tip">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Use PNG format for best steganography results</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Files Section -->
+            <section class="section" id="files-section">
+                <header class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-folder me-3"></i>
+                        My Files
+                    </h2>
+                    <p class="section-subtitle">Manage your encrypted files and download history</p>
+                </header>
+
+                <!-- File Actions -->
+                <div class="file-actions">
+                    <div class="file-filters">
+                        <select id="fileTypeFilter" class="form-control">
+                            <option value="all">All Files</option>
+                            <option value="encrypted">Encrypted</option>
+                            <option value="decrypted">Decrypted</option>
+                            <option value="ai">AI Generated</option>
+                        </select>
+                        <select id="fileDateFilter" class="form-control">
+                            <option value="all">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                        </select>
+                    </div>
+                    <div class="file-search">
+                        <input type="text" id="fileSearch" class="form-control" placeholder="Search files...">
+                        <button class="btn btn-outline-secondary" onclick="searchFiles()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Files Table -->
+                <div class="files-table-container">
+                    <table class="files-table">
+                        <thead>
+                            <tr>
+                                <th>File Name</th>
+                                <th>Type</th>
+                                <th>Size</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="filesTableBody">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 3rem;">
+                                    <div style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem; opacity: 0.5;">
+                                        <i class="fas fa-folder-open"></i>
+                                    </div>
+                                    <h5 style="color: var(--text-primary); margin-bottom: 1rem;">No Files Yet</h5>
+                                    <p style="color: var(--text-secondary); text-align: center;">Your encrypted files will appear here after you create them.</p>
+                                    <button class="btn btn-primary" onclick="switchToSection('encrypt')" style="margin-top: 1rem;">
+                                        <i class="fas fa-plus me-2"></i>
+                                        Create Your First File
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- File Statistics -->
+                <div class="file-stats">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-file"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h6>{{ jobs|length if jobs else 0 }}</h6>
+                            <p>Total Files</p>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-hdd"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h6>2.1 GB</h6>
+                            <p>Storage Used</p>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h6>100%</h6>
+                            <p>Security Score</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Activity Log Section -->
+            <section class="section" id="activity-section">
+                <header class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-history me-3"></i>
+                        Activity Log
+                    </h2>
+                    <p class="section-subtitle">Track all your steganography activities and operations</p>
+                </header>
+
+                <!-- Activity Filters -->
+                <div class="activity-filters">
+                    <div class="filter-group">
+                        <label>Activity Type</label>
+                        <select id="activityTypeFilter" class="form-control">
+                            <option value="all">All Activities</option>
+                            <option value="encryption">Encryption</option>
+                            <option value="decryption">Decryption</option>
+                            <option value="ai">AI Generation</option>
+                            <option value="batch">Batch Processing</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Time Period</label>
+                        <select id="activityTimeFilter" class="form-control">
+                            <option value="today">Today</option>
+                            <option value="week" selected>This Week</option>
+                            <option value="month">This Month</option>
+                            <option value="all">All Time</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="refreshActivity()">
+                        <i class="fas fa-sync-alt me-2"></i>
+                        Refresh
+                    </button>
+                </div>
+
+                <!-- Activity Timeline -->
+                <div class="activity-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker success">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <h6>Message Encrypted Successfully</h6>
+                                <small class="timeline-time">2 minutes ago</small>
+                            </div>
+                            <p class="timeline-description">Hidden secret message in vacation_photo.png using AES-256 encryption</p>
+                            <div class="timeline-meta">
+                                <span class="meta-item">
+                                    <i class="fas fa-file-image"></i>
+                                    2.3 MB
+                                </span>
+                                <span class="meta-item">
+                                    <i class="fas fa-shield-alt"></i>
+                                    Password Protected
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker primary">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <h6>AI Message Generated</h6>
+                                <small class="timeline-time">15 minutes ago</small>
+                            </div>
+                            <p class="timeline-description">Created a romantic birthday message using AI assistant</p>
+                            <div class="timeline-meta">
+                                <span class="meta-item">
+                                    <i class="fas fa-robot"></i>
+                                    GPT-4
+                                </span>
+                                <span class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    3.2s
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker warning">
+                            <i class="fas fa-unlock"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <h6>Message Decrypted</h6>
+                                <small class="timeline-time">1 hour ago</small>
+                            </div>
+                            <p class="timeline-description">Extracted hidden message from encrypted_document.png</p>
+                            <div class="timeline-meta">
+                                <span class="meta-item">
+                                    <i class="fas fa-key"></i>
+                                    Password Required
+                                </span>
+                                <span class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    1.8s
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker secondary">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <h6>Batch Processing Completed</h6>
+                                <small class="timeline-time">2 hours ago</small>
+                            </div>
+                            <p class="timeline-description">Processed 5 images with encrypted messages</p>
+                            <div class="timeline-meta">
+                                <span class="meta-item">
+                                    <i class="fas fa-images"></i>
+                                    5 files
+                                </span>
+                                <span class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    12.5s
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Statistics -->
+                <div class="activity-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4>24</h4>
+                            <p>Today's Activities</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4>2.3s</h4>
+                            <p>Avg. Processing Time</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4>100%</h4>
+                            <p>Success Rate</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Batch Processing Section -->
+            <section class="section" id="batch-section">
+                <header class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-layer-group me-3"></i>
+                        Batch Processing
+                    </h2>
+                    <p class="section-subtitle">Process multiple images with encrypted messages simultaneously</p>
+                </header>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+
+                    <!-- Batch Upload -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">
+                                <i class="fas fa-upload me-2"></i>
+                                Upload Multiple Images
+                            </h4>
+                            <p class="card-subtitle">Select multiple images for batch processing</p>
+                        </div>
+
+                        <div style="padding: 2rem;">
+                            <div class="batch-upload-zone" id="batchUploadZone">
+                                <input type="file" id="batchImages" name="batch_images" accept="image/*" multiple style="display: none;">
+                                <div class="upload-icon">
+                                    <i class="fas fa-images"></i>
+                                </div>
+                                <div class="upload-text">
+                                    <h5>Drop multiple images here</h5>
+                                    <p>or <span style="color: var(--primary); cursor: pointer;" onclick="document.getElementById('batchImages').click()">browse files</span></p>
+                                    <small>PNG, JPEG, GIF, BMP, WebP (max 50MB total)</small>
+                                </div>
+                            </div>
+                            <div id="batchFileList" style="margin-top: 1rem;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Batch Settings -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">
+                                <i class="fas fa-cog me-2"></i>
+                                Processing Settings
+                            </h4>
+                        </div>
+
+                        <div style="padding: 2rem;">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-keyboard me-1"></i>
+                                    Message Source
+                                </label>
+                                <select class="form-control" id="batchMessageSource">
+                                    <option value="single">Use Same Message for All</option>
+                                    <option value="individual">Individual Messages</option>
+                                    <option value="ai">Generate AI Messages</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="singleMessageGroup">
+                                <label class="form-label">
+                                    <i class="fas fa-comment me-1"></i>
+                                    Common Message
+                                </label>
+                                <textarea class="form-control" id="batchMessage" rows="3" placeholder="Enter message for all images..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-lock me-1"></i>
+                                    Password Protection
+                                </label>
+                                <input type="password" class="form-control" id="batchPassword" placeholder="Optional password for all">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-download me-1"></i>
+                                    Output Format
+                                </label>
+                                <select class="form-control" id="batchOutputFormat">
+                                    <option value="zip">ZIP Archive</option>
+                                    <option value="individual">Individual Files</option>
+                                </select>
+                            </div>
+
+                            <div style="text-align: center; margin-top: 2rem;">
+                                <button type="button" class="btn btn-primary btn-lg" onclick="startBatchProcessing()" id="batchProcessBtn">
+                                    <i class="fas fa-play me-2"></i>
+                                    Start Batch Processing
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Batch Progress -->
+                <div class="batch-progress" id="batchProgress" style="display: none;">
+                    <div class="progress-header">
+                        <h5>Processing Progress</h5>
+                        <span id="progressText">0 of 0 completed</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-details" id="progressDetails"></div>
+                </div>
+
+                <!-- Batch Results -->
+                <div class="batch-results" id="batchResults" style="display: none;">
+                    <div class="results-header">
+                        <h5>Processing Complete</h5>
+                        <button class="btn btn-success" onclick="downloadBatchResults()">
+                            <i class="fas fa-download me-2"></i>
+                            Download All
+                        </button>
+                    </div>
+                    <div class="results-grid" id="batchResultsGrid"></div>
+                </div>
+            </section>
+
+            <!-- Templates Section -->
+            <section class="section" id="templates-section">
+                <header class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-file-alt me-3"></i>
+                        Message Templates
+                    </h2>
+                    <p class="section-subtitle">Pre-built message templates for common scenarios</p>
+                </header>
+
+                <!-- Template Categories -->
+                <div class="template-categories">
+                    <button class="category-btn active" data-category="all">
+                        <i class="fas fa-th"></i>
+                        All Templates
+                    </button>
+                    <button class="category-btn" data-category="personal">
+                        <i class="fas fa-heart"></i>
+                        Personal
+                    </button>
+                    <button class="category-btn" data-category="business">
+                        <i class="fas fa-briefcase"></i>
+                        Business
+                    </button>
+                    <button class="category-btn" data-category="celebration">
+                        <i class="fas fa-birthday-cake"></i>
+                        Celebrations
+                    </button>
+                    <button class="category-btn" data-category="mysterious">
+                        <i class="fas fa-mask"></i>
+                        Mysterious
+                    </button>
+                </div>
+
+                <!-- Templates Grid -->
+                <div class="templates-grid">
+                    <div class="template-card" data-category="personal">
+                        <div class="template-header">
+                            <h5>Love Letter</h5>
+                            <span class="template-badge personal">Personal</span>
+                        </div>
+                        <p class="template-preview">My dearest [Name], Every moment with you feels like...</p>
+                        <div class="template-actions">
+                            <button class="btn btn-sm btn-outline-primary" onclick="useTemplate('love-letter')">
+                                <i class="fas fa-plus"></i>
+                                Use Template
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="previewTemplate('love-letter')">
+                                <i class="fas fa-eye"></i>
+                                Preview
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="template-card" data-category="business">
+                        <div class="template-header">
+                            <h5>Business Proposal</h5>
+                            <span class="template-badge business">Business</span>
+                        </div>
+                        <p class="template-preview">Dear [Client], I am pleased to present our proposal for...</p>
+                        <div class="template-actions">
+                            <button class="btn btn-sm btn-outline-primary" onclick="useTemplate('business-proposal')">
+                                <i class="fas fa-plus"></i>
+                                Use Template
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="previewTemplate('business-proposal')">
+                                <i class="fas fa-eye"></i>
+                                Preview
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="template-card" data-category="celebration">
+                        <div class="template-header">
+                            <h5>Birthday Message</h5>
+                            <span class="template-badge celebration">Celebration</span>
+                        </div>
+                        <p class="template-preview">Happy Birthday! Another year of wonderful memories...</p>
+                        <div class="template-actions">
+                            <button class="btn btn-sm btn-outline-primary" onclick="useTemplate('birthday-message')">
+                                <i class="fas fa-plus"></i>
+                                Use Template
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="previewTemplate('birthday-message')">
+                                <i class="fas fa-eye"></i>
+                                Preview
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="template-card" data-category="mysterious">
+                        <div class="template-header">
+                            <h5>Secret Code</h5>
+                            <span class="template-badge mysterious">Mysterious</span>
+                        </div>
+                        <p class="template-preview">The eagle has landed. Mission accomplished...</p>
+                        <div class="template-actions">
+                            <button class="btn btn-sm btn-outline-primary" onclick="useTemplate('secret-code')">
+                                <i class="fas fa-plus"></i>
+                                Use Template
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="previewTemplate('secret-code')">
+                                <i class="fas fa-eye"></i>
+                                Preview
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="template-card" data-category="personal">
+                        <div class="template-header">
+                            <h5>Thank You Note</h5>
+                            <span class="template-badge personal">Personal</span>
+                        </div>
+                        <p class="template-preview">I wanted to express my heartfelt gratitude for...</p>
+                        <div class="template-actions">
+                            <button class="btn btn-sm btn-outline-primary" onclick="useTemplate('thank-you-note')">
+                                <i class="fas fa-plus"></i>
+                                Use Template
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="previewTemplate('thank-you-note')">
+                                <i class="fas fa-eye"></i>
+                                Preview
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="template-card" data-category="business">
+                        <div class="template-header">
+                            <h5>Meeting Reminder</h5>
+                            <span class="template-badge business">Business</span>
+                        </div>
+                        <p class="template-preview">This is a reminder of our upcoming meeting scheduled for...</p>
+                        <div class="template-actions">
+                            <button class="btn btn-sm btn-outline-primary" onclick="useTemplate('meeting-reminder')">
+                                <i class="fas fa-plus"></i>
+                                Use Template
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="previewTemplate('meeting-reminder')">
+                                <i class="fas fa-eye"></i>
+                                Preview
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Template Creator -->
+                <div class="custom-template-creator">
+                    <div class="creator-header">
+                        <h5>Create Custom Template</h5>
+                        <button class="btn btn-primary" onclick="showTemplateCreator()">
+                            <i class="fas fa-plus me-2"></i>
+                            New Template
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section class="section" id="settings-section">
+                <header class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-cog me-3"></i>
+                        Account Settings
+                    </h2>
+                    <p class="section-subtitle">Customize your CyberCloak experience and preferences</p>
+                </header>
+
+                <div class="settings-grid">
+                    <!-- Profile Settings -->
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h5>Profile Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="setting-item">
+                                <label class="setting-label">Display Name</label>
+                                <input type="text" class="form-control" value="{{ current_user.name }}" id="displayName">
+                            </div>
+                            <div class="setting-item">
+                                <label class="setting-label">Email Address</label>
+                                <input type="email" class="form-control" value="{{ current_user.email }}" id="emailAddress">
+                            </div>
+                            <div class="setting-item">
+                                <label class="setting-label">Profile Picture</label>
+                                <div class="file-upload">
+                                    <input type="file" id="profilePicture" accept="image/*" style="display: none;">
+                                    <button class="btn btn-outline-secondary" onclick="document.getElementById('profilePicture').click()">
+                                        <i class="fas fa-upload me-2"></i>
+                                        Choose Image
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h5>Security Preferences</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label class="setting-label">Auto-lock after inactivity</label>
+                                    <small>Automatically lock the app after period of inactivity</small>
+                                </div>
+                                <select class="form-control" id="autoLockTime">
+                                    <option value="5">5 minutes</option>
+                                    <option value="15" selected>15 minutes</option>
+                                    <option value="30">30 minutes</option>
+                                    <option value="60">1 hour</option>
+                                    <option value="never">Never</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label class="setting-label">Default encryption strength</label>
+                                    <small>Set the default encryption algorithm for new messages</small>
+                                </div>
+                                <select class="form-control" id="defaultEncryption">
+                                    <option value="aes256" selected>AES-256 (Recommended)</option>
+                                    <option value="aes128">AES-128</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label class="setting-label">Password complexity</label>
+                                    <small>Require strong passwords for encryption</small>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="passwordComplexity" checked>
+                                    <label for="passwordComplexity" class="toggle-slider"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Appearance Settings -->
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h5>Appearance & Theme</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label class="setting-label">Theme</label>
+                                    <small>Choose your preferred color scheme</small>
+                                </div>
+                                <select class="form-control" id="themeSelector">
+                                    <option value="dark" selected>Dark Theme</option>
+                                    <option value="light">Light Theme</option>
+                                    <option value="auto">Auto (System)</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label class="setting-label">Sidebar collapsed by default</label>
+                                    <small>Keep the sidebar collapsed when opening the app</small>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="sidebarCollapsed">
+                                    <label for="sidebarCollapsed" class="toggle-slider"></label>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label class="setting-label">Show animations</label>
+                                    <small>Enable smooth transitions and animations</small>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="showAnimations" checked>
+                                    <label for="showAnimations" class="toggle-slider"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notification Settings -->
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h5>Notifications</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label class="setting-label">Email notifications</label>
+                                    <small>Receive email updates about your activities</small>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="emailNotifications" checked>
+                                    <label for="emailNotifications" class="toggle-slider"></label>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label class="setting-label">Push notifications</label>
+                                    <small>Get notified about important events</small>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="pushNotifications" checked>
+                                    <label for="pushNotifications" class="toggle-slider"></label>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <label class="setting-label">Weekly summary</label>
+                                    <small>Receive a weekly report of your activities</small>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="weeklySummary">
+                                    <label for="weeklySummary" class="toggle-slider"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save Settings -->
+                <div class="settings-actions">
+                    <button class="btn btn-primary btn-lg" onclick="saveSettings()">
+                        <i class="fas fa-save me-2"></i>
+                        Save All Settings
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="resetSettings()">
+                        <i class="fas fa-undo me-2"></i>
+                        Reset to Defaults
+                    </button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Floating Action Button -->
+    <div class="fab" onclick="showQuickActions()" title="Quick Actions">
+        <i class="fas fa-plus"></i>
+    </div>
+
+    <!-- Quick Actions Modal -->
+    <div class="quick-actions-modal" id="quickActionsModal" style="display: none;">
+        <div class="quick-actions-overlay" onclick="hideQuickActions()"></div>
+        <div class="quick-actions-content">
+            <div class="quick-actions-header">
+                <h4>Quick Actions</h4>
+                <button class="close-btn" onclick="hideQuickActions()">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()">Next</button>
+            <div class="quick-actions-grid">
+                <div class="quick-action-item" onclick="switchToSection('encrypt')">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="quick-action-text">
+                        <h5>Encrypt File</h5>
+                        <p>Hide message in image</p>
+                    </div>
+                </div>
+                <div class="quick-action-item" onclick="switchToSection('decrypt')">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-unlock"></i>
+                    </div>
+                    <div class="quick-action-text">
+                        <h5>Decrypt File</h5>
+                        <p>Extract hidden message</p>
+                    </div>
+                </div>
+                <div class="quick-action-item" onclick="switchToSection('ai')">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="quick-action-text">
+                        <h5>AI Assistant</h5>
+                        <p>Generate secure messages</p>
+                    </div>
+                </div>
+                <div class="quick-action-item" onclick="switchToSection('analytics')">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="quick-action-text">
+                        <h5>View Analytics</h5>
+                        <p>Check your stats</p>
+                    </div>
+                </div>
+                <div class="quick-action-item" onclick="switchToSection('files')">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-folder"></i>
+                    </div>
+                    <div class="quick-action-text">
+                        <h5>My Files</h5>
+                        <p>Manage your files</p>
+                    </div>
+                </div>
+                <div class="quick-action-item" onclick="switchToSection('security')">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="quick-action-text">
+                        <h5>Security</h5>
+                        <p>Security settings</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block scripts %}
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 {% endblock %}

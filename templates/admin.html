@@ -1,0 +1,436 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel - CyberCloak{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="admin-header">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="admin-title">
+                        <i class="fas fa-crown me-3"></i>Admin Panel
+                    </h1>
+                    <p class="admin-subtitle">System administration and monitoring</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="admin-actions">
+                        <button class="btn btn-outline-primary me-2" onclick="refreshData()">
+                            <i class="fas fa-sync-alt me-2"></i>Refresh
+                        </button>
+                        <button class="btn btn-primary" onclick="exportData()">
+                            <i class="fas fa-download me-2"></i>Export Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-xl-3 col-md-6">
+                <div class="admin-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value">{{ total_users }}</h3>
+                        <p class="stat-label">Total Users</p>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up me-1"></i>+12.5%
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="admin-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-image"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value">{{ total_jobs }}</h3>
+                        <p class="stat-label">Encryption Jobs</p>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up me-1"></i>+8.3%
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="admin-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value">{{ total_contacts }}</h3>
+                        <p class="stat-label">Contact Messages</p>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up me-1"></i>+5.2%
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="admin-stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value">99.9%</h3>
+                        <p class="stat-label">Uptime</p>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up me-1"></i>+0.1%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row g-4">
+            <!-- Recent Users -->
+            <div class="col-xl-4">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-user-plus me-2"></i>Recent Users
+                        </h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-content">
+                        <div class="user-list">
+                            {% for user in recent_users %}
+                            <div class="user-item">
+                                <div class="user-avatar">
+                                    {% if user.avatar_url %}
+                                        <img src="{{ user.avatar_url }}" alt="{{ user.name }}">
+                                    {% else %}
+                                        <div class="avatar-placeholder">
+                                            {{ user.name[0].upper() }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="user-info">
+                                    <h6 class="user-name">{{ user.name }}</h6>
+                                    <p class="user-email">{{ user.email }}</p>
+                                    <span class="user-date">{{ user.created_at.strftime('%Y-%m-%d') }}</span>
+                                </div>
+                                <div class="user-actions">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewUser('{{ user.id }}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Jobs -->
+            <div class="col-xl-4">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-tasks me-2"></i>Recent Jobs
+                        </h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-content">
+                        <div class="job-list">
+                            {% for job in recent_jobs %}
+                            <div class="job-item">
+                                <div class="job-icon">
+                                    <i class="fas fa-{{ 'check-circle text-success' if job.status == 'completed' else 'clock text-warning' if job.status == 'pending' else 'times-circle text-danger' }}"></i>
+                                </div>
+                                <div class="job-info">
+                                    <h6 class="job-title">{{ job.original_filename }}</h6>
+                                    <p class="job-user">{{ job.user.name if job.user else 'Anonymous' }}</p>
+                                    <span class="job-date">{{ job.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                                </div>
+                                <div class="job-status">
+                                    <span class="status-badge {{ job.status }}">{{ job.status.title() }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Contacts -->
+            <div class="col-xl-4">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-envelope me-2"></i>Recent Contacts
+                        </h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-content">
+                        <div class="contact-list">
+                            {% for contact in recent_contacts %}
+                            <div class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="contact-info">
+                                    <h6 class="contact-subject">{{ contact.subject }}</h6>
+                                    <p class="contact-name">{{ contact.name }} ({{ contact.email }})</p>
+                                    <span class="contact-date">{{ contact.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                                </div>
+                                <div class="contact-actions">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewContact('{{ contact.id }}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Monitoring -->
+        <div class="row g-4 mt-4">
+            <div class="col-xl-6">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-chart-line me-2"></i>System Performance
+                        </h5>
+                    </div>
+                    <div class="card-content">
+                        <div class="performance-metrics">
+                            <div class="metric-item">
+                                <div class="metric-label">CPU Usage</div>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 45%"></div>
+                                </div>
+                                <div class="metric-value">45%</div>
+                            </div>
+                            
+                            <div class="metric-item">
+                                <div class="metric-label">Memory Usage</div>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 67%"></div>
+                                </div>
+                                <div class="metric-value">67%</div>
+                            </div>
+                            
+                            <div class="metric-item">
+                                <div class="metric-label">Disk Usage</div>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 23%"></div>
+                                </div>
+                                <div class="metric-value">23%</div>
+                            </div>
+                            
+                            <div class="metric-item">
+                                <div class="metric-label">Network I/O</div>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 34%"></div>
+                                </div>
+                                <div class="metric-value">34%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-6">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-shield-alt me-2"></i>Security Status
+                        </h5>
+                    </div>
+                    <div class="card-content">
+                        <div class="security-status">
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span>SSL Certificate</span>
+                                </div>
+                                <div class="security-status">Valid</div>
+                            </div>
+                            
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span>Firewall</span>
+                                </div>
+                                <div class="security-status">Active</div>
+                            </div>
+                            
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span>Database Encryption</span>
+                                </div>
+                                <div class="security-status">Enabled</div>
+                            </div>
+                            
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                    <span>Last Security Scan</span>
+                                </div>
+                                <div class="security-status">2 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row g-4 mt-4">
+            <div class="col-12">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-bolt me-2"></i>Quick Actions
+                        </h5>
+                    </div>
+                    <div class="card-content">
+                        <div class="quick-actions-grid">
+                            <button class="action-btn" onclick="backupDatabase()">
+                                <i class="fas fa-database"></i>
+                                <span>Backup Database</span>
+                            </button>
+                            
+                            <button class="action-btn" onclick="clearCache()">
+                                <i class="fas fa-broom"></i>
+                                <span>Clear Cache</span>
+                            </button>
+                            
+                            <button class="action-btn" onclick="runSecurityScan()">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Security Scan</span>
+                            </button>
+                            
+                            <button class="action-btn" onclick="updateSystem()">
+                                <i class="fas fa-sync-alt"></i>
+                                <span>Update System</span>
+                            </button>
+                            
+                            <button class="action-btn" onclick="viewLogs()">
+                                <i class="fas fa-file-alt"></i>
+                                <span>View Logs</span>
+                            </button>
+                            
+                            <button class="action-btn" onclick="sendNotification()">
+                                <i class="fas fa-bell"></i>
+                                <span>Send Notification</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-refresh data every 30 seconds
+    setInterval(refreshData, 30000);
+    
+    // Initialize real-time updates
+    startRealTimeUpdates();
+});
+
+function refreshData() {
+    // Simulate data refresh
+    console.log('Refreshing admin data...');
+    
+    // Update performance metrics with random values
+    const metrics = document.querySelectorAll('.metric-fill');
+    metrics.forEach(metric => {
+        const randomWidth = Math.floor(Math.random() * 100);
+        metric.style.width = randomWidth + '%';
+        metric.nextElementSibling.textContent = randomWidth + '%';
+    });
+}
+
+function exportData() {
+    // Simulate data export
+    const btn = event.target;
+    const originalText = btn.innerHTML;
+    
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Exporting...';
+    
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        showNotification('Data exported successfully!', 'success');
+    }, 2000);
+}
+
+function viewUser(userId) {
+    showNotification(`Viewing user: ${userId}`, 'info');
+}
+
+function viewContact(contactId) {
+    showNotification(`Viewing contact: ${contactId}`, 'info');
+}
+
+function backupDatabase() {
+    showNotification('Database backup started...', 'info');
+}
+
+function clearCache() {
+    showNotification('Cache cleared successfully!', 'success');
+}
+
+function runSecurityScan() {
+    showNotification('Security scan initiated...', 'info');
+}
+
+function updateSystem() {
+    showNotification('System update started...', 'info');
+}
+
+function viewLogs() {
+    showNotification('Opening system logs...', 'info');
+}
+
+function sendNotification() {
+    showNotification('Notification sent to all users!', 'success');
+}
+
+function startRealTimeUpdates() {
+    // Simulate real-time updates
+    setInterval(() => {
+        // Update user count
+        const userCount = document.querySelector('.stat-value');
+        if (userCount) {
+            const currentCount = parseInt(userCount.textContent);
+            userCount.textContent = currentCount + Math.floor(Math.random() * 3);
+        }
+    }, 10000);
+}
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} notification-toast`;
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
+        ${message}
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+</script>
+{% endblock %}

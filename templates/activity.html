@@ -1,0 +1,372 @@
+{% extends "base.html" %}
+
+{% block title %}My Activity - CyberCloak{% endblock %}
+
+{% block content %}
+<div class="activity-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="activity-header mb-4">
+                    <h1><i class="fas fa-history me-2"></i>My Activity</h1>
+                    <p class="text-muted">Track all your encryption and decryption activities</p>
+                </div>
+                
+                <!-- Activity Stats -->
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card floating-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-file-image text-primary"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>{{ jobs|length }}</h3>
+                                <p>Total Operations</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card floating-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle text-success"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>{{ jobs|selectattr('status', 'equalto', 'completed')|list|length }}</h3>
+                                <p>Completed</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card floating-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-shield-alt text-warning"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>{{ jobs|selectattr('has_password', 'equalto', true)|list|length }}</h3>
+                                <p>Encrypted</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card floating-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-download text-info"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>{{ (jobs|sum(attribute='file_size', start=0) / 1024 / 1024)|round(1) }}</h3>
+                                <p>MB Processed</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filters -->
+                <div class="activity-filters floating-card mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h6 class="mb-0">Filter Activity</h6>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="filter-controls">
+                                <select class="form-select me-2" id="statusFilter">
+                                    <option value="">All Status</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="failed">Failed</option>
+                                </select>
+                                <select class="form-select me-2" id="typeFilter">
+                                    <option value="">All Types</option>
+                                    <option value="encrypted">Encrypted</option>
+                                    <option value="unencrypted">Unencrypted</option>
+                                </select>
+                                <button class="btn btn-outline-primary" id="clearFilters">
+                                    <i class="fas fa-times me-1"></i>Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Activity Timeline -->
+                <div class="activity-timeline">
+                    {% if jobs %}
+                        {% for job in jobs %}
+                        <div class="timeline-item floating-card" data-status="{{ job.status }}" data-encrypted="{{ job.has_password|lower }}">
+                            <div class="timeline-marker">
+                                {% if job.status == 'completed' %}
+                                    <i class="fas fa-check-circle text-success"></i>
+                                {% elif job.status == 'pending' %}
+                                    <i class="fas fa-clock text-warning"></i>
+                                {% else %}
+                                    <i class="fas fa-times-circle text-danger"></i>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <div class="timeline-title">
+                                        <h6 class="mb-1">
+                                            <i class="fas fa-file-image me-2"></i>
+                                            {{ job.original_filename|truncate(40) }}
+                                        </h6>
+                                        <small class="text-muted">
+                                            {{ job.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                                        </small>
+                                    </div>
+                                    <div class="timeline-actions">
+                                        {% if job.status == 'completed' and job.encrypted_filename %}
+                                            <a href="{{ url_for('download_file', filename=job.encrypted_filename) }}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-download me-1"></i>Download
+                                            </a>
+                                        {% endif %}
+                                        <button class="btn btn-sm btn-outline-secondary" onclick="showJobDetails('{{ job.id }}')">
+                                            <i class="fas fa-info-circle me-1"></i>Details
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="timeline-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="info-item">
+                                                <span class="info-label">Message Preview:</span>
+                                                <span class="info-value">{{ job.message|truncate(50) }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="info-item">
+                                                <span class="info-label">Status:</span>
+                                                <span class="badge bg-{{ 'success' if job.status == 'completed' else 'warning' if job.status == 'pending' else 'danger' }}">
+                                                    {{ job.status|title }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="info-item">
+                                                <span class="info-label">Security:</span>
+                                                {% if job.has_password %}
+                                                    <span class="badge bg-warning">
+                                                        <i class="fas fa-lock me-1"></i>Encrypted
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge bg-info">
+                                                        <i class="fas fa-unlock me-1"></i>Plain Text
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {% if job.file_size %}
+                                    <div class="row mt-2">
+                                        <div class="col-12">
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar bg-primary" style="width: {{ (job.file_size / 1024 / 1024 * 100) | round(1) }}%"></div>
+                                            </div>
+                                            <small class="text-muted">
+                                                File Size: {{ (job.file_size / 1024) | round(1) }} KB
+                                            </small>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state text-center py-5">
+                            <div class="empty-icon">
+                                <i class="fas fa-inbox fa-4x text-muted"></i>
+                            </div>
+                            <h4 class="mt-3">No Activity Yet</h4>
+                            <p class="text-muted mb-4">You haven't performed any encryption operations yet.</p>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Start Encrypting
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Load More Button -->
+                {% if jobs|length >= 10 %}
+                <div class="text-center mt-4">
+                    <button class="btn btn-outline-primary" id="loadMoreBtn">
+                        <i class="fas fa-chevron-down me-2"></i>Load More Activity
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Job Details Modal -->
+<div class="modal fade" id="jobDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-info-circle me-2"></i>Job Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="jobDetailsContent">
+                <!-- Job details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Filter functionality
+    const statusFilter = document.getElementById('statusFilter');
+    const typeFilter = document.getElementById('typeFilter');
+    const clearFiltersBtn = document.getElementById('clearFilters');
+    const timelineItems = document.querySelectorAll('.timeline-item');
+    
+    function applyFilters() {
+        const statusValue = statusFilter.value;
+        const typeValue = typeFilter.value;
+        
+        timelineItems.forEach(item => {
+            const status = item.getAttribute('data-status');
+            const encrypted = item.getAttribute('data-encrypted');
+            
+            let showItem = true;
+            
+            if (statusValue && status !== statusValue) {
+                showItem = false;
+            }
+            
+            if (typeValue === 'encrypted' && encrypted !== 'true') {
+                showItem = false;
+            } else if (typeValue === 'unencrypted' && encrypted !== 'false') {
+                showItem = false;
+            }
+            
+            item.style.display = showItem ? 'block' : 'none';
+        });
+    }
+    
+    statusFilter.addEventListener('change', applyFilters);
+    typeFilter.addEventListener('change', applyFilters);
+    
+    clearFiltersBtn.addEventListener('click', function() {
+        statusFilter.value = '';
+        typeFilter.value = '';
+        timelineItems.forEach(item => {
+            item.style.display = 'block';
+        });
+    });
+    
+    // Job details modal
+    function showJobDetails(jobId) {
+        // In a real app, this would fetch job details from the server
+        const jobDetailsContent = document.getElementById('jobDetailsContent');
+        jobDetailsContent.innerHTML = `
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Loading job details...</p>
+            </div>
+        `;
+        
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('jobDetailsModal'));
+        modal.show();
+        
+        // Simulate loading job details
+        setTimeout(() => {
+            jobDetailsContent.innerHTML = `
+                <div class="job-details">
+                    <h6>Job Information</h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <strong>Job ID:</strong> ${jobId}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Status:</strong> <span class="badge bg-success">Completed</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Created:</strong> ${new Date().toLocaleString()}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>File Size:</strong> 2.5 MB
+                        </div>
+                    </div>
+                    
+                    <h6>Security Details</h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <strong>Encryption:</strong> <span class="badge bg-warning">AES-256</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Password Protected:</strong> Yes
+                        </div>
+                    </div>
+                    
+                    <h6>Technical Details</h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <strong>Algorithm:</strong> LSB Steganography
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Security Score:</strong> 95%
+                        </div>
+                    </div>
+                </div>
+            `;
+        }, 1000);
+    }
+    
+    // Make showJobDetails globally available
+    window.showJobDetails = showJobDetails;
+    
+    // Load more functionality
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', function() {
+            this.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Loading...';
+            this.disabled = true;
+            
+            // Simulate loading more items
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-chevron-down me-2"></i>Load More Activity';
+                this.disabled = false;
+                CyberCloak.showNotification('No more activities to load', 'info');
+            }, 1500);
+        });
+    }
+    
+    // Add animation to timeline items
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, index * 100);
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    timelineItems.forEach(item => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+        item.style.transition = 'all 0.5s ease';
+        observer.observe(item);
+    });
+});
+</script>
+{% endblock %}

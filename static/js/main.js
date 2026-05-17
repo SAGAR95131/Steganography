@@ -1,5 +1,26 @@
 // CyberCloak - Main JavaScript with God-like Animations
 
+// Simple Theme Management
+function initializeTheme() {
+    // Load saved theme
+    const savedTheme = localStorage.getItem('cybercloak-theme') || 'default';
+    applyTheme(savedTheme);
+
+    // Handle theme button clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('theme-btn')) {
+            e.preventDefault();
+            const theme = e.target.getAttribute('data-theme');
+            applyTheme(theme);
+            localStorage.setItem('cybercloak-theme', theme);
+        }
+    });
+}
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize all systems
     initializeTheme();
@@ -9,135 +30,13 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeScrollAnimations();
     initializeParticles();
     initializeCounters();
-    
+
     // Add loading screen fade out
     setTimeout(() => {
         document.body.classList.add('loaded');
     }, 500);
 });
 
-// Theme Management System
-function initializeTheme() {
-    const themeSelector = createThemeSelector();
-    const savedTheme = localStorage.getItem('cybercloak-theme') || 'default';
-    applyTheme(savedTheme);
-    updateThemeSelector(savedTheme);
-}
-
-function createThemeSelector() {
-    const existing = document.querySelector('.theme-selector');
-    if (existing) return existing;
-    
-    const selector = document.createElement('div');
-    selector.className = 'theme-selector';
-    selector.innerHTML = `
-        <div class="theme-toggle">
-            <div class="theme-icon">🎨</div>
-            <div class="theme-dropdown">
-                <div class="theme-option" data-theme="default">
-                    <div class="theme-preview default"></div>
-                    <span>Default</span>
-                </div>
-                <div class="theme-option" data-theme="cyberpunk">
-                    <div class="theme-preview cyberpunk"></div>
-                    <span>Cyberpunk</span>
-                </div>
-                <div class="theme-option" data-theme="ocean">
-                    <div class="theme-preview ocean"></div>
-                    <span>Ocean</span>
-                </div>
-                <div class="theme-option" data-theme="sunset">
-                    <div class="theme-preview sunset"></div>
-                    <span>Sunset</span>
-                </div>
-                <div class="theme-option" data-theme="neon">
-                    <div class="theme-preview neon"></div>
-                    <span>Neon</span>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(selector);
-    
-    // Add event listeners
-    selector.querySelector('.theme-icon').addEventListener('click', () => {
-        selector.classList.toggle('active');
-    });
-    
-    selector.querySelectorAll('.theme-option').forEach(option => {
-        option.addEventListener('click', (e) => {
-            const theme = e.currentTarget.dataset.theme;
-            applyTheme(theme);
-            localStorage.setItem('cybercloak-theme', theme);
-            selector.classList.remove('active');
-            updateThemeSelector(theme);
-        });
-    });
-    
-    // Close on click outside
-    document.addEventListener('click', (e) => {
-        if (!selector.contains(e.target)) {
-            selector.classList.remove('active');
-        }
-    });
-    
-    return selector;
-}
-
-function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    
-    // Update CSS variables based on theme
-    const root = document.documentElement;
-    const themes = {
-        default: {
-            '--primary-gradient': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            '--secondary-gradient': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-            '--bg-dark': '#0c0c0c',
-            '--shadow-neon': '0 0 30px rgba(102, 126, 234, 0.3)'
-        },
-        cyberpunk: {
-            '--primary-gradient': 'linear-gradient(135deg, #ff0080 0%, #8000ff 100%)',
-            '--secondary-gradient': 'linear-gradient(135deg, #00ffff 0%, #0080ff 100%)',
-            '--bg-dark': '#0a0a0a',
-            '--shadow-neon': '0 0 30px rgba(255, 0, 128, 0.5)'
-        },
-        ocean: {
-            '--primary-gradient': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-            '--secondary-gradient': 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-            '--bg-dark': '#0d1421',
-            '--shadow-neon': '0 0 30px rgba(79, 172, 254, 0.4)'
-        },
-        sunset: {
-            '--primary-gradient': 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-            '--secondary-gradient': 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
-            '--bg-dark': '#1a0e0a',
-            '--shadow-neon': '0 0 30px rgba(250, 112, 154, 0.4)'
-        },
-        neon: {
-            '--primary-gradient': 'linear-gradient(135deg, #00ff41 0%, #00d4ff 100%)',
-            '--secondary-gradient': 'linear-gradient(135deg, #ff006e 0%, #8338ec 100%)',
-            '--bg-dark': '#050505',
-            '--shadow-neon': '0 0 30px rgba(0, 255, 65, 0.5)'
-        }
-    };
-    
-    if (themes[theme]) {
-        Object.entries(themes[theme]).forEach(([property, value]) => {
-            root.style.setProperty(property, value);
-        });
-    }
-}
-
-function updateThemeSelector(activeTheme) {
-    const selector = document.querySelector('.theme-selector');
-    if (selector) {
-        selector.querySelectorAll('.theme-option').forEach(option => {
-            option.classList.toggle('active', option.dataset.theme === activeTheme);
-        });
-    }
-}
 
 // Scroll Animations
 function initializeScrollAnimations() {

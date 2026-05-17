@@ -1,0 +1,488 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics Dashboard - CyberCloak{% endblock %}
+
+{% block content %}
+<div class="analytics-container">
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="analytics-header">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="analytics-title">
+                        <i class="fas fa-chart-line me-3"></i>Analytics Dashboard
+                    </h1>
+                    <p class="analytics-subtitle">Real-time insights and performance metrics</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="analytics-controls">
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-outline-primary active" data-period="24h">24H</button>
+                            <button class="btn btn-outline-primary" data-period="7d">7D</button>
+                            <button class="btn btn-outline-primary" data-period="30d">30D</button>
+                            <button class="btn btn-outline-primary" data-period="1y">1Y</button>
+                        </div>
+                        <button class="btn btn-primary ms-3" id="refreshData">
+                            <i class="fas fa-sync-alt me-2"></i>Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="row g-4 mb-4">
+            <div class="col-xl-3 col-md-6">
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3 class="metric-value" id="totalUsers">1,247</h3>
+                        <p class="metric-label">Total Users</p>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up me-1"></i>+12.5%
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-file-image"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3 class="metric-value" id="totalImages">39,247</h3>
+                        <p class="metric-label">Images Processed</p>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up me-1"></i>+8.3%
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3 class="metric-value" id="securityScore">98.7%</h3>
+                        <p class="metric-label">Security Score</p>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up me-1"></i>+2.1%
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3 class="metric-value" id="avgProcessTime">1.2s</h3>
+                        <p class="metric-label">Avg Process Time</p>
+                        <div class="metric-change negative">
+                            <i class="fas fa-arrow-down me-1"></i>-15.3%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row g-4 mb-4">
+            <div class="col-xl-8">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h5 class="chart-title">Processing Activity</h5>
+                        <div class="chart-controls">
+                            <select class="form-select" id="chartType">
+                                <option value="line">Line Chart</option>
+                                <option value="bar">Bar Chart</option>
+                                <option value="area">Area Chart</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="activityChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-4">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h5 class="chart-title">File Types Distribution</h5>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="fileTypesChart" width="300" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Charts -->
+        <div class="row g-4 mb-4">
+            <div class="col-xl-6">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h5 class="chart-title">Geographic Distribution</h5>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="geoChart" width="400" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-6">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h5 class="chart-title">Security Incidents</h5>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="securityChart" width="400" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real-time Activity Feed -->
+        <div class="row g-4">
+            <div class="col-xl-8">
+                <div class="activity-feed-card">
+                    <div class="feed-header">
+                        <h5 class="feed-title">Real-time Activity Feed</h5>
+                        <div class="feed-status">
+                            <span class="status-dot"></span>
+                            <span class="status-text">Live</span>
+                        </div>
+                    </div>
+                    <div class="feed-content" id="activityFeed">
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-text">New user registered: <strong>john_doe</strong></p>
+                                <span class="activity-time">2 minutes ago</span>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-file-image"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-text">Image encrypted: <strong>secret_document.png</strong></p>
+                                <span class="activity-time">5 minutes ago</span>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-text">Security scan completed: <strong>All systems secure</strong></p>
+                                <span class="activity-time">8 minutes ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-4">
+                <div class="system-status-card">
+                    <div class="status-header">
+                        <h5 class="status-title">System Status</h5>
+                    </div>
+                    <div class="status-content">
+                        <div class="status-item">
+                            <div class="status-info">
+                                <i class="fas fa-server text-success me-2"></i>
+                                <span>API Server</span>
+                            </div>
+                            <div class="status-indicator online">Online</div>
+                        </div>
+                        
+                        <div class="status-item">
+                            <div class="status-info">
+                                <i class="fas fa-database text-success me-2"></i>
+                                <span>Database</span>
+                            </div>
+                            <div class="status-indicator online">Online</div>
+                        </div>
+                        
+                        <div class="status-item">
+                            <div class="status-info">
+                                <i class="fas fa-envelope text-success me-2"></i>
+                                <span>Email Service</span>
+                            </div>
+                            <div class="status-indicator online">Online</div>
+                        </div>
+                        
+                        <div class="status-item">
+                            <div class="status-info">
+                                <i class="fas fa-shield-alt text-warning me-2"></i>
+                                <span>Security Scanner</span>
+                            </div>
+                            <div class="status-indicator warning">Scanning</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize charts
+    initActivityChart();
+    initFileTypesChart();
+    initGeoChart();
+    initSecurityChart();
+    
+    // Real-time updates
+    startRealTimeUpdates();
+    
+    // Period selector
+    document.querySelectorAll('[data-period]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('[data-period]').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            updateCharts(this.dataset.period);
+        });
+    });
+    
+    // Refresh button
+    document.getElementById('refreshData').addEventListener('click', function() {
+        this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Refreshing...';
+        setTimeout(() => {
+            this.innerHTML = '<i class="fas fa-sync-alt me-2"></i>Refresh';
+            updateAllCharts();
+        }, 2000);
+    });
+});
+
+function initActivityChart() {
+    const ctx = document.getElementById('activityChart').getContext('2d');
+    window.activityChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+            datasets: [{
+                label: 'Images Processed',
+                data: [12, 19, 3, 5, 2, 3, 8],
+                borderColor: '#667eea',
+                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                tension: 0.4,
+                fill: true
+            }, {
+                label: 'Users Active',
+                data: [8, 15, 2, 4, 1, 2, 6],
+                borderColor: '#f093fb',
+                backgroundColor: 'rgba(240, 147, 251, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#ffffff'
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#ffffff' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                y: {
+                    ticks: { color: '#ffffff' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            }
+        }
+    });
+}
+
+function initFileTypesChart() {
+    const ctx = document.getElementById('fileTypesChart').getContext('2d');
+    window.fileTypesChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['PNG', 'JPEG', 'GIF', 'BMP', 'WEBP'],
+            datasets: [{
+                data: [35, 40, 15, 7, 3],
+                backgroundColor: [
+                    '#667eea',
+                    '#f093fb',
+                    '#4facfe',
+                    '#43e97b',
+                    '#fa709a'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#ffffff',
+                        padding: 20
+                    }
+                }
+            }
+        }
+    });
+}
+
+function initGeoChart() {
+    const ctx = document.getElementById('geoChart').getContext('2d');
+    window.geoChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['US', 'UK', 'DE', 'FR', 'CA', 'AU'],
+            datasets: [{
+                label: 'Users',
+                data: [45, 23, 18, 12, 8, 6],
+                backgroundColor: '#667eea'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { color: '#ffffff' }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#ffffff' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                y: {
+                    ticks: { color: '#ffffff' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            }
+        }
+    });
+}
+
+function initSecurityChart() {
+    const ctx = document.getElementById('securityChart').getContext('2d');
+    window.securityChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                label: 'Security Incidents',
+                data: [2, 1, 0, 1, 3, 0, 1],
+                borderColor: '#f5576c',
+                backgroundColor: 'rgba(245, 87, 108, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { color: '#ffffff' }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#ffffff' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                y: {
+                    ticks: { color: '#ffffff' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            }
+        }
+    });
+}
+
+function startRealTimeUpdates() {
+    // Simulate real-time data updates
+    setInterval(() => {
+        updateMetrics();
+        addActivityItem();
+    }, 5000);
+}
+
+function updateMetrics() {
+    // Animate metric values
+    const metrics = ['totalUsers', 'totalImages', 'securityScore', 'avgProcessTime'];
+    metrics.forEach(metric => {
+        const element = document.getElementById(metric);
+        const currentValue = parseInt(element.textContent.replace(/[^\d]/g, ''));
+        const newValue = currentValue + Math.floor(Math.random() * 10);
+        element.textContent = newValue.toLocaleString() + (metric === 'securityScore' ? '%' : '');
+    });
+}
+
+function addActivityItem() {
+    const activities = [
+        { icon: 'fas fa-user-plus', text: 'New user registered', time: 'just now' },
+        { icon: 'fas fa-file-image', text: 'Image processed successfully', time: 'just now' },
+        { icon: 'fas fa-shield-alt', text: 'Security scan completed', time: 'just now' },
+        { icon: 'fas fa-download', text: 'File downloaded', time: 'just now' }
+    ];
+    
+    const activity = activities[Math.floor(Math.random() * activities.length)];
+    const feed = document.getElementById('activityFeed');
+    
+    const activityItem = document.createElement('div');
+    activityItem.className = 'activity-item';
+    activityItem.innerHTML = `
+        <div class="activity-icon">
+            <i class="${activity.icon}"></i>
+        </div>
+        <div class="activity-content">
+            <p class="activity-text">${activity.text}</p>
+            <span class="activity-time">${activity.time}</span>
+        </div>
+    `;
+    
+    feed.insertBefore(activityItem, feed.firstChild);
+    
+    // Remove old items
+    const items = feed.querySelectorAll('.activity-item');
+    if (items.length > 10) {
+        items[items.length - 1].remove();
+    }
+}
+
+function updateCharts(period) {
+    // Update chart data based on selected period
+    console.log('Updating charts for period:', period);
+    // Implementation would fetch new data based on period
+}
+
+function updateAllCharts() {
+    // Refresh all charts with new data
+    console.log('Refreshing all charts');
+    // Implementation would refresh all chart data
+}
+</script>
+{% endblock %}

@@ -1,0 +1,20 @@
+{
+  "name": "cybercloak-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Capacitor wrapper for CyberCloak web app",
+  "scripts": {
+    "cap:add:android": "npx cap add android",
+    "cap:copy": "npx cap copy",
+    "cap:sync": "npx cap sync",
+    "cap:open:android": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.1.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.0",
+    "typescript": "^5.6.2"
+  }
+}
+

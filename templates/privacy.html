@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy - CyberCloak{% endblock %}
+
+{% block content %}
+<div class="legal-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="legal-header text-center mb-5">
+                    <h1>Privacy Policy</h1>
+                    <p class="text-muted">Last updated: {{ moment().format('MMMM Do, YYYY') }}</p>
+                </div>
+                
+                <div class="legal-content floating-card">
+                    <h2>1. Information We Collect</h2>
+                    <p>CyberCloak is designed with privacy in mind. We collect minimal information necessary to provide our services:</p>
+                    <ul>
+                        <li><strong>Account Information:</strong> Email address, username, and name (when you create an account)</li>
+                        <li><strong>Usage Data:</strong> Basic analytics about how you use our service</li>
+                        <li><strong>Technical Data:</strong> IP address, browser type, and device information</li>
+                    </ul>
+                    
+                    <h2>2. What We Don't Collect</h2>
+                    <p>We do NOT collect or store:</p>
+                    <ul>
+                        <li>Your secret messages or passwords</li>
+                        <li>Images you upload (processed locally)</li>
+                        <li>Encryption keys or decryption data</li>
+                        <li>Personal content or sensitive information</li>
+                    </ul>
+                    
+                    <h2>3. How We Use Your Information</h2>
+                    <p>We use the information we collect to:</p>
+                    <ul>
+                        <li>Provide and maintain our service</li>
+                        <li>Improve user experience</li>
+                        <li>Send important service updates</li>
+                        <li>Ensure security and prevent abuse</li>
+                    </ul>
+                    
+                    <h2>4. Data Security</h2>
+                    <p>We implement industry-standard security measures to protect your information:</p>
+                    <ul>
+                        <li>All data is encrypted in transit and at rest</li>
+                        <li>We use secure servers and databases</li>
+                        <li>Regular security audits and updates</li>
+                        <li>Limited access to personal data</li>
+                    </ul>
+                    
+                    <h2>5. Your Rights</h2>
+                    <p>You have the right to:</p>
+                    <ul>
+                        <li>Access your personal data</li>
+                        <li>Correct inaccurate information</li>
+                        <li>Delete your account and data</li>
+                        <li>Export your data</li>
+                        <li>Opt-out of communications</li>
+                    </ul>
+                    
+                    <h2>6. Third-Party Services</h2>
+                    <p>We may use third-party services for:</p>
+                    <ul>
+                        <li>Analytics (Google Analytics)</li>
+                        <li>Email services (SendGrid)</li>
+                        <li>Cloud hosting (AWS, Google Cloud)</li>
+                    </ul>
+                    
+                    <h2>7. Cookies</h2>
+                    <p>We use cookies to:</p>
+                    <ul>
+                        <li>Remember your preferences</li>
+                        <li>Maintain your login session</li>
+                        <li>Analyze website usage</li>
+                    </ul>
+                    
+                    <h2>8. Contact Us</h2>
+                    <p>If you have questions about this Privacy Policy, contact us at:</p>
+                    <ul>
+                        <li>Email: privacy@cybercloak.com</li>
+                        <li>Address: [Your Business Address]</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add smooth scrolling for internal links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

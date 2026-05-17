@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Account Settings - CyberCloak{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-cog me-3"></i>
+                        Account Settings
+                    </h2>
+                    <p class="card-subtitle">Customize your CyberCloak experience and preferences</p>
+                </div>
+
+                <div class="card-body">
+                    <div class="settings-grid">
+                        <!-- Profile Settings -->
+                        <div class="settings-card">
+                            <div class="card-header">
+                                <h5>Profile Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="setting-item">
+                                    <label class="setting-label">Display Name</label>
+                                    <input type="text" class="form-control" value="{{ current_user.name }}" id="displayName">
+                                </div>
+                                <div class="setting-item">
+                                    <label class="setting-label">Email Address</label>
+                                    <input type="email" class="form-control" value="{{ current_user.email }}" id="emailAddress">
+                                </div>
+                                <div class="setting-item">
+                                    <label class="setting-label">Profile Picture</label>
+                                    <div class="file-upload">
+                                        <input type="file" id="profilePicture" accept="image/*" style="display: none;">
+                                        <button class="btn btn-outline-secondary" onclick="document.getElementById('profilePicture').click()">
+                                            <i class="fas fa-upload me-2"></i>
+                                            Choose Image
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Security Settings -->
+                        <div class="settings-card">
+                            <div class="card-header">
+                                <h5>Security Preferences</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Auto-lock after inactivity</label>
+                                        <small>Automatically lock the app after period of inactivity</small>
+                                    </div>
+                                    <select class="form-control" id="autoLockTime">
+                                        <option value="5">5 minutes</option>
+                                        <option value="15" selected>15 minutes</option>
+                                        <option value="30">30 minutes</option>
+                                        <option value="60">1 hour</option>
+                                        <option value="never">Never</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Default encryption strength</label>
+                                        <small>Set the default encryption algorithm for new messages</small>
+                                    </div>
+                                    <select class="form-control" id="defaultEncryption">
+                                        <option value="aes256" selected>AES-256 (Recommended)</option>
+                                        <option value="aes128">AES-128</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Password complexity</label>
+                                        <small>Require strong passwords for encryption</small>
+                                    </div>
+                                    <div class="toggle-switch">
+                                        <input type="checkbox" id="passwordComplexity" checked>
+                                        <label for="passwordComplexity" class="toggle-slider"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Appearance Settings -->
+                        <div class="settings-card">
+                            <div class="card-header">
+                                <h5>Appearance & Theme</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Theme</label>
+                                        <small>Choose your preferred color scheme</small>
+                                    </div>
+                                    <select class="form-control" id="themeSelector">
+                                        <option value="dark" selected>Dark Theme</option>
+                                        <option value="light">Light Theme</option>
+                                        <option value="auto">Auto (System)</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Sidebar collapsed by default</label>
+                                        <small>Keep the sidebar collapsed when opening the app</small>
+                                    </div>
+                                    <div class="toggle-switch">
+                                        <input type="checkbox" id="sidebarCollapsed">
+                                        <label for="sidebarCollapsed" class="toggle-slider"></label>
+                                    </div>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Show animations</label>
+                                        <small>Enable smooth transitions and animations</small>
+                                    </div>
+                                    <div class="toggle-switch">
+                                        <input type="checkbox" id="showAnimations" checked>
+                                        <label for="showAnimations" class="toggle-slider"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notification Settings -->
+                        <div class="settings-card">
+                            <div class="card-header">
+                                <h5>Notifications</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Email notifications</label>
+                                        <small>Receive email updates about your activities</small>
+                                    </div>
+                                    <div class="toggle-switch">
+                                        <input type="checkbox" id="emailNotifications" checked>
+                                        <label for="emailNotifications" class="toggle-slider"></label>
+                                    </div>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Push notifications</label>
+                                        <small>Get notified about important events</small>
+                                    </div>
+                                    <div class="toggle-switch">
+                                        <input type="checkbox" id="pushNotifications" checked>
+                                        <label for="pushNotifications" class="toggle-slider"></label>
+                                    </div>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label class="setting-label">Weekly summary</label>
+                                        <small>Receive a weekly report of your activities</small>
+                                    </div>
+                                    <div class="toggle-switch">
+                                        <input type="checkbox" id="weeklySummary">
+                                        <label for="weeklySummary" class="toggle-slider"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Save Settings -->
+                    <div class="settings-actions">
+                        <button class="btn btn-primary btn-lg" onclick="saveSettings()">
+                            <i class="fas fa-save me-2"></i>
+                            Save All Settings
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="resetSettings()">
+                            <i class="fas fa-undo me-2"></i>
+                            Reset to Defaults
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

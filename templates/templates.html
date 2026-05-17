@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}Message Templates - CyberCloak{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-file-alt me-3"></i>
+                        Message Templates
+                    </h2>
+                    <p class="card-subtitle">Pre-built message templates for common scenarios</p>
+                </div>
+
+                <div class="card-body">
+                    <!-- Template Categories -->
+                    <div class="template-categories">
+                        <button class="category-btn active" data-category="all">
+                            <i class="fas fa-th"></i>
+                            All Templates
+                        </button>
+                        <button class="category-btn" data-category="personal">
+                            <i class="fas fa-heart"></i>
+                            Personal
+                        </button>
+                        <button class="category-btn" data-category="business">
+                            <i class="fas fa-briefcase"></i>
+                            Business
+                        </button>
+                        <button class="category-btn" data-category="celebration">
+                            <i class="fas fa-birthday-cake"></i>
+                            Celebrations
+                        </button>
+                        <button class="category-btn" data-category="mysterious">
+                            <i class="fas fa-mask"></i>
+                            Mysterious
+                        </button>
+                    </div>
+
+                    <!-- Templates Grid -->
+                    <div class="templates-grid">
+                        <div class="template-card" data-category="personal">
+                            <div class="template-header">
+                                <h5>Love Letter</h5>
+                                <span class="template-badge personal">Personal</span>
+                            </div>
+                            <p class="template-preview">My dearest [Name], Every moment with you feels like...</p>
+                            <div class="template-actions">
+                                <button class="btn btn-sm btn-outline-primary" onclick="useTemplate('love-letter')">
+                                    <i class="fas fa-plus"></i>
+                                    Use Template
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="previewTemplate('love-letter')">
+                                    <i class="fas fa-eye"></i>
+                                    Preview
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="template-card" data-category="business">
+                            <div class="template-header">
+                                <h5>Business Proposal</h5>
+                                <span class="template-badge business">Business</span>
+                            </div>
+                            <p class="template-preview">Dear [Client], I am pleased to present our proposal for...</p>
+                            <div class="template-actions">
+                                <button class="btn btn-sm btn-outline-primary" onclick="useTemplate('business-proposal')">
+                                    <i class="fas fa-plus"></i>
+                                    Use Template
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="previewTemplate('business-proposal')">
+                                    <i class="fas fa-eye"></i>
+                                    Preview
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="template-card" data-category="celebration">
+                            <div class="template-header">
+                                <h5>Birthday Message</h5>
+                                <span class="template-badge celebration">Celebration</span>
+                            </div>
+                            <p class="template-preview">Happy Birthday! Another year of wonderful memories...</p>
+                            <div class="template-actions">
+                                <button class="btn btn-sm btn-outline-primary" onclick="useTemplate('birthday-message')">
+                                    <i class="fas fa-plus"></i>
+                                    Use Template
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="previewTemplate('birthday-message')">
+                                    <i class="fas fa-eye"></i>
+                                    Preview
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="template-card" data-category="mysterious">
+                            <div class="template-header">
+                                <h5>Secret Code</h5>
+                                <span class="template-badge mysterious">Mysterious</span>
+                            </div>
+                            <p class="template-preview">The eagle has landed. Mission accomplished...</p>
+                            <div class="template-actions">
+                                <button class="btn btn-sm btn-outline-primary" onclick="useTemplate('secret-code')">
+                                    <i class="fas fa-plus"></i>
+                                    Use Template
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="previewTemplate('secret-code')">
+                                    <i class="fas fa-eye"></i>
+                                    Preview
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="template-card" data-category="personal">
+                            <div class="template-header">
+                                <h5>Thank You Note</h5>
+                                <span class="template-badge personal">Personal</span>
+                            </div>
+                            <p class="template-preview">I wanted to express my heartfelt gratitude for...</p>
+                            <div class="template-actions">
+                                <button class="btn btn-sm btn-outline-primary" onclick="useTemplate('thank-you-note')">
+                                    <i class="fas fa-plus"></i>
+                                    Use Template
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="previewTemplate('thank-you-note')">
+                                    <i class="fas fa-eye"></i>
+                                    Preview
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="template-card" data-category="business">
+                            <div class="template-header">
+                                <h5>Meeting Reminder</h5>
+                                <span class="template-badge business">Business</span>
+                            </div>
+                            <p class="template-preview">This is a reminder of our upcoming meeting scheduled for...</p>
+                            <div class="template-actions">
+                                <button class="btn btn-sm btn-outline-primary" onclick="useTemplate('meeting-reminder')">
+                                    <i class="fas fa-plus"></i>
+                                    Use Template
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="previewTemplate('meeting-reminder')">
+                                    <i class="fas fa-eye"></i>
+                                    Preview
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Template Creator -->
+                    <div class="custom-template-creator">
+                        <div class="creator-header">
+                            <h5>Create Custom Template</h5>
+                            <button class="btn btn-primary" onclick="showTemplateCreator()">
+                                <i class="fas fa-plus me-2"></i>
+                                New Template
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

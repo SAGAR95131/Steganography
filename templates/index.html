@@ -12,52 +12,142 @@
                     <h1 class="hero-title mb-4">
                         <span class="gradient-text">CyberCloak</span>
                     </h1>
-                    <h2 class="hero-subtitle mb-4">Secure Image Encryption Platform</h2>
+                    <h2 class="hero-subtitle mb-4">Hide Secrets in Plain Sight</h2>
                     <p class="hero-description mb-5">
-                        Hide your secrets within images using military-grade encryption and advanced steganography techniques. 
-                        Complete privacy, unbreakable security.
+                        Transform ordinary images into secure vaults using advanced steganography and AES-256 encryption.
+                        Your secrets remain invisible to everyone except you.
                     </p>
                     
                     <div class="hero-buttons mb-5">
                         {% if current_user.is_authenticated %}
-                            <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg glow-btn me-3">
-                                🚀 Go to Dashboard
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg glow-btn">
+                                🚀 Access Dashboard
                             </a>
                         {% else %}
-                            <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg glow-btn me-3">
-                                🚀 Get Started
+                            <a href="#features" class="btn btn-primary btn-lg glow-btn me-3">
+                                🚀 Explore Features
+                            </a>
+                            <a href="{{ url_for('signup') }}" class="btn btn-outline-light btn-lg">
+                                📝 Sign Up Free
                             </a>
                         {% endif %}
-                        
-                        <a href="#features" class="btn btn-outline-light btn-lg">
-                            📚 Learn More
-                        </a>
                     </div>
                     
-                    <!-- Stats Counter -->
-                    <div class="stats-counter row g-4">
-                        <div class="col-6 col-md-3">
-                            <div class="stat-item">
-                                <div class="stat-number" data-count="780">0</div>
-                                <div class="stat-label">Active Users</div>
+                    <!-- Enhanced Stats Counter -->
+                    <div class="stats-counter">
+                        <div class="stats-header">
+                            <h3 class="stats-title">Platform Statistics</h3>
+                            <p class="stats-subtitle">Real-time metrics from our secure encryption platform</p>
+                        </div>
+
+                        <div class="row g-4 justify-content-center">
+                            <!-- Active Users -->
+                            <div class="col-6 col-md-3" style="min-width: 280px;">
+                                <div class="stat-item enhanced-stat">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-users" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" data-count="1250">0</div>
+                                        <div class="stat-label">Active Users</div>
+                                        <div class="stat-description">Trusted users worldwide</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Images Encrypted -->
+                            <div class="col-6 col-md-3" style="min-width: 280px;">
+                                <div class="stat-item enhanced-stat">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-image" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" data-count="85000">0</div>
+                                        <div class="stat-label">Images Encrypted</div>
+                                        <div class="stat-description">Secure operations completed</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Uptime -->
+                            <div class="col-6 col-md-3" style="min-width: 280px;">
+                                <div class="stat-item enhanced-stat">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-server" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" data-count="99.9">0</div>
+                                        <div class="stat-unit">%</div>
+                                        <div class="stat-label">Uptime</div>
+                                        <div class="stat-description">Service reliability</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Encryption Strength -->
+                            <div class="col-6 col-md-3" style="min-width: 280px;">
+                                <div class="stat-item enhanced-stat">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" data-count="256">0</div>
+                                        <div class="stat-unit">-Bit</div>
+                                        <div class="stat-label">AES Encryption</div>
+                                        <div class="stat-description">Military-grade security</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-6 col-md-3">
-                            <div class="stat-item">
-                                <div class="stat-number" data-count="39000">0</div>
-                                <div class="stat-label">Images Encrypted</div>
+
+                        <!-- Additional Stats Row -->
+                        <div class="row g-4 mt-3">
+                            <div class="col-6 col-md-3">
+                                <div class="stat-item mini-stat">
+                                    <div class="mini-stat-icon">
+                                        <i class="fas fa-clock" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="mini-stat-content">
+                                        <div class="mini-stat-number"><2s</div>
+                                        <div class="mini-stat-label">Avg. Processing</div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="stat-item">
-                                <div class="stat-number" data-count="99.9">0</div>
-                                <div class="stat-label">% Uptime</div>
+
+                            <div class="col-6 col-md-3">
+                                <div class="stat-item mini-stat">
+                                    <div class="mini-stat-icon">
+                                        <i class="fas fa-globe" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="mini-stat-content">
+                                        <div class="mini-stat-number">50+</div>
+                                        <div class="mini-stat-label">Countries</div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="stat-item">
-                                <div class="stat-number" data-count="256">0</div>
-                                <div class="stat-label">Bit Encryption</div>
+
+                            <div class="col-6 col-md-3">
+                                <div class="stat-item mini-stat">
+                                    <div class="mini-stat-icon">
+                                        <i class="fas fa-star" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="mini-stat-content">
+                                        <div class="mini-stat-number">4.9</div>
+                                        <div class="mini-stat-label">User Rating</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-6 col-md-3">
+                                <div class="stat-item mini-stat">
+                                    <div class="mini-stat-icon">
+                                        <i class="fas fa-lock" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="mini-stat-content">
+                                        <div class="mini-stat-number">100%</div>
+                                        <div class="mini-stat-label">Data Privacy</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -78,7 +168,7 @@
         <div class="row g-4">
             <div class="col-lg-4 col-md-6">
                 <div class="feature-card floating-card">
-                    <div class="feature-icon">🔐</div>
+                    <div class="feature-icon" aria-label="Military-Grade Encryption">🔐</div>
                     <h4>Military-Grade Encryption</h4>
                     <p>AES-256 encryption with PBKDF2 key derivation ensures your data remains secure against any attack.</p>
                 </div>
@@ -86,7 +176,7 @@
             
             <div class="col-lg-4 col-md-6">
                 <div class="feature-card floating-card">
-                    <div class="feature-icon">👁️‍🗨️</div>
+                    <div class="feature-icon" aria-label="Advanced Steganography">👁️‍🗨️</div>
                     <h4>Advanced Steganography</h4>
                     <p>Hide encrypted data within images using LSB techniques that are virtually undetectable.</p>
                 </div>
@@ -94,7 +184,7 @@
             
             <div class="col-lg-4 col-md-6">
                 <div class="feature-card floating-card">
-                    <div class="feature-icon">🚀</div>
+                    <div class="feature-icon" aria-label="Fast Processing">🚀</div>
                     <h4>Fast Processing</h4>
                     <p>Lightning-fast encryption and decryption with real-time progress tracking and optimization.</p>
                 </div>
@@ -102,7 +192,7 @@
             
             <div class="col-lg-4 col-md-6">
                 <div class="feature-card floating-card">
-                    <div class="feature-icon">🌐</div>
+                    <div class="feature-icon" aria-label="Cross-Platform">🌐</div>
                     <h4>Cross-Platform</h4>
                     <p>Works seamlessly across all devices and browsers with responsive design and PWA support.</p>
                 </div>
@@ -110,7 +200,7 @@
             
             <div class="col-lg-4 col-md-6">
                 <div class="feature-card floating-card">
-                    <div class="feature-icon">🔄</div>
+                    <div class="feature-icon" aria-label="Batch Processing">🔄</div>
                     <h4>Batch Processing</h4>
                     <p>Process multiple images simultaneously with queue management and progress tracking.</p>
                 </div>
@@ -118,7 +208,7 @@
             
             <div class="col-lg-4 col-md-6">
                 <div class="feature-card floating-card">
-                    <div class="feature-icon">📊</div>
+                    <div class="feature-icon" aria-label="Analytics Dashboard">📊</div>
                     <h4>Analytics Dashboard</h4>
                     <p>Track your encryption history, security scores, and performance metrics in real-time.</p>
                 </div>
@@ -179,69 +269,6 @@
     </div>
 </section>
 
-<!-- CTA Section -->
-<section class="cta-section py-5">
-    <div class="container text-center">
-        <h2 class="mb-4">Ready to Start Encrypting?</h2>
-        <p class="mb-4">Sign in to access our powerful encryption tools</p>
-        {% if not current_user.is_authenticated %}
-            <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg glow-btn">
-                🚀 Sign In Now
-            </a>
-        {% endif %}
-    </div>
-</section>
-
-<!-- Extract & Decrypt Section -->
-<section class="extract-section py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <div class="extract-card floating-card">
-                    <div class="text-center mb-4">
-                        <h3>Extract & Decrypt Message</h3>
-                        <p>Reveal hidden messages from encrypted images</p>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h5>📤 Upload Encrypted Image</h5>
-                            <div class="upload-zone" id="extractUploadZone">
-                                <div class="upload-icon">🔓</div>
-                                <h6>Drop encrypted image here</h6>
-                                <p>Select the image containing hidden message</p>
-                                <input type="file" id="encrypted_image" name="encrypted_image" accept="image/*" style="display: none;">
-                                <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('encrypted_image').click()">
-                                    Choose File
-                                </button>
-                            </div>
-                            
-                            <div class="mb-3 mt-3">
-                                <label for="decrypt_password" class="form-label">Decryption Password (if used)</label>
-                                <input type="password" class="form-control" id="decrypt_password" name="decrypt_password" placeholder="Enter password if encrypted">
-                            </div>
-                            
-                            <button type="button" class="btn btn-primary w-100" onclick="extractMessage()">
-                                🔓 Extract Message
-                            </button>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <h5>📄 Extracted Message</h5>
-                            <div class="result-area" id="extractResult">
-                                <div class="empty-state">
-                                    <div class="empty-icon">📭</div>
-                                    <p>Upload an encrypted image to reveal its hidden message</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
 <!-- Contact Section -->
 <section class="contact-section py-5">
     <div class="container">
@@ -253,7 +280,7 @@
         <div class="row g-5">
             <div class="col-lg-8">
                 <div class="contact-form-card floating-card">
-                    <h4 class="mb-4">📧 Send Message</h4>
+                    <h4 class="mb-4" aria-label="Send Message">📧 Send Message</h4>
                     <form method="POST" action="{{ url_for('contact') }}" id="contactForm">
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -292,34 +319,34 @@
             
             <div class="col-lg-4">
                 <div class="contact-info-card floating-card">
-                    <h4 class="mb-4">💬 Other Ways to Reach Us</h4>
+                    <h4 class="mb-4" aria-label="Other Ways to Reach Us">💬 Other Ways to Reach Us</h4>
                     
                     <div class="contact-item">
-                        <h6>📧 Email</h6>
-                        <p><a href="mailto:rahulkumarpokhriyal1029@gmail.com">rahulkumarpokhriyal1029@gmail.com</a></p>
+                        <h6 aria-label="Email">📧 Email</h6>
+                        <p><a href="mailto:sagarsiddesh14@gmail.com">sagarsiddesh14@gmail.com</a></p>
                     </div>
                     
                     <div class="contact-item">
-                        <h6>👤 Developer</h6>
-                        <p>Rahul Pokhriyal</p>
+                        <h6 aria-label="Developer">👤 Developer</h6>
+                        <p>Sagar S</p>
                     </div>
                     
                     <div class="contact-item">
-                        <h6>📱 Phone</h6>
+                        <h6 aria-label="Phone">📱 Phone</h6>
                         <p><a href="tel:+918920405371">+91 8920405371</a></p>
                     </div>
                     
                     <div class="contact-item">
-                        <h6>⚡ Response Time</h6>
+                        <h6 aria-label="Response Time">⚡ Response Time</h6>
                         <p>Usually within 24 hours</p>
                     </div>
                     
                     <div class="contact-item">
-                        <h6>🌐 Social</h6>
+                        <h6 aria-label="Social">🌐 Social</h6>
                         <div class="social-links">
-                            <a href="#" class="btn btn-outline-primary btn-sm me-2">GitHub</a>
-                            <a href="#" class="btn btn-outline-primary btn-sm me-2">Twitter</a>
-                            <a href="#" class="btn btn-outline-primary btn-sm">Discord</a>
+                            <a href="#" class="btn btn-outline-primary btn-sm me-2" aria-label="GitHub coming soon">GitHub</a>
+                            <a href="#" class="btn btn-outline-primary btn-sm me-2" aria-label="Twitter coming soon">Twitter</a>
+                            <a href="#" class="btn btn-outline-primary btn-sm" aria-label="Discord coming soon">Discord</a>
                         </div>
                     </div>
                 </div>
@@ -331,117 +358,92 @@
 <!-- Final CTA -->
 <section class="final-cta py-5">
     <div class="container text-center">
-        <h2 class="mb-3">Ready to Secure Your Images?</h2>
-        <p class="mb-4">Join thousands of users who trust CyberCloak for their image encryption needs</p>
+        <h2 class="mb-3">Start Protecting Your Secrets Today</h2>
+        <p class="mb-4">Experience the power of invisible encryption with CyberCloak's advanced steganography</p>
         {% if not current_user.is_authenticated %}
-            <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg glow-btn">
-                🚀 Get Started Free
+            <div class="trust-indicators mb-4">
+                <div class="row g-4 justify-content-center">
+                    <div class="col-auto">
+                        <div class="trust-item">
+                            <i class="fas fa-check-circle text-success me-2" aria-hidden="true"></i>
+                            <span>Free to Start</span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="trust-item">
+                            <i class="fas fa-shield-alt text-primary me-2" aria-hidden="true"></i>
+                            <span>Military-Grade Security</span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="trust-item">
+                            <i class="fas fa-users text-info me-2" aria-hidden="true"></i>
+                            <span>1,000+ Users</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cta-buttons">
+                <a href="{{ url_for('signup') }}" class="btn btn-primary btn-lg glow-btn me-3">
+                    🚀 Create Free Account
+                </a>
+                <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg">
+                    🔐 Already Have Account?
+                </a>
+            </div>
+            <p class="mt-3 text-muted">No credit card required • Instant access • 30-day free trial</p>
+        {% else %}
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg glow-btn">
+                🚀 Continue to Dashboard
             </a>
         {% endif %}
     </div>
 </section>
+
+<!-- Footer Spacer -->
+<div class="py-4"></div>
+</main>
 {% endblock %}
 
 {% block scripts %}
 <script>
-// Counter Animation
+// Enhanced Counter Animation
 function animateCounters() {
     const counters = document.querySelectorAll('.stat-number');
-    
+
     counters.forEach(counter => {
         const target = parseFloat(counter.getAttribute('data-count'));
         const increment = target / 100;
         let current = 0;
-        
+
         const timer = setInterval(() => {
             current += increment;
             if (current >= target) {
                 current = target;
                 clearInterval(timer);
             }
-            
-            // Format number
+
+            // Format number with proper display
+            let displayValue;
             if (target >= 1000) {
-                counter.textContent = Math.floor(current).toLocaleString();
+                displayValue = Math.floor(current).toLocaleString();
+            } else if (target % 1 !== 0) {
+                displayValue = current.toFixed(1);
             } else {
-                counter.textContent = current.toFixed(1);
+                displayValue = Math.floor(current);
+            }
+
+            // Update the number part only, preserving any existing content
+            const numberSpan = counter.querySelector('.stat-number-value');
+            if (numberSpan) {
+                numberSpan.textContent = displayValue;
+            } else {
+                counter.textContent = displayValue;
             }
         }, 20);
     });
 }
 
-// Extract message functionality
-async function extractMessage() {
-    const fileInput = document.getElementById('encrypted_image');
-    const passwordInput = document.getElementById('decrypt_password');
-    const resultDiv = document.getElementById('extractResult');
-    
-    if (!fileInput.files[0]) {
-        CyberCloak.showNotification('Please select an image file first', 'error');
-        return;
-    }
-    
-    const formData = new FormData();
-    formData.append('encrypted_image', fileInput.files[0]);
-    formData.append('decrypt_password', passwordInput.value);
-    
-    // Show loading state
-    resultDiv.innerHTML = '<div class="loading-state"><div class="spinner-border text-primary"></div><p>Extracting message...</p></div>';
-    
-    try {
-        const response = await fetch('/api/extract_decrypt', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            resultDiv.innerHTML = `
-                <div class="success-state">
-                    <div class="success-icon">✅</div>
-                    <h6>Message Extracted Successfully!</h6>
-                    <div class="extracted-message">${result.message}</div>
-                    ${result.was_encrypted ? '<small class="text-success">✓ Message was encrypted</small>' : ''}
-                </div>
-            `;
-        } else {
-            resultDiv.innerHTML = `
-                <div class="error-state">
-                    <div class="error-icon">❌</div>
-                    <h6>Extraction Failed</h6>
-                    <p>${result.error || 'No hidden message found'}</p>
-                </div>
-            `;
-        }
-    } catch (error) {
-        resultDiv.innerHTML = `
-            <div class="error-state">
-                <div class="error-icon">❌</div>
-                <h6>Error</h6>
-                <p>Failed to extract message: ${error.message}</p>
-            </div>
-        `;
-    }
-}
-
-// File input handling
-document.getElementById('encrypted_image').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const uploadZone = document.getElementById('extractUploadZone');
-        uploadZone.innerHTML = `
-            <div class="file-selected">
-                <div class="file-icon">📄</div>
-                <h6>${file.name}</h6>
-                <p>Size: ${CyberCloak.formatFileSize(file.size)}</p>
-                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('encrypted_image').click()">
-                    Change File
-                </button>
-            </div>
-        `;
-    }
-});
 
 // Initialize animations when page loads
 document.addEventListener('DOMContentLoaded', function() {

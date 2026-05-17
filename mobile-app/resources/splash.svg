@@ -1,0 +1,19 @@
+<svg width="1280" height="1920" viewBox="0 0 1280 1920" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f0f23"/>
+      <stop offset="100%" stop-color="#16213e"/>
+    </linearGradient>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#667eea"/>
+      <stop offset="100%" stop-color="#764ba2"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="1920" fill="url(#bg)"/>
+  <circle cx="1040" cy="340" r="220" fill="url(#g)" opacity="0.15"/>
+  <circle cx="260" cy="1560" r="260" fill="url(#g)" opacity="0.12"/>
+  <rect x="240" y="790" width="800" height="340" rx="40" fill="rgba(255,255,255,0.06)"/>
+  <text x="50%" y="915" text-anchor="middle" font-family="Segoe UI, Roboto, Arial, sans-serif" font-weight="800" font-size="180" fill="#ffffff">CyberCloak</text>
+  <text x="50%" y="1010" text-anchor="middle" font-family="Segoe UI, Roboto, Arial, sans-serif" font-weight="500" font-size="44" fill="#cfd8ff">Secure Steganography</text>
+</svg>
+

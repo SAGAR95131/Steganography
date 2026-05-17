@@ -1,0 +1,560 @@
+{% extends "base.html" %}
+
+{% block title %}Message Sent - CyberCloak{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8 col-xl-6">
+            <!-- Success Card -->
+            <div class="success-card shadow-lg">
+                <!-- Success Animation -->
+                <div class="text-center mb-4">
+                    <div class="success-icon-wrapper">
+                        <div class="success-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Success Header -->
+                <div class="text-center mb-4">
+                    <h1 class="success-title">Message Sent Successfully!</h1>
+                    <p class="success-subtitle">Thank you for contacting CyberCloak</p>
+                </div>
+
+                <!-- Developer Contact Message -->
+                <div class="developer-message mb-4">
+                    <div class="alert alert-success border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-user-tie text-success me-3 fs-4"></i>
+                            <div>
+                                <h5 class="alert-heading mb-1">Developer Will Contact You Soon</h5>
+                                <p class="mb-0">Sagar S has been notified and will respond within 24 hours</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="contact-info-section mb-4">
+                    <h4 class="section-title mb-3">Contact Information</h4>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="info-card">
+                                <div class="info-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <h6>Email</h6>
+                                <p>sagarsiddesh14@gmail.com</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-card">
+                                <div class="info-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <h6>Phone</h6>
+                                <p>+91 8920405371</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-card">
+                                <div class="info-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <h6>Response Time</h6>
+                                <p>Within 24 hours</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Process Steps -->
+                <div class="process-section mb-4">
+                    <h4 class="section-title mb-4 text-center">What Happens Next?</h4>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker">
+                                <span class="timeline-number">1</span>
+                            </div>
+                            <div class="timeline-content">
+                                <h6 class="timeline-title">Message Received</h6>
+                                <p class="timeline-description">Your message has been securely saved to our database</p>
+                            </div>
+                        </div>
+                        <div class="timeline-connector"></div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker">
+                                <span class="timeline-number">2</span>
+                            </div>
+                            <div class="timeline-content">
+                                <h6 class="timeline-title">Email Notification</h6>
+                                <p class="timeline-description">Developer receives instant email notification</p>
+                            </div>
+                        </div>
+                        <div class="timeline-connector"></div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker">
+                                <span class="timeline-number">3</span>
+                            </div>
+                            <div class="timeline-content">
+                                <h6 class="timeline-title">Review & Response</h6>
+                                <p class="timeline-description">Personal response sent within 24 hours</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons text-center">
+                    <div class="row g-2">
+                        <div class="col-12 col-sm-6">
+                            <a href="/" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-home me-2"></i>
+                                Back to Home
+                            </a>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <a href="/contact" class="btn btn-outline-primary btn-lg w-100">
+                                <i class="fas fa-envelope me-2"></i>
+                                Send Another Message
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Help -->
+                <div class="additional-help mt-4">
+                    <h5 class="text-center mb-3">Need Immediate Help?</h5>
+                    <div class="help-options">
+                        <a href="/help" class="help-link">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Help Center</span>
+                        </a>
+                        <a href="/api-docs" class="help-link">
+                            <i class="fas fa-code"></i>
+                            <span>API Docs</span>
+                        </a>
+                        <a href="mailto:sagarsiddesh14@gmail.com" class="help-link">
+                            <i class="fas fa-envelope"></i>
+                            <span>Direct Email</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Success Page Styles */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.success-card {
+    background: white;
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    margin: 2rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.success-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #28a745, #20c997, #17a2b8);
+}
+
+.success-icon-wrapper {
+    margin-bottom: 2rem;
+}
+
+.success-icon {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #28a745, #20c997);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+    animation: successPulse 2s ease-in-out infinite;
+    margin: 0 auto;
+}
+
+.success-icon i {
+    font-size: 2.5rem;
+    color: white;
+    animation: checkmarkBounce 0.8s ease-out 0.2s both;
+}
+
+@keyframes successPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 15px 40px rgba(40, 167, 69, 0.4);
+    }
+}
+
+@keyframes checkmarkBounce {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.success-title {
+    color: #28a745;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(40, 167, 69, 0.1);
+}
+
+.success-subtitle {
+    color: #6c757d;
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 0;
+}
+
+.developer-message {
+    margin: 2rem 0;
+}
+
+.developer-message .alert {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    border: none;
+    border-radius: 15px;
+    padding: 1.5rem;
+}
+
+.section-title {
+    color: #495057;
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 0.5rem;
+}
+
+.info-card {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    background: white;
+}
+
+.info-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.info-card h6 {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.info-card p {
+    color: #6c757d;
+    margin: 0;
+    font-size: 0.9rem;
+    word-break: break-all;
+}
+
+.timeline {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 30px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, #007bff, #28a745);
+    border-radius: 2px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.timeline-marker {
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+}
+
+.timeline-number {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+    border: 3px solid white;
+}
+
+.timeline-content {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+    flex: 1;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+.timeline-content:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.timeline-title {
+    color: #495057;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-description {
+    color: #6c757d;
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.timeline-connector {
+    position: absolute;
+    left: 60px;
+    top: 60px;
+    width: 2px;
+    height: 2rem;
+    background: #007bff;
+    z-index: 1;
+}
+
+.action-buttons {
+    margin-top: 2rem;
+}
+
+.btn {
+    border-radius: 10px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    border: 2px solid;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,123,255,0.3);
+    background: linear-gradient(135deg, #0056b3, #004085);
+    border-color: #0056b3;
+}
+
+.btn-outline-primary {
+    color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-color: #007bff;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,123,255,0.3);
+}
+
+.additional-help {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #dee2e6;
+}
+
+.additional-help h5 {
+    color: #495057;
+    font-weight: 600;
+}
+
+.help-options {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.help-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: #f8f9fa;
+    color: #495057;
+    text-decoration: none;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.help-link:hover {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,123,255,0.2);
+}
+
+.help-link i {
+    font-size: 1.1rem;
+}
+
+/* Timeline Mobile Styles */
+@media (max-width: 768px) {
+    .timeline::before {
+        left: 25px;
+    }
+
+    .timeline-item {
+        margin-bottom: 1.5rem;
+    }
+
+    .timeline-number {
+        width: 50px;
+        height: 50px;
+        font-size: 1rem;
+    }
+
+    .timeline-content {
+        padding: 1rem;
+        margin-top: 5px;
+    }
+
+    .timeline-connector {
+        left: 50px;
+        height: 1.5rem;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .success-card {
+        padding: 2rem 1.5rem;
+        margin: 1rem 0;
+    }
+
+    .success-title {
+        font-size: 2rem;
+    }
+
+    .success-subtitle {
+        font-size: 1rem;
+    }
+
+    .info-card {
+        margin-bottom: 1rem;
+    }
+
+    .help-options {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .help-link {
+        width: 100%;
+        max-width: 250px;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .success-card {
+        padding: 1.5rem 1rem;
+    }
+
+    .success-title {
+        font-size: 1.75rem;
+    }
+
+    .action-buttons .row > div {
+        margin-bottom: 0.5rem;
+    }
+
+    .timeline::before {
+        left: 20px;
+    }
+
+    .timeline-number {
+        width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+
+    .timeline-content {
+        padding: 0.75rem;
+    }
+}
+</style>
+{% endblock %}

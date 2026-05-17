@@ -1,0 +1,41 @@
+# Core Flask dependencies
+Flask==3.1.2
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Flask-CORS==6.0.1
+
+# Authentication
+Authlib==1.6.3
+
+# Database
+psycopg2-binary==2.9.10
+
+# Image processing
+Pillow==11.3.0
+opencv-python==4.11.0.86
+numpy==2.3.2
+
+# Steganography
+stegano==2.0.0
+
+# Encryption
+cryptography>=45.0.7
+
+# Email
+sendgrid==6.12.4
+
+# Utilities
+python-dotenv==1.1.1
+email-validator==2.3.0
+requests==2.32.5
+Werkzeug==3.1.3
+
+# 2FA and Security
+pyotp==2.9.0
+qrcode==7.4.2
+
+# Cloud Storage
+boto3==1.34.0
+
+# Production server
+gunicorn==23.0.0

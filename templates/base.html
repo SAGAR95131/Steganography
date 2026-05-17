@@ -9,6 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Custom CSS -->
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
     {% block head %}{% endblock %}
@@ -16,8 +18,16 @@
 <body data-theme="default">
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
-                <i class="fas fa-shield-alt me-2"></i>CyberCloak
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
+                <div class="brand-logo me-3">
+                    <div class="logo-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-main">CyberCloak</span>
+                    <span class="brand-tagline">Secure Steganography</span>
+                </div>
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -46,6 +56,26 @@
                 </ul>
                 
                 <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('about') }}">
+                            <i class="fas fa-info-circle me-1"></i>About
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('help') }}">
+                            <i class="fas fa-question-circle me-1"></i>Help
+                        </a>
+                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('api_docs') }}">
+                        <i class="fas fa-code me-1"></i>API Docs
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('mobile') }}">
+                        <i class="fas fa-mobile-alt me-1"></i>Mobile App
+                    </a>
+                </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-palette me-1"></i>Theme
@@ -61,20 +91,61 @@
                     {% if current_user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <img src="{{ current_user.avatar_url or '/static/images/default-avatar.png' }}" 
+                            <img src="{{ current_user.avatar_url or 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTIiIGZpbGw9IiM2MzZlZWEiLz4KPGNpcmNsZSBjeD0iMTIiIGN5PSI5LjUiIHI9IjMuNSIgZmlsbD0iI2ZmZmZmZiIvPgo8cGF0aCBkPSJNMjEgMjAuMjE3NWMtLjQ5NC0uMzg5LTEuMTIzLS42MTUtMS44MjMtLjYxNUgxOC41YzAtMS4zODMtMS4xMTctMi41LTIuNS0yLjVoLTJjMC0xLjM4MyAxLjExNy0yLjUgMi41LTIuNWgzYzEuMzgzIDAgMi41IDEuMTE3IDIuNSAyLjV2MmMwIDEuMzgzLTEuMTE3IDIuNS0yLjUgMi41SDQuNWMtLjY5OSAwLTEuMzI4LjIyNi0xLjgyMy42MTVMMCAyNC4wNzA2djAuNDI5NGgxOFYyMC4yMTc1eiIgZmlsbD0iI2ZmZmZmZiIvPgo8L3N2Zz4K' }}"
                                  alt="Avatar" class="rounded-circle me-1" width="24" height="24">
                             {{ current_user.name }}
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('dashboard') }}">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('profile') }}">
+                                <i class="fas fa-user me-2"></i>Profile Settings
+                            </a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('activity') }}">
+                            <i class="fas fa-history me-2"></i>My Activity
+                        </a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('analytics') }}">
+                            <i class="fas fa-chart-line me-2"></i>Analytics
+                        </a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('file_management') }}">
+                            <i class="fas fa-cloud me-2"></i>File Management
+                        </a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('security_settings') }}">
+                            <i class="fas fa-shield-alt me-2"></i>Security Settings
+                        </a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('notifications_page') }}">
+                            <i class="fas fa-bell me-2"></i>Notifications
+                        </a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('social') }}">
+                            <i class="fas fa-users me-2"></i>Social Feed
+                        </a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('workspaces') }}">
+                            <i class="fas fa-project-diagram me-2"></i>Workspaces
+                        </a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('collaborate') }}">
+                            <i class="fas fa-handshake me-2"></i>Collaborate
+                        </a></li>
+                        {% if current_user.email == 'sagarsiddesh14@gmail.com' %}
+                        <li><a class="dropdown-item" href="{{ url_for('admin') }}">
+                            <i class="fas fa-crown me-2"></i>Admin Panel
+                        </a></li>
+                        {% endif %}
+                        <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('logout') }}">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </a></li>
                         </ul>
                     </li>
                     {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('login') }}">
                             <i class="fas fa-sign-in-alt me-1"></i>Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('signup') }}">
+                            <i class="fas fa-user-plus me-1"></i>Sign Up
                         </a>
                     </li>
                     {% endif %}
@@ -99,24 +170,88 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="footer mt-5 py-4">
-        <div class="container text-center">
-            <div class="row">
-                <div class="col-md-6">
-                    <p class="mb-0">&copy; 2024 CyberCloak. Secure steganography made simple.</p>
-                </div>
-                <div class="col-md-6">
-                    <div class="social-links">
-                        <a href="#" class="text-decoration-none me-3">
-                            <i class="fab fa-github"></i>
-                        </a>
-                        <a href="#" class="text-decoration-none me-3">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="{{ url_for('contact') }}" class="text-decoration-none">
-                            <i class="fas fa-envelope"></i>
-                        </a>
+    <footer class="footer mt-5 py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-brand">
+                        <h5 class="mb-3">
+                            <i class="fas fa-shield-alt me-2"></i>CyberCloak
+                        </h5>
+                        <p class="text-muted mb-3">
+                            Military-grade steganography and encryption platform. 
+                            Hide your secrets within images with complete security.
+                        </p>
+                        <div class="social-links">
+                            <a href="#" class="social-link me-3" title="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="social-link me-3" title="Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-link me-3" title="Discord">
+                                <i class="fab fa-discord"></i>
+                            </a>
+                            <a href="{{ url_for('contact') }}" class="social-link" title="Contact">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
                     </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="footer-title mb-3">Product</h6>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('index') }}">Features</a></li>
+                        <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
+                        <li><a href="{{ url_for('security_settings') }}">Security</a></li>
+                        <li><a href="{{ url_for('api') }}">API</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="footer-title mb-3">Support</h6>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('help') }}">Help Center</a></li>
+                        <li><a href="{{ url_for('documentation') }}">Documentation</a></li>
+                        <li><a href="{{ url_for('contact') }}">Contact Us</a></li>
+                        <li><a href="{{ url_for('status') }}">Status</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="footer-title mb-3">Company</h6>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('about') }}">About</a></li>
+                        <li><a href="{{ url_for('blog') }}">Blog</a></li>
+                        <li><a href="{{ url_for('careers') }}">Careers</a></li>
+                        <li><a href="{{ url_for('press') }}">Press</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="footer-title mb-3">Legal</h6>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('privacy') }}">Privacy Policy</a></li>
+                        <li><a href="{{ url_for('terms') }}">Terms of Service</a></li>
+                        <li><a href="{{ url_for('cookies') }}">Cookie Policy</a></li>
+                        <li><a href="{{ url_for('gdpr') }}">GDPR</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1);">
+            
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0 text-muted">
+                        &copy; 2024 CyberCloak. All rights reserved.
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0 text-muted">
+                        Made with <i class="fas fa-heart text-danger"></i> for security
+                    </p>
                 </div>
             </div>
         </div>

@@ -1,0 +1,391 @@
+{% extends "base.html" %}
+
+{% block title %}API Documentation - CyberCloak{% endblock %}
+
+{% block content %}
+<div class="api-docs-container">
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="api-header">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h1 class="api-title">
+                        <i class="fas fa-code me-3"></i>API Documentation
+                    </h1>
+                    <p class="api-subtitle">Comprehensive API reference with interactive testing</p>
+                </div>
+                <div class="col-lg-4 text-end">
+                    <div class="api-version">
+                        <span class="version-badge">v1.0.0</span>
+                        <span class="version-status">Stable</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <div class="col-lg-3">
+                <div class="api-sidebar">
+                    <div class="sidebar-section">
+                        <h6 class="sidebar-title">Getting Started</h6>
+                        <ul class="sidebar-nav">
+                            <li><a href="#authentication" class="sidebar-link">Authentication</a></li>
+                            <li><a href="#rate-limits" class="sidebar-link">Rate Limits</a></li>
+                            <li><a href="#errors" class="sidebar-link">Error Handling</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="sidebar-section">
+                        <h6 class="sidebar-title">Endpoints</h6>
+                        <ul class="sidebar-nav">
+                            <li><a href="#encrypt" class="sidebar-link">Encrypt Image</a></li>
+                            <li><a href="#decrypt" class="sidebar-link">Decrypt Image</a></li>
+                            <li><a href="#upload" class="sidebar-link">Upload File</a></li>
+                            <li><a href="#download" class="sidebar-link">Download File</a></li>
+                            <li><a href="#user" class="sidebar-link">User Management</a></li>
+                            <li><a href="#analytics" class="sidebar-link">Analytics</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="sidebar-section">
+                        <h6 class="sidebar-title">SDKs</h6>
+                        <ul class="sidebar-nav">
+                            <li><a href="#python-sdk" class="sidebar-link">Python SDK</a></li>
+                            <li><a href="#javascript-sdk" class="sidebar-link">JavaScript SDK</a></li>
+                            <li><a href="#curl-examples" class="sidebar-link">cURL Examples</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="api-content">
+                    <!-- Authentication Section -->
+                    <section id="authentication" class="api-section">
+                        <h2 class="section-title">Authentication</h2>
+                        <p class="section-description">
+                            All API requests require authentication. You can authenticate using API keys or OAuth tokens.
+                        </p>
+                        
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">API Key Authentication</span>
+                                <button class="btn btn-sm btn-outline-primary copy-btn" data-target="#auth-code">Copy</button>
+                            </div>
+                            <pre id="auth-code"><code>curl -H "Authorization: Bearer YOUR_API_KEY" \
+     -H "Content-Type: application/json" \
+     https://api.cybercloak.com/v1/encrypt</code></pre>
+                        </div>
+                        
+                        <div class="api-test">
+                            <h5>Test Authentication</h5>
+                            <div class="test-form">
+                                <div class="row g-3">
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" id="apiKey" placeholder="Enter your API key">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-primary w-100" onclick="testAuth()">Test Connection</button>
+                                    </div>
+                                </div>
+                                <div id="auth-result" class="test-result mt-3"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Encrypt Image Endpoint -->
+                    <section id="encrypt" class="api-section">
+                        <h2 class="section-title">Encrypt Image</h2>
+                        <p class="section-description">Encrypt and hide a message within an image using steganography.</p>
+                        
+                        <div class="endpoint-info">
+                            <span class="method post">POST</span>
+                            <span class="endpoint-url">/api/v1/encrypt</span>
+                        </div>
+                        
+                        <div class="request-response">
+                            <div class="request-section">
+                                <h5>Request Body</h5>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span class="code-title">JSON Schema</span>
+                                        <button class="btn btn-sm btn-outline-primary copy-btn" data-target="#encrypt-request">Copy</button>
+                                    </div>
+                                    <pre id="encrypt-request"><code>{
+  "image": "base64_encoded_image_data",
+  "message": "Secret message to hide",
+  "password": "optional_password",
+  "format": "png"
+}</code></pre>
+                                </div>
+                            </div>
+                            
+                            <div class="response-section">
+                                <h5>Response</h5>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span class="code-title">Success Response</span>
+                                        <button class="btn btn-sm btn-outline-primary copy-btn" data-target="#encrypt-response">Copy</button>
+                                    </div>
+                                    <pre id="encrypt-response"><code>{
+  "success": true,
+  "data": {
+    "encrypted_image": "base64_encoded_result",
+    "file_id": "uuid_string",
+    "processing_time": 1.23,
+    "security_score": 95
+  }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="api-test">
+                            <h5>Test Encrypt Endpoint</h5>
+                            <div class="test-form">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Message</label>
+                                        <input type="text" class="form-control" id="encrypt-message" placeholder="Enter secret message">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Password (optional)</label>
+                                        <input type="password" class="form-control" id="encrypt-password" placeholder="Enter password">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Image File</label>
+                                        <input type="file" class="form-control" id="encrypt-file" accept="image/*">
+                                    </div>
+                                    <div class="col-12">
+                                        <button class="btn btn-primary" onclick="testEncrypt()">Test Encrypt</button>
+                                    </div>
+                                </div>
+                                <div id="encrypt-result" class="test-result mt-3"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Decrypt Image Endpoint -->
+                    <section id="decrypt" class="api-section">
+                        <h2 class="section-title">Decrypt Image</h2>
+                        <p class="section-description">Extract and decrypt a hidden message from an image.</p>
+                        
+                        <div class="endpoint-info">
+                            <span class="method get">GET</span>
+                            <span class="endpoint-url">/api/v1/decrypt</span>
+                        </div>
+                        
+                        <div class="request-response">
+                            <div class="request-section">
+                                <h5>Request Parameters</h5>
+                                <div class="params-table">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Parameter</th>
+                                                <th>Type</th>
+                                                <th>Required</th>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>file_id</td>
+                                                <td>string</td>
+                                                <td>Yes</td>
+                                                <td>File ID from encryption response</td>
+                                            </tr>
+                                            <tr>
+                                                <td>password</td>
+                                                <td>string</td>
+                                                <td>No</td>
+                                                <td>Password used for encryption</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="response-section">
+                                <h5>Response</h5>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span class="code-title">Success Response</span>
+                                        <button class="btn btn-sm btn-outline-primary copy-btn" data-target="#decrypt-response">Copy</button>
+                                    </div>
+                                    <pre id="decrypt-response"><code>{
+  "success": true,
+  "data": {
+    "message": "Extracted secret message",
+    "file_id": "uuid_string",
+    "processing_time": 0.87
+  }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SDK Examples -->
+                    <section id="python-sdk" class="api-section">
+                        <h2 class="section-title">Python SDK</h2>
+                        <p class="section-description">Use our Python SDK for easy integration.</p>
+                        
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">Installation</span>
+                                <button class="btn btn-sm btn-outline-primary copy-btn" data-target="#python-install">Copy</button>
+                            </div>
+                            <pre id="python-install"><code>pip install cybercloak-sdk</code></pre>
+                        </div>
+                        
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">Usage Example</span>
+                                <button class="btn btn-sm btn-outline-primary copy-btn" data-target="#python-example">Copy</button>
+                            </div>
+                            <pre id="python-example"><code>from cybercloak import CyberCloakClient
+
+# Initialize client
+client = CyberCloakClient(api_key="your_api_key")
+
+# Encrypt image
+result = client.encrypt_image(
+    image_path="path/to/image.png",
+    message="Secret message",
+    password="optional_password"
+)
+
+print(f"Encrypted image saved to: {result['file_path']}")
+
+# Decrypt image
+decrypted = client.decrypt_image(
+    file_id=result['file_id'],
+    password="optional_password"
+)
+
+print(f"Decrypted message: {decrypted['message']}")</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Error Codes -->
+                    <section id="errors" class="api-section">
+                        <h2 class="section-title">Error Codes</h2>
+                        <p class="section-description">Common error responses and their meanings.</p>
+                        
+                        <div class="error-codes">
+                            <div class="error-item">
+                                <span class="error-code">400</span>
+                                <div class="error-info">
+                                    <h6>Bad Request</h6>
+                                    <p>Invalid request parameters or missing required fields.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="error-item">
+                                <span class="error-code">401</span>
+                                <div class="error-info">
+                                    <h6>Unauthorized</h6>
+                                    <p>Invalid or missing API key.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="error-item">
+                                <span class="error-code">429</span>
+                                <div class="error-info">
+                                    <h6>Rate Limited</h6>
+                                    <p>Too many requests. Please wait before retrying.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="error-item">
+                                <span class="error-code">500</span>
+                                <div class="error-info">
+                                    <h6>Internal Server Error</h6>
+                                    <p>Something went wrong on our end. Please try again later.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Copy buttons
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const target = document.querySelector(this.dataset.target);
+            navigator.clipboard.writeText(target.textContent);
+            
+            const originalText = this.textContent;
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+                this.textContent = originalText;
+            }, 2000);
+        });
+    });
+    
+    // Smooth scrolling for sidebar links
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            target.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+});
+
+function testAuth() {
+    const apiKey = document.getElementById('apiKey').value;
+    const result = document.getElementById('auth-result');
+    
+    if (!apiKey) {
+        result.innerHTML = '<div class="alert alert-warning">Please enter an API key</div>';
+        return;
+    }
+    
+    result.innerHTML = '<div class="alert alert-info"><i class="fas fa-spinner fa-spin me-2"></i>Testing connection...</div>';
+    
+    // Simulate API call
+    setTimeout(() => {
+        result.innerHTML = '<div class="alert alert-success"><i class="fas fa-check-circle me-2"></i>Authentication successful!</div>';
+    }, 2000);
+}
+
+function testEncrypt() {
+    const message = document.getElementById('encrypt-message').value;
+    const password = document.getElementById('encrypt-password').value;
+    const file = document.getElementById('encrypt-file').files[0];
+    const result = document.getElementById('encrypt-result');
+    
+    if (!message || !file) {
+        result.innerHTML = '<div class="alert alert-warning">Please enter a message and select an image file</div>';
+        return;
+    }
+    
+    result.innerHTML = '<div class="alert alert-info"><i class="fas fa-spinner fa-spin me-2"></i>Encrypting image...</div>';
+    
+    // Simulate API call
+    setTimeout(() => {
+        result.innerHTML = `
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle me-2"></i>Image encrypted successfully!
+                <div class="mt-2">
+                    <strong>File ID:</strong> <code>enc_${Date.now()}</code><br>
+                    <strong>Processing Time:</strong> 1.23s<br>
+                    <strong>Security Score:</strong> 95%
+                </div>
+            </div>
+        `;
+    }, 3000);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,381 @@
+{% extends "base.html" %}
+
+{% block title %}Profile Settings - CyberCloak{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="profile-sidebar">
+                    <div class="profile-card floating-card text-center">
+                        <div class="profile-avatar">
+                            <img src="{{ current_user.avatar_url or 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNjAiIHI9IjYwIiBmaWxsPSIjNjM2ZWVhIi8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNDUiIHI9IjIyLjUiIGZpbGw9IiNmZmZmZmYiLz4KPHBhdGggZD0iTTEwNSAxMDMuNTM1Yy0uNjI5LS4yNzYtMS43NDctLjQ0LTEuOTc0LS40NEg3Ny41YzAtMS45NTYtMS42MjItMy41LTMuNS0zLjVoLTJjMC0xLjk1NiAxLjYyMi0zLjUgMy41LTMuNWgzYzEuOTU2IDAgMy41IDEuNjIyIDMuNSAzLjV2NGMwIDEuOTU2LTEuNjIyIDMuNS0zLjUgMy41SDI0LjVjLS40OTkgMC0uOTU5LjE4OS0xLjQ3NC4zNDRsLTEuNSAxLjA5di4zMDJoMTJ2LTEwLjUzNXoiIGZpbGw9IiNmZmZmZmYiLz4KPHN2Zy8+' }}"
+                                 alt="Profile Picture" class="img-fluid">
+                        </div>
+                        <h4 class="profile-name">{{ current_user.name }}</h4>
+                        <p class="profile-email">{{ current_user.email }}</p>
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">{{ current_user.encryption_jobs|length }}</div>
+                                <div class="stat-label">Files Encrypted</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">{{ current_user.created_at.strftime('%b %Y') }}</div>
+                                <div class="stat-label">Member Since</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-menu floating-card">
+                        <h6 class="menu-title">Account Settings</h6>
+                        <ul class="profile-nav">
+                            <li><a href="#profile-info" class="nav-link active" data-section="profile-info">
+                                <i class="fas fa-user me-2"></i>Profile Information
+                            </a></li>
+                            <li><a href="#security" class="nav-link" data-section="security">
+                                <i class="fas fa-shield-alt me-2"></i>Security Settings
+                            </a></li>
+                            <li><a href="#preferences" class="nav-link" data-section="preferences">
+                                <i class="fas fa-cog me-2"></i>Preferences
+                            </a></li>
+                            <li><a href="#notifications" class="nav-link" data-section="notifications">
+                                <i class="fas fa-bell me-2"></i>Notifications
+                            </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-8">
+                <div class="profile-content">
+                    <!-- Profile Information -->
+                    <div class="profile-section" id="profile-info">
+                        <div class="section-header">
+                            <h3>Profile Information</h3>
+                            <p>Update your personal information and profile details</p>
+                        </div>
+                        
+                        <div class="profile-form floating-card">
+                            <form id="profileForm">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="fullName" class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" id="fullName" 
+                                               value="{{ current_user.name }}" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="username" class="form-label">Username</label>
+                                        <input type="text" class="form-control" id="username" 
+                                               value="{{ current_user.username }}" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="email" class="form-label">Email Address</label>
+                                        <input type="email" class="form-control" id="email" 
+                                               value="{{ current_user.email }}" readonly>
+                                        <div class="form-text">Email cannot be changed. Contact support if needed.</div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="bio" class="form-label">Bio</label>
+                                        <textarea class="form-control" id="bio" rows="3" 
+                                                  placeholder="Tell us about yourself..."></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save me-2"></i>Save Changes
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Security Settings -->
+                    <div class="profile-section" id="security" style="display: none;">
+                        <div class="section-header">
+                            <h3>Security Settings</h3>
+                            <p>Manage your account security and privacy settings</p>
+                        </div>
+                        
+                        <div class="security-settings floating-card">
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h6>Two-Factor Authentication</h6>
+                                    <p class="text-muted">Add an extra layer of security to your account</p>
+                                </div>
+                                <div class="security-action">
+                                    <button class="btn btn-outline-primary" disabled>
+                                        <i class="fas fa-mobile-alt me-2"></i>Enable 2FA
+                                    </button>
+                                    <small class="text-muted d-block mt-1">Coming Soon</small>
+                                </div>
+                            </div>
+                            
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h6>Login Sessions</h6>
+                                    <p class="text-muted">Manage your active login sessions</p>
+                                </div>
+                                <div class="security-action">
+                                    <button class="btn btn-outline-secondary">
+                                        <i class="fas fa-list me-2"></i>View Sessions
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h6>Account Deletion</h6>
+                                    <p class="text-muted">Permanently delete your account and all data</p>
+                                </div>
+                                <div class="security-action">
+                                    <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                                        <i class="fas fa-trash me-2"></i>Delete Account
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Preferences -->
+                    <div class="profile-section" id="preferences" style="display: none;">
+                        <div class="section-header">
+                            <h3>Preferences</h3>
+                            <p>Customize your CyberCloak experience</p>
+                        </div>
+                        
+                        <div class="preferences-settings floating-card">
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <h6>Default Theme</h6>
+                                    <p class="text-muted">Choose your preferred color theme</p>
+                                </div>
+                                <div class="preference-action">
+                                    <select class="form-select" id="themeSelect">
+                                        <option value="default">Default</option>
+                                        <option value="cyberpunk">Cyberpunk</option>
+                                        <option value="ocean">Ocean</option>
+                                        <option value="sunset">Sunset</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <h6>Language</h6>
+                                    <p class="text-muted">Select your preferred language</p>
+                                </div>
+                                <div class="preference-action">
+                                    <select class="form-select">
+                                        <option value="en">English</option>
+                                        <option value="es">Español</option>
+                                        <option value="fr">Français</option>
+                                        <option value="de">Deutsch</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <h6>Auto-save Settings</h6>
+                                    <p class="text-muted">Automatically save your encryption preferences</p>
+                                </div>
+                                <div class="preference-action">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="autoSave" checked>
+                                        <label class="form-check-label" for="autoSave">
+                                            Enable auto-save
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <div class="profile-section" id="notifications" style="display: none;">
+                        <div class="section-header">
+                            <h3>Notification Preferences</h3>
+                            <p>Choose how you want to be notified about important updates</p>
+                        </div>
+                        
+                        <div class="notification-settings floating-card">
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <h6>Email Notifications</h6>
+                                    <p class="text-muted">Receive updates via email</p>
+                                </div>
+                                <div class="notification-action">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                        <label class="form-check-label" for="emailNotifications">
+                                            Enable email notifications
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <h6>Security Alerts</h6>
+                                    <p class="text-muted">Get notified about security-related events</p>
+                                </div>
+                                <div class="notification-action">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="securityAlerts" checked>
+                                        <label class="form-check-label" for="securityAlerts">
+                                            Enable security alerts
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <h6>Product Updates</h6>
+                                    <p class="text-muted">Stay informed about new features and improvements</p>
+                                </div>
+                                <div class="notification-action">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="productUpdates">
+                                        <label class="form-check-label" for="productUpdates">
+                                            Enable product updates
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Warning:</strong> This action cannot be undone. All your data will be permanently deleted.
+                </div>
+                <p>Are you sure you want to delete your account? This will:</p>
+                <ul>
+                    <li>Permanently delete all your encrypted files</li>
+                    <li>Remove all your encryption history</li>
+                    <li>Cancel any active subscriptions</li>
+                    <li>Delete your profile and account data</li>
+                </ul>
+                <div class="mb-3">
+                    <label for="confirmDelete" class="form-label">Type "DELETE" to confirm:</label>
+                    <input type="text" class="form-control" id="confirmDelete" placeholder="Type DELETE here">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn" disabled>
+                    <i class="fas fa-trash me-2"></i>Delete Account
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Profile navigation
+    const navLinks = document.querySelectorAll('.profile-nav .nav-link');
+    const sections = document.querySelectorAll('.profile-section');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all links
+            navLinks.forEach(l => l.classList.remove('active'));
+            // Add active class to clicked link
+            this.classList.add('active');
+            
+            // Hide all sections
+            sections.forEach(section => section.style.display = 'none');
+            // Show target section
+            const targetSection = this.getAttribute('data-section');
+            document.getElementById(targetSection).style.display = 'block';
+        });
+    });
+    
+    // Theme selection
+    const themeSelect = document.getElementById('themeSelect');
+    if (themeSelect) {
+        const savedTheme = localStorage.getItem('cybercloak-theme') || 'default';
+        themeSelect.value = savedTheme;
+        
+        themeSelect.addEventListener('change', function() {
+            const theme = this.value;
+            localStorage.setItem('cybercloak-theme', theme);
+            CyberCloak.applyTheme(theme);
+        });
+    }
+    
+    // Profile form submission
+    const profileForm = document.getElementById('profileForm');
+    if (profileForm) {
+        profileForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Saving...';
+            submitBtn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                CyberCloak.showNotification('Profile updated successfully!', 'success');
+            }, 1500);
+        });
+    }
+    
+    // Delete account confirmation
+    const confirmDeleteInput = document.getElementById('confirmDelete');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    
+    if (confirmDeleteInput && confirmDeleteBtn) {
+        confirmDeleteInput.addEventListener('input', function() {
+            confirmDeleteBtn.disabled = this.value !== 'DELETE';
+        });
+        
+        confirmDeleteBtn.addEventListener('click', function() {
+            if (confirmDeleteInput.value === 'DELETE') {
+                // Show final confirmation
+                if (confirm('Are you absolutely sure you want to delete your account? This action cannot be undone.')) {
+                    // In a real app, this would make an API call to delete the account
+                    CyberCloak.showNotification('Account deletion initiated. You will be logged out shortly.', 'warning');
+                    setTimeout(() => {
+                        window.location.href = '/logout';
+                    }, 3000);
+                }
+            }
+        });
+    }
+    
+    // Save preferences
+    document.querySelectorAll('input[type="checkbox"], select').forEach(element => {
+        element.addEventListener('change', function() {
+            // In a real app, this would save to the backend
+            CyberCloak.showNotification('Preferences saved!', 'success');
+        });
+    });
+});
+</script>
+{% endblock %}

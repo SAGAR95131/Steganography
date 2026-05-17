@@ -1,0 +1,388 @@
+{% extends "base.html" %}
+
+{% block title %}Mobile App - CyberCloak{% endblock %}
+
+{% block content %}
+<div class="mobile-container">
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="mobile-hero">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            <i class="fas fa-mobile-alt me-3"></i>CyberCloak Mobile
+                        </h1>
+                        <p class="hero-subtitle">
+                            Take your encryption power anywhere with our mobile app. 
+                            Secure, fast, and always at your fingertips.
+                        </p>
+                        <div class="hero-features">
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <span>Offline encryption</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <span>Biometric authentication</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <span>Cloud sync</span>
+                            </div>
+                        </div>
+                        <div class="hero-actions">
+                            <a href="#" class="btn btn-primary btn-lg glow-btn me-3">
+                                <i class="fab fa-apple me-2"></i>Download for iOS
+                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-lg">
+                                <i class="fab fa-google-play me-2"></i>Download for Android
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-phone">
+                        <div class="phone-mockup">
+                            <div class="phone-screen">
+                                <div class="app-interface">
+                                    <div class="app-header">
+                                        <div class="app-title">CyberCloak</div>
+                                        <div class="app-menu">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </div>
+                                    </div>
+                                    <div class="app-content">
+                                        <div class="quick-actions">
+                                            <button class="action-btn">
+                                                <i class="fas fa-camera"></i>
+                                                <span>Encrypt Photo</span>
+                                            </button>
+                                            <button class="action-btn">
+                                                <i class="fas fa-file-image"></i>
+                                                <span>Decrypt Image</span>
+                                            </button>
+                                        </div>
+                                        <div class="recent-files">
+                                            <h6>Recent Files</h6>
+                                            <div class="file-item">
+                                                <i class="fas fa-image text-primary"></i>
+                                                <span>secret_doc.png</span>
+                                                <span class="file-time">2 min ago</span>
+                                            </div>
+                                            <div class="file-item">
+                                                <i class="fas fa-image text-success"></i>
+                                                <span>encrypted_img.jpg</span>
+                                                <span class="file-time">1 hour ago</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <section class="mobile-features py-5">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Mobile-First Features</h2>
+                <p class="section-subtitle">Designed for mobile security and convenience</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-fingerprint"></i>
+                        </div>
+                        <h4>Biometric Security</h4>
+                        <p>Use your fingerprint or face ID for instant, secure access to your encrypted files.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                        <h4>Cloud Sync</h4>
+                        <p>Seamlessly sync your encrypted files across all your devices with end-to-end encryption.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-wifi-slash"></i>
+                        </div>
+                        <h4>Offline Mode</h4>
+                        <p>Encrypt and decrypt files even without internet connection. Your data stays private.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h4>Camera Integration</h4>
+                        <p>Take photos and encrypt them instantly with our advanced camera integration.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        <h4>Secure Sharing</h4>
+                        <p>Share encrypted files safely through secure channels with automatic decryption.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <h4>Smart Notifications</h4>
+                        <p>Get notified about encryption status, security alerts, and important updates.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- App Screenshots -->
+        <section class="app-screenshots py-5">
+            <div class="text-center mb-5">
+                <h2 class="section-title">App Screenshots</h2>
+                <p class="section-subtitle">See CyberCloak Mobile in action</p>
+            </div>
+            
+            <div class="screenshots-carousel">
+                <div class="screenshot-item">
+                    <div class="screenshot-phone">
+                        <div class="phone-screen">
+                            <div class="app-interface">
+                                <div class="app-header">
+                                    <div class="app-title">Encrypt</div>
+                                </div>
+                                <div class="app-content">
+                                    <div class="upload-area">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <p>Tap to select image</p>
+                                    </div>
+                                    <div class="message-input">
+                                        <input type="text" placeholder="Enter secret message">
+                                    </div>
+                                    <button class="encrypt-btn">Encrypt & Hide</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h5>Encrypt Screen</h5>
+                </div>
+                
+                <div class="screenshot-item">
+                    <div class="screenshot-phone">
+                        <div class="phone-screen">
+                            <div class="app-interface">
+                                <div class="app-header">
+                                    <div class="app-title">Decrypt</div>
+                                </div>
+                                <div class="app-content">
+                                    <div class="upload-area">
+                                        <i class="fas fa-image"></i>
+                                        <p>Select encrypted image</p>
+                                    </div>
+                                    <div class="password-input">
+                                        <input type="password" placeholder="Enter password">
+                                    </div>
+                                    <button class="decrypt-btn">Extract Message</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h5>Decrypt Screen</h5>
+                </div>
+                
+                <div class="screenshot-item">
+                    <div class="screenshot-phone">
+                        <div class="phone-screen">
+                            <div class="app-interface">
+                                <div class="app-header">
+                                    <div class="app-title">Files</div>
+                                </div>
+                                <div class="app-content">
+                                    <div class="file-list">
+                                        <div class="file-item">
+                                            <i class="fas fa-image text-primary"></i>
+                                            <div class="file-info">
+                                                <span class="file-name">document.png</span>
+                                                <span class="file-size">2.4 MB</span>
+                                            </div>
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </div>
+                                        <div class="file-item">
+                                            <i class="fas fa-image text-success"></i>
+                                            <div class="file-info">
+                                                <span class="file-name">secret.jpg</span>
+                                                <span class="file-size">1.8 MB</span>
+                                            </div>
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h5>File Manager</h5>
+                </div>
+            </div>
+        </section>
+
+        <!-- Download Section -->
+        <section class="download-section py-5">
+            <div class="download-card">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h3 class="download-title">Ready to Get Started?</h3>
+                        <p class="download-subtitle">
+                            Download CyberCloak Mobile now and experience the future of mobile encryption.
+                        </p>
+                        <div class="download-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">50K+</span>
+                                <span class="stat-label">Downloads</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">4.8★</span>
+                                <span class="stat-label">Rating</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">99.9%</span>
+                                <span class="stat-label">Uptime</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 text-center">
+                        <div class="download-buttons">
+                            <a href="#" class="download-btn ios-btn">
+                                <i class="fab fa-apple"></i>
+                                <div class="btn-text">
+                                    <span class="btn-label">Download on the</span>
+                                    <span class="btn-store">App Store</span>
+                                </div>
+                            </a>
+                            <a href="#" class="download-btn android-btn">
+                                <i class="fab fa-google-play"></i>
+                                <div class="btn-text">
+                                    <span class="btn-label">Get it on</span>
+                                    <span class="btn-store">Google Play</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PWA Features -->
+        <section class="pwa-features py-5">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Progressive Web App</h2>
+                <p class="section-subtitle">Use CyberCloak in your browser like a native app</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="pwa-card">
+                        <div class="pwa-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <h4>Install on Device</h4>
+                        <p>Add CyberCloak to your home screen for instant access. Works offline and feels like a native app.</p>
+                        <button class="btn btn-outline-primary" onclick="installPWA()">
+                            <i class="fas fa-plus me-2"></i>Install PWA
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="pwa-card">
+                        <div class="pwa-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h4>Mobile Optimized</h4>
+                        <p>Fully responsive design that works perfectly on all mobile devices and screen sizes.</p>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-external-link-alt me-2"></i>Try Web Version
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize PWA installation
+    let deferredPrompt;
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        // Show install button
+        const installBtn = document.querySelector('[onclick="installPWA()"]');
+        if (installBtn) {
+            installBtn.style.display = 'block';
+        }
+    });
+    
+    // Screenshot carousel
+    initScreenshotCarousel();
+});
+
+function installPWA() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the PWA install prompt');
+            }
+            deferredPrompt = null;
+        });
+    } else {
+        // Fallback for browsers that don't support PWA
+        alert('PWA installation is not supported in this browser. Please use Chrome, Edge, or Safari.');
+    }
+}
+
+function initScreenshotCarousel() {
+    const carousel = document.querySelector('.screenshots-carousel');
+    if (!carousel) return;
+    
+    let currentIndex = 0;
+    const items = carousel.querySelectorAll('.screenshot-item');
+    const totalItems = items.length;
+    
+    // Auto-rotate screenshots
+    setInterval(() => {
+        items[currentIndex].classList.remove('active');
+        currentIndex = (currentIndex + 1) % totalItems;
+        items[currentIndex].classList.add('active');
+    }, 3000);
+    
+    // Initialize first item as active
+    if (items.length > 0) {
+        items[0].classList.add('active');
+    }
+}
+</script>
+{% endblock %}

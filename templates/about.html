@@ -1,0 +1,922 @@
+{% extends "base.html" %}
+
+{% block title %}About Us - CyberCloak{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="about-hero py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="hero-title mb-4">
+                    <span class="gradient-text">About CyberCloak</span>
+                </h1>
+                <p class="hero-description mb-4">
+                    We're on a mission to make digital privacy accessible to everyone. 
+                    CyberCloak combines cutting-edge steganography with military-grade encryption 
+                    to provide the most secure way to hide information within images.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="50000">0</div>
+                        <div class="stat-label">Images Encrypted</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="99.9">0</div>
+                        <div class="stat-label">Uptime</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="256">0</div>
+                        <div class="stat-label">Bit Encryption</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="about-visual">
+                    <div class="floating-card">
+                        <div class="visual-content">
+                            <div class="security-badge">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Military Grade</span>
+                            </div>
+                            <div class="encryption-flow">
+                                <div class="flow-step">
+                                    <i class="fas fa-image"></i>
+                                    <span>Image</span>
+                                </div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-step">
+                                    <i class="fas fa-lock"></i>
+                                    <span>Encrypt</span>
+                                </div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-step">
+                                    <i class="fas fa-eye-slash"></i>
+                                    <span>Hide</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mission Section -->
+<section class="mission-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="section-title mb-4">Our Mission</h2>
+                <p class="section-subtitle mb-5">
+                    To democratize digital privacy by providing accessible, secure, and easy-to-use 
+                    steganography tools that protect your most sensitive information.
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="mission-card floating-card text-center">
+                    <div class="mission-icon">🔒</div>
+                    <h4>Privacy First</h4>
+                    <p>We believe privacy is a fundamental right. Our zero-logging policy ensures your data never leaves your control.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="mission-card floating-card text-center">
+                    <div class="mission-icon">⚡</div>
+                    <h4>Innovation</h4>
+                    <p>We continuously push the boundaries of steganography technology to stay ahead of emerging threats.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="mission-card floating-card text-center">
+                    <div class="mission-icon">🌍</div>
+                    <h4>Accessibility</h4>
+                    <p>Security shouldn't be complicated. We make advanced encryption accessible to everyone.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="team-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Meet Our Team</h2>
+            <p class="section-subtitle">The passionate students behind CyberCloak</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <!-- Sagar S - Founder & Lead Developer -->
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card floating-card text-center">
+                    <div class="team-avatar">
+                        <img src="/static/images/team/sagar_s.jpg" alt="Sagar S" class="team-photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="avatar-placeholder" style="display: none;">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                    </div>
+                    <h4>Sagar S</h4>
+                    <p class="team-role">Founder & Lead Developer</p>
+                    <div class="team-details">
+                        <p class="team-education">
+                            <i class="fas fa-graduation-cap me-1"></i>
+                            BTech CSBS, 3rd Year
+                        </p>
+                        <p class="team-institute">
+                            <i class="fas fa-university me-1"></i>
+                            Bapuji Institute of Technology
+                        </p>
+                    </div>
+                    <p class="team-bio">
+                        Passionate about cybersecurity and building secure applications.
+                        Leading the development of CyberCloak with innovative solutions.
+                    </p>
+                    <div class="team-contact">
+                        <small class="text-muted">
+                            <i class="fas fa-envelope me-1"></i>
+                            sagarsiddesh14@gmail.com
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rahul Malagi - Co-Developer -->
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card floating-card text-center">
+                    <div class="team-avatar">
+                        <img src="/static/images/team/rahul_malagi.jpeg" alt="Rahul Malagi" class="team-photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="avatar-placeholder" style="display: none;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <h4>Rahul Malagi</h4>
+                    <p class="team-role">Co-Developer</p>
+                    <div class="team-details">
+                        <p class="team-education">
+                            <i class="fas fa-graduation-cap me-1"></i>
+                            BTech Student
+                        </p>
+                        <p class="team-institute">
+                            <i class="fas fa-university me-1"></i>
+                            Bapuji Institute of Technology
+                        </p>
+                    </div>
+                    <p class="team-bio">
+                        Collaborative developer working alongside the team to build
+                        robust and secure applications for CyberCloak.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Sagar S - Cryptography Specialist -->
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card floating-card text-center">
+                    <div class="team-avatar">
+                        <img src="/static/images/team/sagar_s.jpg" alt="Sagar S" class="team-photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="avatar-placeholder" style="display: none;">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                    <h4>Sagar S</h4>
+                    <p class="team-role">Cryptography Specialist</p>
+                    <div class="team-details">
+                        <p class="team-education">
+                            <i class="fas fa-graduation-cap me-1"></i>
+                            BTech Student
+                        </p>
+                        <p class="team-institute">
+                            <i class="fas fa-university me-1"></i>
+                            Bapuji Institute of Technology
+                        </p>
+                    </div>
+                    <p class="team-bio">
+                        Expert in cryptographic algorithms and security protocols.
+                        Ensures all encryption methods meet industry standards.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Dhruva Bhardwaj - DevOps Team HR -->
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card floating-card text-center">
+                    <div class="team-avatar">
+                        <img src="/static/images/team/dhruva_bhardwaj.jpg" alt="Dhruva Bhardwaj" class="team-photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="avatar-placeholder" style="display: none;">
+                            <i class="fas fa-server"></i>
+                        </div>
+                    </div>
+                    <h4>Dhruva Bhardwaj</h4>
+                    <p class="team-role">DevOps Team HR</p>
+                    <div class="team-details">
+                        <p class="team-education">
+                            <i class="fas fa-graduation-cap me-1"></i>
+                            BTech Student
+                        </p>
+                        <p class="team-institute">
+                            <i class="fas fa-university me-1"></i>
+                            Bapuji Institute of Technology
+                        </p>
+                    </div>
+                    <p class="team-bio">
+                        Manages DevOps operations and infrastructure.
+                        Ensures smooth deployment and system reliability.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Stats -->
+        <div class="team-stats mt-5">
+            <div class="row text-center g-4">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number" data-target="4">0</div>
+                        <div class="stat-label">Team Members</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number">3rd</div>
+                        <div class="stat-label">Year Students</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number">CSBS</div>
+                        <div class="stat-label">Department</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number" data-target="2025">2025</div>
+                        <div class="stat-label">Project Year</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Story Section -->
+<section class="story-section py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="section-title mb-4">Our Story</h2>
+                <p class="story-text mb-4">
+                    CyberCloak was born from a simple idea: what if everyone could have access to
+                    military-grade encryption without needing to be a cybersecurity expert?
+                </p>
+                <p class="story-text mb-4">
+                    Founded by Sagar S and his team of talented BTech students from
+                    Bapuji Institute of Technology, we've been working tirelessly to democratize
+                    digital privacy since 2025.
+                </p>
+                <p class="story-text">
+                    Our mission is to make advanced steganography and encryption technologies
+                    accessible to everyone, from individuals protecting personal photos to
+                    businesses securing sensitive data.
+                </p>
+            </div>
+            <div class="col-lg-6">
+                <div class="story-visual">
+                    <div class="story-card floating-card">
+                        <div class="story-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h4>Innovation Born</h4>
+                        <p>Started as a college project with big dreams</p>
+                        <div class="story-year">2025</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Technology Section -->
+<section class="technology-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Our Technology</h2>
+            <p class="section-subtitle">Built with the latest security standards</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="tech-card floating-card">
+                    <h4><i class="fas fa-shield-alt me-2"></i>Encryption Standards</h4>
+                    <ul class="tech-list">
+                        <li><strong>AES-256:</strong> Military-grade symmetric encryption</li>
+                        <li><strong>PBKDF2:</strong> Password-based key derivation</li>
+                        <li><strong>SHA-256:</strong> Secure hash algorithm</li>
+                        <li><strong>RSA-4096:</strong> Asymmetric encryption for key exchange</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="tech-card floating-card">
+                    <h4><i class="fas fa-eye-slash me-2"></i>Steganography Methods</h4>
+                    <ul class="tech-list">
+                        <li><strong>LSB:</strong> Least Significant Bit manipulation</li>
+                        <li><strong>DCT:</strong> Discrete Cosine Transform</li>
+                        <li><strong>Wavelet:</strong> Wavelet-based hiding</li>
+                        <li><strong>Adaptive:</strong> Dynamic capacity optimization</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Achievements Section -->
+<section class="achievements-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Our Achievements</h2>
+            <p class="section-subtitle">Milestones in our journey</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="achievement-card floating-card text-center">
+                    <div class="achievement-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h4 class="achievement-number">50,000+</h4>
+                    <h5 class="achievement-title">Lines of Code</h5>
+                    <p class="achievement-description">Secure, optimized, and well-documented</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="achievement-card floating-card text-center">
+                    <div class="achievement-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4 class="achievement-number">1,000+</h4>
+                    <h5 class="achievement-title">Active Users</h5>
+                    <p class="achievement-description">Trust CyberCloak for their privacy needs</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="achievement-card floating-card text-center">
+                    <div class="achievement-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h4 class="achievement-number">Award</h4>
+                    <h5 class="achievement-title">Winning Project</h5>
+                    <p class="achievement-description">College project with multiple recognitions</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="achievement-card floating-card text-center">
+                    <div class="achievement-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <h4 class="achievement-number">99.9%</h4>
+                    <h5 class="achievement-title">Uptime</h5>
+                    <p class="achievement-description">Reliable and stable service delivery</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Values Section -->
+<section class="values-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Our Values</h2>
+            <p class="section-subtitle">The principles that guide everything we do</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card floating-card text-center">
+                    <div class="value-icon">🔐</div>
+                    <h5>Security</h5>
+                    <p>We never compromise on security. Every feature is designed with privacy in mind.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card floating-card text-center">
+                    <div class="value-icon">🤝</div>
+                    <h5>Transparency</h5>
+                    <p>Open source and transparent about our methods. Trust through visibility.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card floating-card text-center">
+                    <div class="value-icon">🚀</div>
+                    <h5>Innovation</h5>
+                    <p>Continuously improving and adapting to new security challenges.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card floating-card text-center">
+                    <div class="value-icon">❤️</div>
+                    <h5>Community</h5>
+                    <p>Building a community of privacy-conscious individuals and organizations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to Secure Your Data?</h2>
+        <p class="mb-4">Join thousands of users who trust CyberCloak for their privacy needs</p>
+        {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('signup') }}" class="btn btn-primary btn-lg glow-btn me-3">
+                🚀 Get Started Free
+            </a>
+            <a href="{{ url_for('contact') }}" class="btn btn-outline-light btn-lg">
+                📞 Contact Us
+            </a>
+        {% else %}
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg glow-btn">
+                🚀 Go to Dashboard
+            </a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+<style>
+/* Team Section Styles */
+.team-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem 1.5rem;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.team-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #007bff, #28a745, #17a2b8);
+}
+
+.team-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+.team-avatar {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #f8f9fa;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+}
+
+.team-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    border-radius: 50%;
+    border: 4px solid #f8f9fa;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    display: block;
+}
+
+.team-card h4 {
+    color: #495057;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+}
+
+.team-role {
+    color: #007bff;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.team-details {
+    margin-bottom: 1rem;
+}
+
+.team-education,
+.team-institute {
+    color: #6c757d;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.team-education i,
+.team-institute i {
+    color: #28a745;
+    margin-right: 0.25rem;
+}
+
+.team-bio {
+    color: #6c757d;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.team-contact {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.team-contact small {
+    font-size: 0.8rem;
+}
+
+/* Team Stats */
+.team-stats {
+    margin-top: 3rem;
+    padding: 2rem 0;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 15px;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #007bff;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: #6c757d;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Story Section Styles */
+.story-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.story-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #495057;
+}
+
+.story-visual {
+    text-align: center;
+}
+
+.story-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    max-width: 400px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.story-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #007bff, #28a745);
+    border-radius: 15px 15px 0 0;
+}
+
+.story-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.story-year {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #28a745;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+/* Achievements Section Styles */
+.achievements-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.achievement-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 2rem 1.5rem;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.achievement-card:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.achievement-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.achievement-card h4 {
+    color: white;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.achievement-card p {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+
+.achievement-number {
+    color: white;
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.25rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.achievement-title {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.achievement-description {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .team-card {
+        padding: 1.5rem 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .team-avatar {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 1rem;
+    }
+
+    .avatar-placeholder {
+        font-size: 1.5rem;
+    }
+
+    .team-card h4 {
+        font-size: 1.1rem;
+    }
+
+    .team-role {
+        font-size: 0.9rem;
+    }
+
+    .team-bio {
+        font-size: 0.85rem;
+    }
+
+    .stat-card {
+        margin-bottom: 1rem;
+    }
+
+    .story-text {
+        font-size: 1rem;
+    }
+
+    .story-card {
+        padding: 1.5rem;
+    }
+
+    .achievement-card {
+        padding: 1.5rem 1rem;
+    }
+
+    .achievement-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .team-section .row {
+        --bs-gutter-x: 1rem;
+    }
+
+    .team-card {
+        padding: 1rem;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+    }
+}
+</style>
+
+{% block scripts %}
+<script>
+// Counter animation function
+function animateCounter(counter) {
+    const target = parseFloat(counter.getAttribute('data-target'));
+    if (!target) return; // Skip if no data-target
+
+    const duration = 2000; // 2 seconds
+    const start = performance.now();
+    const startValue = 0;
+
+    function update(currentTime) {
+        const elapsed = currentTime - start;
+        const progress = Math.min(elapsed / duration, 1);
+
+        // Easing function for smooth animation
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        const currentValue = startValue + (target - startValue) * easeOutQuart;
+
+        // Format the number
+        if (target >= 1000) {
+            counter.textContent = Math.floor(currentValue).toLocaleString();
+        } else if (target % 1 !== 0) {
+            counter.textContent = currentValue.toFixed(1);
+        } else {
+            counter.textContent = Math.floor(currentValue);
+        }
+
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        } else {
+            // Ensure final value is exact
+            if (target >= 1000) {
+                counter.textContent = target.toLocaleString();
+            } else if (target % 1 !== 0) {
+                counter.textContent = target.toFixed(1);
+            } else {
+                counter.textContent = target;
+            }
+        }
+    }
+
+    requestAnimationFrame(update);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate stats on scroll
+    const stats = document.querySelectorAll('.stat-number[data-target]');
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounter(entry.target);
+                statsObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    stats.forEach(stat => {
+        statsObserver.observe(stat);
+    });
+
+    // Enhanced hover effects for team cards
+    document.querySelectorAll('.team-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-10px) scale(1.02)';
+            this.style.boxShadow = '0 15px 35px rgba(0,0,0,0.15)';
+        });
+
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+            this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.1)';
+        });
+    });
+
+    // Animate team cards on scroll
+    const teamCards = document.querySelectorAll('.team-card');
+    const teamObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, index * 100);
+                teamObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    teamCards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'all 0.6s ease';
+        teamObserver.observe(card);
+    });
+
+    // Add smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}My Files - CyberCloak{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-folder me-3"></i>
+                        My Files
+                    </h2>
+                    <p class="card-subtitle">Manage your encrypted files and documents</p>
+                </div>
+
+                <div class="card-body">
+                    <!-- File Upload Section -->
+                    <div class="file-upload-section">
+                        <div class="upload-zone" id="fileUploadZone">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="upload-text">
+                                <h5>Upload Files</h5>
+                                <p>Drag & drop files here or <span style="color: var(--primary); cursor: pointer;" onclick="document.getElementById('fileInput').click()">browse</span></p>
+                                <small>Max file size: 16MB per file</small>
+                            </div>
+                            <input type="file" id="fileInput" multiple style="display: none;">
+                        </div>
+                    </div>
+
+                    <!-- File Filters -->
+                    <div class="file-filters">
+                        <div class="filter-group">
+                            <input type="text" class="form-control" id="fileSearch" placeholder="Search files...">
+                        </div>
+                        <div class="filter-group">
+                            <select class="form-control" id="fileTypeFilter">
+                                <option value="all">All Types</option>
+                                <option value="image">Images</option>
+                                <option value="document">Documents</option>
+                                <option value="encrypted">Encrypted</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <select class="form-control" id="fileDateFilter">
+                                <option value="all">All Time</option>
+                                <option value="today">Today</option>
+                                <option value="week">This Week</option>
+                                <option value="month">This Month</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="refreshFiles()">
+                            <i class="fas fa-sync-alt me-2"></i>
+                            Refresh
+                        </button>
+                    </div>
+
+                    <!-- Files Grid -->
+                    <div class="files-grid">
+                        <div class="file-item">
+                            <div class="file-icon">
+                                <i class="fas fa-file-image"></i>
+                            </div>
+                            <div class="file-info">
+                                <h6>encrypted_image.png</h6>
+                                <small>2.3 MB • Encrypted • 2 hours ago</small>
+                            </div>
+                            <div class="file-actions">
+                                <button class="btn btn-sm btn-outline-primary" onclick="downloadFile('1')">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteFile('1')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="file-item">
+                            <div class="file-icon">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div class="file-info">
+                                <h6>document.pdf</h6>
+                                <small>1.8 MB • Document • Yesterday</small>
+                            </div>
+                            <div class="file-actions">
+                                <button class="btn btn-sm btn-outline-primary" onclick="downloadFile('2')">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteFile('2')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="file-item">
+                            <div class="file-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="file-info">
+                                <h6>notes.txt</h6>
+                                <small>45 KB • Text • 3 days ago</small>
+                            </div>
+                            <div class="file-actions">
+                                <button class="btn btn-sm btn-outline-primary" onclick="downloadFile('3')">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteFile('3')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="file-item">
+                            <div class="file-icon">
+                                <i class="fas fa-file-image"></i>
+                            </div>
+                            <div class="file-info">
+                                <h6>vacation_photo.jpg</h6>
+                                <small>4.1 MB • Image • 1 week ago</small>
+                            </div>
+                            <div class="file-actions">
+                                <button class="btn btn-sm btn-outline-primary" onclick="downloadFile('4')">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteFile('4')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Storage Usage -->
+                    <div class="storage-usage">
+                        <div class="usage-header">
+                            <h5>Storage Usage</h5>
+                            <span>2.4 GB of 10 GB used</span>
+                        </div>
+                        <div class="usage-bar">
+                            <div class="usage-fill" style="width: 24%"></div>
+                        </div>
+                        <div class="usage-details">
+                            <div class="usage-item">
+                                <span>Images</span>
+                                <span>1.2 GB</span>
+                            </div>
+                            <div class="usage-item">
+                                <span>Documents</span>
+                                <span>850 MB</span>
+                            </div>
+                            <div class="usage-item">
+                                <span>Other</span>
+                                <span>350 MB</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bulk Actions -->
+                    <div class="bulk-actions">
+                        <div class="bulk-select">
+                            <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                            <label for="selectAll">Select All</label>
+                        </div>
+                        <div class="bulk-buttons">
+                            <button class="btn btn-outline-primary" onclick="bulkDownload()">
+                                <i class="fas fa-download me-2"></i>
+                                Download Selected
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="bulkDelete()">
+                                <i class="fas fa-trash me-2"></i>
+                                Delete Selected
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

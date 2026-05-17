@@ -1,0 +1,360 @@
+{% extends "base.html" %}
+
+{% block title %}Help Center - CyberCloak{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="help-hero py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="hero-title mb-4">
+                    <span class="gradient-text">Help Center</span>
+                </h1>
+                <p class="hero-description mb-5">
+                    Find answers to common questions and learn how to use CyberCloak effectively.
+                </p>
+                
+                <!-- Search Box -->
+                <div class="search-box mb-5">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Search for help..." id="helpSearch">
+                        <button class="btn btn-primary" type="button">Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Links -->
+<section class="quick-links py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <a href="#getting-started" class="quick-link-card floating-card">
+                    <div class="quick-link-icon">🚀</div>
+                    <h5>Getting Started</h5>
+                    <p>Learn the basics of using CyberCloak</p>
+                </a>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <a href="#encryption" class="quick-link-card floating-card">
+                    <div class="quick-link-icon">🔐</div>
+                    <h5>Encryption Guide</h5>
+                    <p>How to encrypt and hide messages</p>
+                </a>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <a href="#extraction" class="quick-link-card floating-card">
+                    <div class="quick-link-icon">🔓</div>
+                    <h5>Message Extraction</h5>
+                    <p>How to extract hidden messages</p>
+                </a>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <a href="#troubleshooting" class="quick-link-card floating-card">
+                    <div class="quick-link-icon">🛠️</div>
+                    <h5>Troubleshooting</h5>
+                    <p>Common issues and solutions</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section py-5" id="faq">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <p class="section-subtitle">Quick answers to common questions</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="accordion" id="faqAccordion">
+                    <!-- Getting Started -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                How do I get started with CyberCloak?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <ol>
+                                    <li>Sign up for a free account or try our demo</li>
+                                    <li>Upload an image (PNG, JPEG, GIF, or BMP)</li>
+                                    <li>Enter your secret message</li>
+                                    <li>Optionally add a password for extra security</li>
+                                    <li>Download your encrypted image</li>
+                                </ol>
+                                <p class="mt-3">The process is designed to be simple and secure!</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                What image formats are supported?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We support the following image formats:
+                                <ul class="mt-2">
+                                    <li><strong>PNG</strong> - Recommended for best results</li>
+                                    <li><strong>JPEG</strong> - Good for photos</li>
+                                    <li><strong>GIF</strong> - Supports animation</li>
+                                    <li><strong>BMP</strong> - Uncompressed format</li>
+                                </ul>
+                                <p class="mt-3">PNG is recommended as it preserves image quality without compression artifacts.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                How secure is CyberCloak?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                CyberCloak uses military-grade security:
+                                <ul class="mt-2">
+                                    <li><strong>AES-256 encryption</strong> - The same standard used by governments</li>
+                                    <li><strong>PBKDF2 key derivation</strong> - Protects against brute force attacks</li>
+                                    <li><strong>Zero-logging policy</strong> - We don't store your messages or passwords</li>
+                                    <li><strong>Client-side processing</strong> - Your data never leaves your device</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                What's the maximum message size I can hide?
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Message capacity depends on your image:
+                                <ul class="mt-2">
+                                    <li><strong>Image size</strong> - Larger images can hide more data</li>
+                                    <li><strong>Image complexity</strong> - Detailed images work better</li>
+                                    <li><strong>Format</strong> - PNG typically offers the best capacity</li>
+                                </ul>
+                                <p class="mt-3">Our system automatically calculates the maximum capacity when you upload an image. Typical images can hide several KB of text data.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                Can I extract messages without an account?
+                            </button>
+                        </h2>
+                        <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes! Message extraction is available without creating an account. However, creating and hiding messages requires authentication for security purposes. This ensures that only authorized users can create encrypted content.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+                                What if I forget my password?
+                            </button>
+                        </h2>
+                        <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Unfortunately, we cannot recover forgotten passwords due to our zero-knowledge architecture. This is by design to ensure maximum security. We recommend:
+                                <ul class="mt-2">
+                                    <li>Using a password manager</li>
+                                    <li>Keeping a secure backup of important passwords</li>
+                                    <li>Using memorable but secure passwords</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Tutorial Section -->
+<section class="tutorial-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Step-by-Step Tutorials</h2>
+            <p class="section-subtitle">Learn how to use CyberCloak like a pro</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="tutorial-card floating-card">
+                    <div class="tutorial-header">
+                        <div class="tutorial-icon">🔐</div>
+                        <h4>Encrypting Your First Message</h4>
+                    </div>
+                    <div class="tutorial-content">
+                        <ol>
+                            <li>Sign in to your CyberCloak account</li>
+                            <li>Click "New Encryption" on your dashboard</li>
+                            <li>Upload a high-quality image (PNG recommended)</li>
+                            <li>Enter your secret message</li>
+                            <li>Add a strong password (optional but recommended)</li>
+                            <li>Click "Process Message" and wait for completion</li>
+                            <li>Download your encrypted image</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="tutorial-card floating-card">
+                    <div class="tutorial-header">
+                        <div class="tutorial-icon">🔓</div>
+                        <h4>Extracting Hidden Messages</h4>
+                    </div>
+                    <div class="tutorial-content">
+                        <ol>
+                            <li>Go to the homepage or use the extraction tool</li>
+                            <li>Upload the encrypted image</li>
+                            <li>Enter the password if one was used</li>
+                            <li>Click "Extract Message"</li>
+                            <li>View your revealed message</li>
+                            <li>Copy or save the message as needed</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Support -->
+<section class="support-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <div class="support-card floating-card">
+                    <h3 class="mb-4">Still Need Help?</h3>
+                    <p class="mb-4">Our support team is here to help you with any questions or issues.</p>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="support-option">
+                                <i class="fas fa-envelope fa-2x mb-3"></i>
+                                <h5>Email Support</h5>
+                                <p>Get help via email within 24 hours</p>
+                                <a href="{{ url_for('contact') }}" class="btn btn-outline-primary">Contact Us</a>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="support-option">
+                                <i class="fab fa-github fa-2x mb-3"></i>
+                                <h5>GitHub Issues</h5>
+                                <p>Report bugs or request features</p>
+                                <a href="#" class="btn btn-outline-primary">GitHub</a>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="support-option">
+                                <i class="fas fa-comments fa-2x mb-3"></i>
+                                <h5>Community</h5>
+                                <p>Join our Discord community</p>
+                                <a href="#" class="btn btn-outline-primary">Discord</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality
+    const searchInput = document.getElementById('helpSearch');
+    const searchBtn = searchInput.nextElementSibling;
+    
+    function performSearch() {
+        const query = searchInput.value.toLowerCase().trim();
+        if (!query) return;
+        
+        // Simple search implementation
+        const faqItems = document.querySelectorAll('.accordion-item');
+        let found = false;
+        
+        faqItems.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(query)) {
+                item.style.display = 'block';
+                found = true;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        if (!found) {
+            CyberCloak.showNotification('No results found for "' + query + '"', 'warning');
+        }
+    }
+    
+    searchBtn.addEventListener('click', performSearch);
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
+    
+    // Clear search
+    searchInput.addEventListener('input', function() {
+        if (this.value === '') {
+            document.querySelectorAll('.accordion-item').forEach(item => {
+                item.style.display = 'block';
+            });
+        }
+    });
+    
+    // Smooth scroll for quick links
+    document.querySelectorAll('.quick-link-card').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = this.getAttribute('href');
+            if (target.startsWith('#')) {
+                const element = document.querySelector(target);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    });
+    
+    // Add animation to tutorial cards
+    document.querySelectorAll('.tutorial-card').forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.2}s`;
+        card.classList.add('animate-on-scroll');
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+
+{% block title %}Security Center - CyberCloak{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-shield-alt me-3"></i>
+                        Security Center
+                    </h2>
+                    <p class="card-subtitle">Manage your account security and privacy settings</p>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Security Overview -->
+                        <div class="col-lg-8">
+                            <div class="security-overview">
+                                <div class="security-score">
+                                    <div class="score-circle">
+                                        <div class="score-value">95</div>
+                                        <div class="score-label">Security Score</div>
+                                    </div>
+                                    <div class="score-details">
+                                        <h5>Excellent Security</h5>
+                                        <p>Your account is well protected with strong security measures in place.</p>
+                                    </div>
+                                </div>
+
+                                <div class="security-metrics">
+                                    <div class="metric-item">
+                                        <div class="metric-icon">
+                                            <i class="fas fa-lock"></i>
+                                        </div>
+                                        <div class="metric-info">
+                                            <h6>Password Strength</h6>
+                                            <p>Strong password set</p>
+                                        </div>
+                                        <div class="metric-status excellent">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="metric-item">
+                                        <div class="metric-icon">
+                                            <i class="fas fa-mobile-alt"></i>
+                                        </div>
+                                        <div class="metric-info">
+                                            <h6>Two-Factor Authentication</h6>
+                                            <p>2FA is enabled</p>
+                                        </div>
+                                        <div class="metric-status excellent">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="metric-item">
+                                        <div class="metric-icon">
+                                            <i class="fas fa-clock"></i>
+                                        </div>
+                                        <div class="metric-info">
+                                            <h6>Last Login</h6>
+                                            <p>Today at 10:30 AM</p>
+                                        </div>
+                                        <div class="metric-status good">
+                                            <i class="fas fa-clock"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="metric-item">
+                                        <div class="metric-icon">
+                                            <i class="fas fa-key"></i>
+                                        </div>
+                                        <div class="metric-info">
+                                            <h6>Encryption Keys</h6>
+                                            <p>AES-256 encryption active</p>
+                                        </div>
+                                        <div class="metric-status excellent">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="col-lg-4">
+                            <div class="security-actions">
+                                <h5>Security Actions</h5>
+
+                                <div class="action-buttons">
+                                    <button class="btn btn-primary btn-block" onclick="changePassword()">
+                                        <i class="fas fa-key me-2"></i>
+                                        Change Password
+                                    </button>
+
+                                    <button class="btn btn-outline-primary btn-block" onclick="setup2FA()">
+                                        <i class="fas fa-mobile-alt me-2"></i>
+                                        Setup 2FA
+                                    </button>
+
+                                    <button class="btn btn-outline-secondary btn-block" onclick="manageSessions()">
+                                        <i class="fas fa-desktop me-2"></i>
+                                        Active Sessions
+                                    </button>
+
+                                    <button class="btn btn-outline-secondary btn-block" onclick="downloadData()">
+                                        <i class="fas fa-download me-2"></i>
+                                        Export Data
+                                    </button>
+                                </div>
+
+                                <div class="security-tips">
+                                    <h6>Security Tips</h6>
+                                    <ul>
+                                        <li>Use strong, unique passwords</li>
+                                        <li>Enable two-factor authentication</li>
+                                        <li>Regularly review your active sessions</li>
+                                        <li>Keep your encryption keys secure</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <div class="security-settings">
+                        <h5>Advanced Security Settings</h5>
+
+                        <div class="settings-grid">
+                            <div class="setting-card">
+                                <div class="setting-header">
+                                    <h6>Login Security</h6>
+                                </div>
+                                <div class="setting-options">
+                                    <div class="setting-option">
+                                        <div class="option-info">
+                                            <label>Require password change every 90 days</label>
+                                            <small>Automatically prompt for password change</small>
+                                        </div>
+                                        <div class="toggle-switch">
+                                            <input type="checkbox" id="passwordExpiry" checked>
+                                            <label for="passwordExpiry" class="toggle-slider"></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="setting-option">
+                                        <div class="option-info">
+                                            <label>Login notifications</label>
+                                            <small>Get notified of new login attempts</small>
+                                        </div>
+                                        <div class="toggle-switch">
+                                            <input type="checkbox" id="loginNotifications" checked>
+                                            <label for="loginNotifications" class="toggle-slider"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="setting-card">
+                                <div class="setting-header">
+                                    <h6>Data Protection</h6>
+                                </div>
+                                <div class="setting-options">
+                                    <div class="setting-option">
+                                        <div class="option-info">
+                                            <label>Auto-delete old files</label>
+                                            <small>Automatically delete files older than 30 days</small>
+                                        </div>
+                                        <div class="toggle-switch">
+                                            <input type="checkbox" id="autoDelete">
+                                            <label for="autoDelete" class="toggle-slider"></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="setting-option">
+                                        <div class="option-info">
+                                            <label>Backup encryption keys</label>
+                                            <small>Keep encrypted backups of your keys</small>
+                                        </div>
+                                        <div class="toggle-switch">
+                                            <input type="checkbox" id="backupKeys" checked>
+                                            <label for="backupKeys" class="toggle-slider"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Security Events -->
+                    <div class="security-events">
+                        <h5>Recent Security Events</h5>
+                        <div class="events-list">
+                            <div class="event-item">
+                                <div class="event-icon success">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                </div>
+                                <div class="event-content">
+                                    <h6>Successful Login</h6>
+                                    <p>Logged in from Chrome on Windows</p>
+                                    <small>2 hours ago</small>
+                                </div>
+                            </div>
+
+                            <div class="event-item">
+                                <div class="event-icon warning">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                                <div class="event-content">
+                                    <h6>Password Changed</h6>
+                                    <p>Account password was updated</p>
+                                    <small>1 week ago</small>
+                                </div>
+                            </div>
+
+                            <div class="event-item">
+                                <div class="event-icon info">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="event-content">
+                                    <h6>2FA Enabled</h6>
+                                    <p>Two-factor authentication was activated</p>
+                                    <small>2 weeks ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
